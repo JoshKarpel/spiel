@@ -1,0 +1,13 @@
+coverage:
+  range: 90..100
+  round: down
+  precision: 1
+  status:
+    project:
+      default:
+        target: auto
+        informational: true
+    patch:
+      default:
+        target: auto
+        informational: true

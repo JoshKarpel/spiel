@@ -2,15 +2,21 @@
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.black]
+line-length = 100
+target-version = ["py36", "py37", "py38"]
+include = "\\.pyi?$"
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
 [tool.poetry]
 name = "orate"
 version = "0.1.0"
 description = "Present slides in your terminal."
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
 license = "MIT"
-
-[tool.poetry.scripts]
-orate = 'orate.main:app'
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -24,14 +30,8 @@ pytest-cov = "^2.11.1"
 pytest-xdist = "^2.2.1"
 mypy = "^0.812"
 
-[tool.black]
-line-length = 100
-target-version = ["py36", "py37", "py38"]
-include = "\\.pyi?$"
-
-[tool.isort]
-profile = "black"
-line_length = 100
+[tool.poetry.scripts]
+orate = 'orate.main:app'
 
 [tool.pytest.ini_options]
 addopts = ['--strict-markers']

@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest]
         python-version: [3.9]
     defaults:
       run:
@@ -50,4 +50,3 @@ jobs:
       with:
         env_vars: PLATFORM,PYTHON_VERSION
         fail_ci_if_error: true
-        verbose: true

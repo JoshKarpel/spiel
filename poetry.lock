@@ -307,7 +307,7 @@ python-versions = "*"
 name = "watchdog"
 version = "2.0.2"
 description = "Filesystem events monitoring"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -317,7 +317,7 @@ watchmedo = ["PyYAML (>=3.10)", "argh (>=0.24.1)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "aa04bd0437cc73dbb4b38767d062a7b9cd4f7ae9fab2ebc2966afe4a5b6285a4"
+content-hash = "2f22b639cb117b6ac82c3f119170567a05dc6cc1222251cad0a26e1e4de6befc"
 
 [metadata.files]
 apipkg = [

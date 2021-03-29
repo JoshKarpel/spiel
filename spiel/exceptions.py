@@ -1,10 +1,14 @@
-class OrateException(Exception):
+class SpielException(Exception):
     pass
 
 
-class DuplicateInputHandler(OrateException):
+class DuplicateInputHandler(SpielException):
     pass
 
 
-class UnknownModeError(OrateException):
+class UnknownModeError(SpielException):
+    pass
+
+
+class NoDeckFound(SpielException):
     pass

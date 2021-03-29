@@ -30,10 +30,12 @@ pytest-watch = "^4.2.0"
 pytest-cov = "^2.11.1"
 pytest-xdist = "^2.2.1"
 mypy = "^0.812"
+pytest-mypy = "^0.8.1"
+pytest-mock = "^3.5.1"
 
 [tool.poetry.scripts]
 spiel = 'spiel.main:app'
 
 [tool.pytest.ini_options]
-addopts = ['--strict-markers']
-testpaths = ["tests"]
+addopts = ['--strict-markers', '--mypy']
+testpaths = ["tests", "spiel", "examples"]

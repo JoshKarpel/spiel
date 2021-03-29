@@ -45,8 +45,6 @@ jobs:
       run: poetry install --no-interaction
     - name: Run tests
       run: poetry run pytest --cov --cov-report=xml
-    - name: Check types
-      run: poetry run mypy
     - name: Upload coverage
       uses: codecov/codecov-action@v1
       with:

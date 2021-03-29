@@ -120,11 +120,12 @@ def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
         return result
 
 
+Character = Union[str, SpecialCharacters]
 InputHandler = Callable[[State], Optional[NoReturn]]
-InputHandlerKey = Tuple[Union[str, SpecialCharacters], Mode]
+InputHandlerKey = Tuple[Character, Mode]
 InputHandlerDecorator = Callable[[InputHandler], InputHandler]
 
-INPUT_HANDLERS: MutableMapping[InputHandlerKey, InputHandler] = {}
+INPUT_HANDLERS: MutableMapping[InputHandlerKey, InputHandler] = {}  # type: ignore
 
 
 def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
@@ -139,16 +140,17 @@ def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
 
 
 def input(
-    *characters: Union[str, SpecialCharacters],
+    *characters: Character,
     modes: Optional[Iterator[Mode]] = None,
 ) -> InputHandlerDecorator:
     def decorator(func: InputHandler) -> InputHandler:
         for character, mode in product(characters, modes or list(Mode)):
-            if (character, mode) in INPUT_HANDLERS:
+            key: InputHandlerKey = (character, mode)
+            if key in INPUT_HANDLERS:
                 raise DuplicateInputHandler(
                     f"{character} is already registered as an input handler for mode {mode}"
                 )
-            INPUT_HANDLERS[(character, mode)] = func
+            INPUT_HANDLERS[key] = func
         return func
 
     return decorator

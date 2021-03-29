@@ -18,11 +18,14 @@ class State:
     def current_slide_idx(self, idx: int) -> None:
         self._current_slide_idx = max(0, min(len(self.deck) - 1, idx))
 
-    def next_slide(self, n: int = 1) -> None:
-        self.current_slide_idx += n
+    def next_slide(self, move: int = 1) -> None:
+        self.current_slide_idx += move
 
-    def previous_slide(self, n: int = 1) -> None:
-        self.current_slide_idx -= n
+    def previous_slide(self, move: int = 1) -> None:
+        self.current_slide_idx -= move
+
+    def jump_to_slide(self, idx: int) -> None:
+        self.current_slide_idx = idx
 
     @property
     def current_slide(self) -> Slide:

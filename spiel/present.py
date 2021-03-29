@@ -10,7 +10,7 @@ from .modes import Mode
 from .state import State
 
 
-def display_deck(console: Console, state: State) -> None:
+def present_deck(console: Console, state: State) -> None:
     def get_renderable() -> Layout:
         footer = Layout(Footer(state), name="footer", size=1)
 

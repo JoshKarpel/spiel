@@ -4,11 +4,12 @@ from dataclasses import dataclass, field
 from typing import List, Union
 
 from rich.console import ConsoleRenderable, RichCast
+from rich.text import Text
 
 
 @dataclass
 class Slide:
-    content: Union[RichCast, ConsoleRenderable]
+    content: Union[RichCast, ConsoleRenderable] = field(default_factory=Text)
 
 
 @dataclass

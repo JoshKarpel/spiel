@@ -2,12 +2,13 @@ import socket
 from datetime import datetime
 
 from rich.align import Align
+from rich.console import ConsoleRenderable
 from rich.layout import Layout
 from rich.markdown import Markdown
 from rich.style import Style
 from rich.text import Text
 
-from spiel.slides import Deck, Slide
+from spiel import Deck, Slide
 
 DECK = Deck(name="Spiel Demo Deck")
 
@@ -16,7 +17,7 @@ left_markup = """\
 
 [Spiel](https://github.com/JoshKarpel/spiel) is a framework for building slide decks in Python.
 
-Orate uses [Rich](https://rich.readthedocs.io/) to render slide content.
+Spiel uses [Rich](https://rich.readthedocs.io/) to render slide content.
 """
 
 right_markup = """\
@@ -53,7 +54,7 @@ DECK.add_slide(
 
 
 class Now:
-    def __rich__(self):
+    def __rich__(self) -> ConsoleRenderable:
         return Align(
             Text(
                 f"Right now, at {datetime.now()}!",
@@ -71,7 +72,7 @@ DECK.add_slide(
 
 
 class Where:
-    def __rich__(self):
+    def __rich__(self) -> ConsoleRenderable:
         return Align(
             Text(
                 f"Right here, at {socket.gethostname()}!",

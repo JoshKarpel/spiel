@@ -8,6 +8,10 @@ source =
 
 [report]
 
+skip_empty = True
+show_missing = True
+sort = -cover
+
 exclude_lines =
     def __repr__
     if self\.debug

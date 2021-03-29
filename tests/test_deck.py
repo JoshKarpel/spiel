@@ -1,4 +1,4 @@
-from spiel.slides import Slide, Deck
+from spiel.slides import Deck, Slide
 
 
 def test_can_add_slide_to_deck(three_slide_deck: Deck) -> None:

@@ -1,19 +1,19 @@
 from __future__ import annotations
+
 import importlib.util
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from types import TracebackType
-from typing import Optional, Type, ContextManager
+from typing import ContextManager, Optional, Type
 
-from watchdog.events import FileSystemEventHandler, FileSystemEvent
-from watchdog.observers.polling import PollingObserver
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver
 
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound
 from spiel.slides import Deck
-
 from spiel.state import State
 
 

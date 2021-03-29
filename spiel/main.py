@@ -4,9 +4,9 @@ from pathlib import Path
 from rich.console import Console
 from typer import Argument, Option, Typer
 
+from spiel.load import DeckReloader, DeckWatcher, load_deck
 from spiel.present import present_deck
 from spiel.state import State
-from spiel.load import DeckReloader, load_deck, DeckWatcher
 
 app = Typer()
 console = Console()

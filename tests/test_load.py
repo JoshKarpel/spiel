@@ -1,15 +1,15 @@
-from time import sleep
 from pathlib import Path
 from textwrap import dedent
+from time import sleep
 
 import pytest
+from pytest_mock.plugin import MockerFixture
 
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound
-from spiel.load import load_deck, DeckReloader, DeckWatcher
+from spiel.load import DeckReloader, DeckWatcher, load_deck
 from spiel.slides import Deck
 from spiel.state import State
-from pytest_mock.plugin import MockerFixture
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ def valid_file(empty_file: Path) -> Path:
         dedent(
             """\
     from spiel import Deck
-    
+
     DECK = Deck(name="deck")
     """
         )
@@ -65,7 +65,7 @@ def test_reloader_triggers_when_file_modified(valid_file: Path) -> None:
             dedent(
                 """\
     from spiel import Deck
-    
+
     DECK = Deck(name="modified")
     """
             )

@@ -9,9 +9,9 @@ from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
 
-from orate.display import display_deck
-from orate.slides import Deck
-from orate.state import State
+from spiel.display import display_deck
+from spiel.slides import Deck
+from spiel.state import State
 
 app = Typer()
 console = Console()

@@ -5,7 +5,7 @@ import pytest
 from click.testing import Result
 from typer.testing import CliRunner
 
-from orate.main import app
+from spiel.main import app
 
 CLI = Callable[[List[str]], Result]
 

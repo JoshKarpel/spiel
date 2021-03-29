@@ -7,20 +7,20 @@ from rich.markdown import Markdown
 from rich.style import Style
 from rich.text import Text
 
-from orate.slides import Deck, Slide
+from spiel.slides import Deck, Slide
 
-DECK = Deck(name="Orate Demo Reel")
+DECK = Deck(name="Spiel Demo Deck")
 
 left_markup = """\
-## What is Orate?
+## What is Spiel?
 
-[Orate](https://github.com/JoshKarpel/orate) is a framework for building slide decks in Python.
+[Spiel](https://github.com/JoshKarpel/spiel) is a framework for building slide decks in Python.
 
 Orate uses [Rich](https://rich.readthedocs.io/) to render slide content.
 """
 
 right_markup = """\
-## Why Orate?
+## Why Spiel?
 
 It's fun!
 

@@ -12,7 +12,7 @@ profile = "black"
 line_length = 100
 
 [tool.poetry]
-name = "orate"
+name = "spiel"
 version = "0.1.0"
 description = "Present slides in your terminal."
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
@@ -32,7 +32,7 @@ pytest-xdist = "^2.2.1"
 mypy = "^0.812"
 
 [tool.poetry.scripts]
-orate = 'orate.main:app'
+spiel = 'spiel.main:app'
 
 [tool.pytest.ini_options]
 addopts = ['--strict-markers']

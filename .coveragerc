@@ -3,7 +3,7 @@
 branch = True
 
 source =
-    orate/
+    spiel/
     tests/
 
 [report]

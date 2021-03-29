@@ -5,7 +5,7 @@ from rich.console import ConsoleRenderable
 from rich.style import Style
 from rich.table import Column, Table
 
-from orate.state import Stateful
+from spiel.state import Stateful
 
 
 @dataclass

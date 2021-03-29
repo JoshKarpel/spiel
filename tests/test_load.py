@@ -76,4 +76,6 @@ def test_reloader_triggers_when_file_modified(valid_file: Path) -> None:
                 return  # test succeeded
             sleep(0.1)
 
-        assert False, f"Reloader never trigger, current file contents:\n{valid_file.read_text()}"
+        assert (
+            False
+        ), f"Reloader never triggered, current file contents:\n{valid_file.read_text()}"  # pragma: debugging

@@ -5,17 +5,7 @@ import termios
 from contextlib import contextmanager
 from enum import Enum, unique
 from itertools import product
-from typing import (
-    Callable,
-    Dict,
-    Iterator,
-    MutableMapping,
-    NoReturn,
-    Optional,
-    TextIO,
-    Tuple,
-    Union,
-)
+from typing import Callable, Iterator, MutableMapping, NoReturn, Optional, TextIO, Tuple, Union
 
 from .exceptions import DuplicateInputHandler
 from .modes import Mode
@@ -124,8 +114,8 @@ Character = Union[str, SpecialCharacters]
 InputHandler = Callable[[State], Optional[NoReturn]]
 InputHandlerKey = Tuple[Character, Mode]
 InputHandlerDecorator = Callable[[InputHandler], InputHandler]
-
-INPUT_HANDLERS: MutableMapping[InputHandlerKey, InputHandler] = {}  # type: ignore
+InputHandlers = MutableMapping[InputHandlerKey, InputHandler]
+INPUT_HANDLERS: InputHandlers = {}  # type: ignore
 
 
 def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
@@ -139,28 +129,29 @@ def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
     return handler(state)
 
 
-def input(
+def action(
     *characters: Character,
     modes: Optional[Iterator[Mode]] = None,
+    handlers: InputHandlers = INPUT_HANDLERS,
 ) -> InputHandlerDecorator:
     def decorator(func: InputHandler) -> InputHandler:
         for character, mode in product(characters, modes or list(Mode)):
             key: InputHandlerKey = (character, mode)
-            if key in INPUT_HANDLERS:
+            if key in handlers:
                 raise DuplicateInputHandler(
                     f"{character} is already registered as an input handler for mode {mode}"
                 )
-            INPUT_HANDLERS[key] = func
+            handlers[key] = func
         return func
 
     return decorator
 
 
-@input(SpecialCharacters.Right)
+@action(SpecialCharacters.Right)
 def next_slide(state: State) -> None:
     state.next_slide()
 
 
-@input(SpecialCharacters.Left)
+@action(SpecialCharacters.Left)
 def previous_slide(state: State) -> None:
     state.previous_slide()

@@ -12,30 +12,6 @@ from spiel.slides import Deck
 from spiel.state import State
 
 
-@pytest.fixture
-def empty_file(tmp_path: Path) -> Path:
-    file = tmp_path / "test_deck.py"
-
-    file.touch()
-
-    return file
-
-
-@pytest.fixture
-def valid_file(empty_file: Path) -> Path:
-    empty_file.write_text(
-        dedent(
-            """\
-    from spiel import Deck
-
-    DECK = Deck(name="deck")
-    """
-        )
-    )
-
-    return empty_file
-
-
 def test_loading_from_empty_file_fails(empty_file: Path) -> None:
     with pytest.raises(NoDeckFound, match=DECK):
         load_deck(empty_file)
@@ -48,18 +24,18 @@ def test_loading_from_missing_file_fails(tmp_path: Path) -> None:
         load_deck(missing_file)
 
 
-def test_can_load_deck_from_valid_file(valid_file: Path) -> None:
-    assert isinstance(load_deck(valid_file), Deck)
+def test_can_load_deck_from_valid_file(file_with_empty_deck: Path) -> None:
+    assert isinstance(load_deck(file_with_empty_deck), Deck)
 
 
-def test_reloader_triggers_when_file_modified(valid_file: Path) -> None:
-    state = State(load_deck(valid_file))
-    reloader = DeckReloader(state=state, deck_path=valid_file)
+def test_reloader_triggers_when_file_modified(file_with_empty_deck: Path) -> None:
+    state = State(load_deck(file_with_empty_deck))
+    reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)
 
-    with DeckWatcher(event_handler=reloader, path=valid_file, poll=True):
+    with DeckWatcher(event_handler=reloader, path=file_with_empty_deck, poll=True):
         sleep(0.01)
 
-        valid_file.write_text(
+        file_with_empty_deck.write_text(
             dedent(
                 """\
     from spiel import Deck
@@ -78,4 +54,4 @@ def test_reloader_triggers_when_file_modified(valid_file: Path) -> None:
 
         assert (
             False
-        ), f"Reloader never triggered, current file contents:\n{valid_file.read_text()}"  # pragma: debugging
+        ), f"Reloader never triggered, current file contents:\n{file_with_empty_deck.read_text()}"  # pragma: debugging

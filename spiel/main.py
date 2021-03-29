@@ -2,8 +2,10 @@ from contextlib import nullcontext
 from pathlib import Path
 
 from rich.console import Console
+from rich.text import Text
 from typer import Argument, Option, Typer
 
+from spiel.constants import PACKAGE_NAME, __version__
 from spiel.load import DeckReloader, DeckWatcher, load_deck
 from spiel.present import present_deck
 from spiel.state import State
@@ -33,3 +35,8 @@ def present(
 
     with watcher:
         present_deck(console, state)
+
+
+@app.command()
+def version() -> None:
+    console.print(Text(f"{PACKAGE_NAME} {__version__}"))

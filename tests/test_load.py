@@ -53,13 +53,11 @@ def test_can_load_deck_from_valid_file(valid_file: Path) -> None:
 
 
 def test_reloader_triggers_when_file_modified(valid_file: Path) -> None:
-    delay = 1  # a small delay is needed after starting the watcher and before checking for the reload (they happen async)
-
     state = State(load_deck(valid_file))
     reloader = DeckReloader(state=state, deck_path=valid_file)
 
     with DeckWatcher(event_handler=reloader, path=valid_file, poll=True):
-        sleep(delay)
+        sleep(0.01)
 
         valid_file.write_text(
             dedent(
@@ -71,6 +69,11 @@ def test_reloader_triggers_when_file_modified(valid_file: Path) -> None:
             )
         )
 
-        sleep(delay)
+        sleep(0.01)
 
-        assert state.deck.name == "modified"
+        for attempt in range(10):
+            if state.deck.name == "modified":
+                return  # test succeeded
+            sleep(0.1)
+
+        assert False, f"Reloader never trigger, current file contents:\n{valid_file.read_text()}"

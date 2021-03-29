@@ -54,7 +54,7 @@ class DeckWatcher(ContextManager):
     observer: Optional[Observer] = None
 
     def __enter__(self) -> DeckWatcher:
-        self.observer = PollingObserver() if self.poll else Observer()
+        self.observer = (PollingObserver if self.poll else Observer)(timeout=0.1)
         self.observer.schedule(self.event_handler, str(self.path))
         self.observer.start()
 

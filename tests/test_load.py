@@ -3,7 +3,6 @@ from textwrap import dedent
 from time import sleep
 
 import pytest
-from pytest_mock.plugin import MockerFixture
 
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound

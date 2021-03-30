@@ -155,3 +155,13 @@ def next_slide(state: State) -> None:
 @action(SpecialCharacters.Left)
 def previous_slide(state: State) -> None:
     state.previous_slide()
+
+
+@action("d")
+def deck_mode(state: State) -> None:
+    state.mode = Mode.DECK
+
+
+@action("s")
+def slide_mode(state: State) -> None:
+    state.mode = Mode.SLIDE

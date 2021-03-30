@@ -10,6 +10,7 @@ from rich.text import Text
 @dataclass
 class Slide:
     content: Union[RichCast, ConsoleRenderable] = field(default_factory=Text)
+    title: str = ""
 
 
 @dataclass

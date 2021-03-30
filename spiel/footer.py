@@ -5,7 +5,9 @@ from rich.console import ConsoleRenderable
 from rich.style import Style
 from rich.table import Column, Table
 
+from spiel.modes import Mode
 from spiel.state import Stateful
+from spiel.utils import joinify
 
 
 @dataclass
@@ -32,7 +34,13 @@ class Footer(Stateful):
             expand=True,
         )
         grid.add_row(
-            self.state.deck.name,
+            joinify(
+                " | ",
+                [
+                    self.state.deck.name,
+                    self.state.current_slide.title if self.state.mode is Mode.SLIDE else None,
+                ],
+            ),
             date.today().isoformat(),
             f"[{self.state.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.state.deck)}]",
         )

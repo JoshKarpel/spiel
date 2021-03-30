@@ -3,10 +3,14 @@
 branch = True
 
 source =
-    orate/
+    spiel/
     tests/
 
 [report]
+
+skip_empty = True
+show_missing = True
+sort = -cover
 
 exclude_lines =
     def __repr__
@@ -18,3 +22,6 @@ exclude_lines =
     if 0:
     if False:
     if __name__ == .__main__.:
+
+    pragma: debugging
+    pragma: never runs

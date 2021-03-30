@@ -12,7 +12,7 @@ profile = "black"
 line_length = 100
 
 [tool.poetry]
-name = "orate"
+name = "spiel"
 version = "0.1.0"
 description = "Present slides in your terminal."
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
@@ -22,6 +22,7 @@ license = "MIT"
 python = "^3.9"
 rich = "^10.0.0"
 typer = "^0.3.2"
+watchdog = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
@@ -29,10 +30,12 @@ pytest-watch = "^4.2.0"
 pytest-cov = "^2.11.1"
 pytest-xdist = "^2.2.1"
 mypy = "^0.812"
+pytest-mypy = "^0.8.1"
+pytest-mock = "^3.5.1"
 
 [tool.poetry.scripts]
-orate = 'orate.main:app'
+spiel = 'spiel.main:app'
 
 [tool.pytest.ini_options]
-addopts = ['--strict-markers']
-testpaths = ["tests"]
+addopts = ['--strict-markers', '--mypy']
+testpaths = ["tests", "spiel", "examples"]

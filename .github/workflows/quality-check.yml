@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest]
         python-version: [3.9]
     defaults:
       run:
@@ -45,11 +45,8 @@ jobs:
       run: poetry install --no-interaction
     - name: Run tests
       run: poetry run pytest --cov --cov-report=xml
-    - name: Check types
-      run: poetry run mypy
     - name: Upload coverage
       uses: codecov/codecov-action@v1
       with:
         env_vars: PLATFORM,PYTHON_VERSION
         fail_ci_if_error: true
-        verbose: true

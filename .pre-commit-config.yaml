@@ -24,15 +24,6 @@ repos:
       - id: python-no-eval
       - id: python-no-log-warn
       - id: python-use-type-annotations
-  - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.9
-    hooks:
-      - id: remove-crlf
-  - repo: https://github.com/pappasam/toml-sort
-    rev: v0.18.0
-    hooks:
-      - id: toml-sort
-        args: [--in-place]
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
@@ -41,3 +32,7 @@ repos:
     rev: 5.8.0
     hooks:
       - id: isort
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.9
+    hooks:
+      - id: remove-crlf

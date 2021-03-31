@@ -119,7 +119,7 @@ def dynamic():
     return RenderGroup(
         Align(
             Text(
-                f"Slides can have very dynamic content!",
+                f"Slides can have dynamic content!",
                 style=Style(color="bright_magenta", bold=True, italic=True),
                 justify="center",
             ),

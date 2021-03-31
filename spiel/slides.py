@@ -6,13 +6,12 @@ from typing import Callable, List, Union
 from rich.console import ConsoleRenderable, RichCast
 from rich.text import Text
 
-Renderable = Union[RichCast, ConsoleRenderable]
-MakeRenderable = Callable[[], Renderable]
+MakeRenderable = Callable[[], ConsoleRenderable]
 
 
 @dataclass
 class Slide:
-    content: Renderable = field(default_factory=Text)
+    content: ConsoleRenderable = field(default_factory=Text)
     title: str = ""
 
     @classmethod
@@ -21,8 +20,8 @@ class Slide:
         function: MakeRenderable,
         title: str = "",
     ) -> Slide:
-        class Dynamic:
-            def __rich__(self) -> Renderable:
+        class Dynamic(ConsoleRenderable):
+            def __rich__(self) -> ConsoleRenderable:
                 return function()
 
         return cls(content=Dynamic(), title=title)

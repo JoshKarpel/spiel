@@ -46,7 +46,7 @@ class Footer(Stateful):
                 ],
             ),
             self.state.message,
-            now().format("YYYY-MM-DD HH:mm A"),
+            now().format("YYYY-MM-DD hh:mm A"),
             f"[{self.state.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.state.deck)}]",
         )
         return grid

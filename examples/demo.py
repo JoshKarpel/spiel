@@ -179,9 +179,9 @@ def watch():
         f"""\
     ## Developing a Deck
 
-    {SPIEL} can reload your deck as you edit it if you add the `--watch` option to `display`:
+    {SPIEL} can reload your deck as you edit it if you add the `--watch` option to `present`:
 
-    `$ spiel display examples/demo.py --watch`
+    `$ spiel present examples/demo.py --watch`
 
     If you're on a system without inotify support (e.g., Windows Subsystem for Linux), you may need to use the `--poll` option instead.
 

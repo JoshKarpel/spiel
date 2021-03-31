@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import importlib.util
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from types import TracebackType
 from typing import ContextManager, Optional, Type
 
+from pendulum import DateTime, now
+from rich.control import Control
+from rich.style import Style
+from rich.text import Text
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
@@ -38,9 +42,30 @@ def load_deck(deck_path: Path) -> Deck:
 class DeckReloader(FileSystemEventHandler):
     state: State
     deck_path: Path
+    last_reload: DateTime = field(default_factory=now)
 
     def on_modified(self, event: FileSystemEvent) -> None:
-        self.state.deck = load_deck(self.deck_path)
+        try:
+            self.state.deck = load_deck(self.deck_path)
+            self.state.set_message(
+                lambda: Text(
+                    f"Reloaded deck from {self.deck_path} {self.last_reload.diff_for_humans(None, False)}",
+                    style=Style(color="bright_green"),
+                )
+            )
+        except Exception:
+            try:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                self.state.set_message(
+                    lambda: Text(
+                        f"Error: {self.last_reload.diff_for_humans(None, False)}: {exc_obj!r}{Control.bell()}",
+                        style=Style(color="bright_red"),
+                    )
+                )
+            except Exception:
+                # If something goes wrong generating the reloader's message, don't let the reloader die!
+                pass
+        self.last_reload = now()
 
     def __hash__(self) -> int:
         return hash((type(self), id(self)))

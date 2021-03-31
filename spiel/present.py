@@ -4,6 +4,7 @@ from itertools import islice
 from rich.console import Console
 from rich.layout import Layout
 from rich.live import Live
+from rich.padding import Padding
 from rich.panel import Panel
 from rich.style import Style
 
@@ -23,7 +24,7 @@ def present_deck(console: Console, state: State) -> None:
 
         body = Layout(name="body", ratio=1)
         if state.mode is Mode.SLIDE:
-            body.update(current_slide.content)
+            body.update(Padding(current_slide.render(), pad=1))
         elif state.mode is Mode.DECK:
             n = console.size.width // 30
             row_of_current_slide = state.current_slide_idx // n
@@ -39,15 +40,15 @@ def present_deck(console: Console, state: State) -> None:
             body.split_column(*rows)
             for row, layouts in zip(rows, cols):
                 for layout in layouts:
-                    slide_idx, slide = next(slides, (None, None))
+                    slide_number, slide = next(slides, (None, None))
                     if slide is None:
                         layout.update("")
                     else:
                         is_active_slide = slide is state.current_slide
                         layout.update(
                             Panel(
-                                slide.content,
-                                title=joinify(" | ", [slide_idx, slide.title]),
+                                slide.render(),
+                                title=joinify(" | ", [slide_number, slide.title]),
                                 border_style=Style(
                                     color="bright_cyan" if is_active_slide else None,
                                     dim=not is_active_slide,

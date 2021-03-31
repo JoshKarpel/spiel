@@ -43,7 +43,9 @@ def cli(runner: CliRunner) -> CLI:
 
 @pytest.fixture
 def three_slide_deck() -> Deck:
-    return Deck(name="three-slides", slides=[Slide(), Slide(), Slide()])
+    deck = Deck(name="three-slides")
+    deck.add_slides(Slide(), Slide(), Slide())
+    return deck
 
 
 @pytest.fixture

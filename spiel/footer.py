@@ -24,6 +24,10 @@ class Footer(Stateful):
                 justify="left",
             ),
             Column(
+                style=Style(bold=True),
+                justify="center",
+            ),
+            Column(
                 style=Style(dim=True),
                 justify="center",
             ),
@@ -41,6 +45,7 @@ class Footer(Stateful):
                     self.state.current_slide.title if self.state.mode is Mode.SLIDE else None,
                 ],
             ),
+            self.state.message,
             date.today().isoformat(),
             f"[{self.state.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.state.deck)}]",
         )

@@ -6,7 +6,7 @@ from rich.text import Text
 from .modes import Mode
 from .slides import Deck, Slide
 
-Textlike = Union[Text, Callable[[], Text]]
+TextLike = Union[Text, Callable[[], Text]]
 
 
 @dataclass
@@ -14,7 +14,7 @@ class State:
     deck: Deck
     _current_slide_idx: int = 0
     mode: Mode = Mode.SLIDE
-    _message: Textlike = Text("")
+    _message: TextLike = Text("")
 
     @property
     def current_slide_idx(self) -> int:
@@ -44,7 +44,7 @@ class State:
         else:
             return self._message
 
-    def set_message(self, message: Textlike) -> None:
+    def set_message(self, message: TextLike) -> None:
         self._message = message
 
 

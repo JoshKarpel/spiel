@@ -17,14 +17,14 @@ from .utils import joinify
 
 
 def present_deck(console: Console, state: State) -> None:
-    def get_renderable() -> Layout:
-        footer = Layout(Footer(state), name="footer", size=1)
+    footer = Layout(Footer(state), name="footer", size=1)
 
+    def get_renderable() -> Layout:
         current_slide = state.deck[state.current_slide_idx]
 
         body = Layout(name="body", ratio=1)
         if state.mode is Mode.SLIDE:
-            body.update(Padding(current_slide.render(), pad=1))
+            body.update(Padding(current_slide.content, pad=1))
         elif state.mode is Mode.DECK:
             n = console.size.width // 30
             row_of_current_slide = state.current_slide_idx // n
@@ -47,7 +47,7 @@ def present_deck(console: Console, state: State) -> None:
                         is_active_slide = slide is state.current_slide
                         layout.update(
                             Panel(
-                                slide.render(),
+                                slide.content,
                                 title=joinify(" | ", [slide_number, slide.title]),
                                 border_style=Style(
                                     color="bright_cyan" if is_active_slide else None,

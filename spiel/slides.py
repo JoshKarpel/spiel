@@ -7,43 +7,64 @@ from rich.console import ConsoleRenderable, RichCast
 from rich.text import Text
 
 Renderable = Union[RichCast, ConsoleRenderable]
-Contentlike = Union[Renderable, Callable[[], Renderable]]
+MakeRenderable = Callable[[], Renderable]
 
 
 @dataclass
 class Slide:
-    content: Contentlike = field(default_factory=Text)
+    content: Renderable = field(default_factory=Text)
     title: str = ""
 
-    def render(self) -> Renderable:
-        if callable(self.content):
-            return self.content()
-        else:
-            return self.content
+    @classmethod
+    def from_function(
+        cls,
+        function: MakeRenderable,
+        title: str = "",
+    ) -> Slide:
+        class Dynamic:
+            def __rich__(self) -> Renderable:
+                return function()
 
-    def __call__(self) -> Slide:
-        return self
-
-
-Slidelike = Union[Slide, Callable[[], Slide]]
+        return cls(content=Dynamic(), title=title)
 
 
 @dataclass
 class Deck:
     name: str
-    _slides: List[Slidelike] = field(default_factory=list)
-
-    @property
-    def slides(self) -> List[Slide]:
-        return [slide() for slide in self._slides]
+    slides: List[Slide] = field(default_factory=list)
 
     def __getitem__(self, idx: int) -> Slide:
-        return self.slides[idx]()
+        return self.slides[idx]
 
     def __len__(self) -> int:
         return len(self.slides)
 
-    def add_slides(self, *slides: Slidelike) -> Deck:
-        self._slides.extend(slides)
-
+    def add_slides(self, *slides: Slide) -> Deck:
+        self.slides.extend(slides)
         return self
+
+    def slide(
+        self,
+        *args,
+        title: str = "",
+    ) -> Callable[[MakeRenderable], MakeRenderable]:
+        def decorator(
+            slide_function: MakeRenderable,
+        ) -> MakeRenderable:
+            self.add_slides(Slide(slide_function(), title=title))
+            return slide_function
+
+        return decorator
+
+    def slide_function(
+        self,
+        *args,
+        title: str = "",
+    ) -> Callable[[MakeRenderable], MakeRenderable]:
+        def decorator(
+            slide_function: MakeRenderable,
+        ) -> MakeRenderable:
+            self.add_slides(Slide.from_function(slide_function, title=title))
+            return slide_function
+
+        return decorator

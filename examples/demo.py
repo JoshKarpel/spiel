@@ -1,9 +1,8 @@
 import inspect
-import os
 import shutil
 import socket
-import tempfile
 from datetime import datetime
+from pathlib import Path
 from textwrap import dedent
 
 from rich.align import Align
@@ -82,7 +81,7 @@ def code():
 
     The source code is pulled directly from the definitions via [`inspect.getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource).
 
-    (Because {RICH} supports syntax highlighting, so does {SPIEL}!)
+    ({RICH} supports syntax highlighting, so {SPIEL} does too!)
     """
     )
     root = Layout()
@@ -105,23 +104,24 @@ def code():
         )
 
     lower.split_row(
-        Layout(make_code_panel(Slide)),
         Layout(make_code_panel(Deck)),
+        Layout(make_code_panel(Slide)),
     )
 
     return root
 
 
-@DECK.slide_function(title="Dynamic Content")
+@DECK.slide(title="Dynamic Content", dynamic=True)
 def dynamic():
-    tmp_dir = tempfile.gettempdir()
+    home = Path.home()
     width = shutil.get_terminal_size().columns
     width_limit = 80
     return RenderGroup(
         Align(
             Text(
-                f"Your slides can have very dynamic content, like this!",
+                f"Slides can have very dynamic content!",
                 style=Style(color="bright_magenta", bold=True, italic=True),
+                justify="center",
             ),
             align="center",
         ),
@@ -150,7 +150,7 @@ def dynamic():
         Align(
             Panel(
                 Text(
-                    f"There are {len(os.listdir(tmp_dir))} entries under {tmp_dir} right now.",
+                    f"There are {len([f for f in home.iterdir() if f.is_file()])} files in {home} right now.",
                     style=Style(color="yellow"),
                     justify="center",
                 )

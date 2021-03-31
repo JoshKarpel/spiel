@@ -45,26 +45,15 @@ class Deck:
 
     def slide(
         self,
-        *args,
         title: str = "",
+        dynamic: bool = False,
     ) -> Callable[[MakeRenderable], MakeRenderable]:
-        def decorator(
-            slide_function: MakeRenderable,
-        ) -> MakeRenderable:
-            self.add_slides(Slide(slide_function(), title=title))
-            return slide_function
-
-        return decorator
-
-    def slide_function(
-        self,
-        *args,
-        title: str = "",
-    ) -> Callable[[MakeRenderable], MakeRenderable]:
-        def decorator(
-            slide_function: MakeRenderable,
-        ) -> MakeRenderable:
-            self.add_slides(Slide.from_function(slide_function, title=title))
+        def decorator(slide_function: MakeRenderable) -> MakeRenderable:
+            if dynamic:
+                slide = Slide.from_function(slide_function, title=title)
+            else:
+                slide = Slide(slide_function(), title=title)
+            self.add_slides(slide)
             return slide_function
 
         return decorator

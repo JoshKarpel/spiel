@@ -33,7 +33,7 @@ def present_deck(state: State) -> None:
             start_row = clamp(
                 value=row_of_current_slide - (grid_width // 2),
                 lower=0,
-                upper=num_rows - grid_width,
+                upper=max(num_rows - grid_width, 0),
             )
             start_slide_idx = grid_width * start_row
             slides = islice(enumerate(state.deck.slides, start=1), start_slide_idx, None)

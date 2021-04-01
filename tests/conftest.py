@@ -6,6 +6,7 @@ from typing import Callable, List, Union
 
 import pytest
 from click.testing import Result
+from rich.console import Console
 from typer.testing import CliRunner
 
 from spiel.main import app
@@ -50,7 +51,7 @@ def three_slide_deck() -> Deck:
 
 @pytest.fixture
 def three_slide_state(three_slide_deck: Deck) -> State:
-    return State(deck=three_slide_deck)
+    return State(console=Console(), deck=three_slide_deck)
 
 
 @pytest.fixture

@@ -5,7 +5,17 @@ import termios
 from contextlib import contextmanager
 from enum import Enum, unique
 from itertools import product
-from typing import Callable, Iterator, MutableMapping, NoReturn, Optional, TextIO, Tuple, Union
+from typing import (
+    Callable,
+    Iterable,
+    Iterator,
+    MutableMapping,
+    NoReturn,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+)
 
 from .exceptions import DuplicateInputHandler
 from .modes import Mode
@@ -131,7 +141,7 @@ def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
 
 def action(
     *characters: Character,
-    modes: Optional[Iterator[Mode]] = None,
+    modes: Optional[Iterable[Mode]] = None,
     handlers: InputHandlers = INPUT_HANDLERS,
 ) -> InputHandlerDecorator:
     def decorator(func: InputHandler) -> InputHandler:
@@ -155,6 +165,16 @@ def next_slide(state: State) -> None:
 @action(SpecialCharacters.Left)
 def previous_slide(state: State) -> None:
     state.previous_slide()
+
+
+@action(SpecialCharacters.Up, modes=[Mode.DECK])
+def up_grid_row(state: State) -> None:
+    state.previous_slide(move=state.deck_grid_width)
+
+
+@action(SpecialCharacters.Down, modes=[Mode.DECK])
+def down_grid_row(state: State) -> None:
+    state.next_slide(move=state.deck_grid_width)
 
 
 @action("d")

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Callable, Union
 
+from rich.console import Console
 from rich.text import Text
 
 from .modes import Mode
@@ -11,6 +12,7 @@ TextLike = Union[Text, Callable[[], Text]]
 
 @dataclass
 class State:
+    console: Console
     deck: Deck
     _current_slide_idx: int = 0
     mode: Mode = Mode.SLIDE
@@ -46,6 +48,10 @@ class State:
 
     def set_message(self, message: TextLike) -> None:
         self._message = message
+
+    @property
+    def deck_grid_width(self) -> int:
+        return self.console.size.width // 30
 
 
 @dataclass

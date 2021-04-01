@@ -1,7 +1,7 @@
 import sys
 from itertools import islice
+from math import ceil
 
-from rich.console import Console
 from rich.layout import Layout
 from rich.live import Live
 from rich.padding import Padding
@@ -13,11 +13,12 @@ from .footer import Footer
 from .input import handle_input, no_echo
 from .modes import Mode
 from .state import State
-from .utils import joinify
+from .utils import clamp, joinify
 
 
-def present_deck(console: Console, state: State) -> None:
+def present_deck(state: State) -> None:
     footer = Layout(Footer(state), name="footer", size=1)
+    console = state.console
 
     def get_renderable() -> Layout:
         current_slide = state.deck[state.current_slide_idx]
@@ -26,16 +27,21 @@ def present_deck(console: Console, state: State) -> None:
         if state.mode is Mode.SLIDE:
             body.update(Padding(current_slide.content, pad=1))
         elif state.mode is Mode.DECK:
-            n = console.size.width // 30
-            row_of_current_slide = state.current_slide_idx // n
-            slides = islice(
-                enumerate(state.deck.slides, start=1),
-                n * max(0, row_of_current_slide - (n // 2)) if n ** 2 < len(state.deck) else 0,
-                None,
+            grid_width = state.deck_grid_width
+            row_of_current_slide = state.current_slide_idx // grid_width
+            num_rows = ceil(len(state.deck) / grid_width)
+            start_row = clamp(
+                value=row_of_current_slide - (grid_width // 2),
+                lower=0,
+                upper=num_rows - grid_width,
             )
+            start_slide_idx = grid_width * start_row
+            slides = islice(enumerate(state.deck.slides, start=1), start_slide_idx, None)
 
-            rows = [Layout(name=str(r)) for r in range(n)]
-            cols = [[Layout(name=f"{r}-{c}") for c in range(n)] for r, _ in enumerate(rows)]
+            rows = [Layout(name=str(r)) for r in range(grid_width)]
+            cols = [
+                [Layout(name=f"{r}-{c}") for c in range(grid_width)] for r, _ in enumerate(rows)
+            ]
 
             body.split_column(*rows)
             for row, layouts in zip(rows, cols):

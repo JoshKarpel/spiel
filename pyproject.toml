@@ -33,6 +33,7 @@ pytest-xdist = "^2.2.1"
 mypy = "^0.812"
 pytest-mypy = "^0.8.1"
 pytest-mock = "^3.5.1"
+hypothesis = "^6.8.3"
 
 [tool.poetry.scripts]
 spiel = 'spiel.main:app'

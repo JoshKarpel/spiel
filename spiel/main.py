@@ -11,7 +11,6 @@ from spiel.present import present_deck
 from spiel.state import State
 
 app = Typer()
-console = Console()
 
 
 @app.command()
@@ -25,7 +24,7 @@ def present(
         help="If enabled, poll the filesystem for changes (implies --watch). Use this option on systems that don't support file modification notifications.",
     ),
 ) -> None:
-    state = State(deck=load_deck(path))
+    state = State(console=Console(), deck=load_deck(path))
 
     watcher = (
         DeckWatcher(event_handler=DeckReloader(state, path), path=path, poll=poll)
@@ -34,9 +33,9 @@ def present(
     )
 
     with watcher:
-        present_deck(console, state)
+        present_deck(state)
 
 
 @app.command()
 def version() -> None:
-    console.print(Text(f"{PACKAGE_NAME} {__version__}"))
+    Console().print(Text(f"{PACKAGE_NAME} {__version__}"))

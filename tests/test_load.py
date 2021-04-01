@@ -3,6 +3,7 @@ from textwrap import dedent
 from time import sleep
 
 import pytest
+from rich.console import Console
 
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound
@@ -28,7 +29,7 @@ def test_can_load_deck_from_valid_file(file_with_empty_deck: Path) -> None:
 
 
 def test_reloader_triggers_when_file_modified(file_with_empty_deck: Path) -> None:
-    state = State(load_deck(file_with_empty_deck))
+    state = State(console=Console(), deck=load_deck(file_with_empty_deck))
     reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)
 
     with DeckWatcher(event_handler=reloader, path=file_with_empty_deck, poll=True):

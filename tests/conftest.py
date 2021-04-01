@@ -1,5 +1,6 @@
 import sys
 import traceback
+from io import StringIO
 from pathlib import Path
 from textwrap import dedent
 from typing import Callable, List, Union
@@ -29,7 +30,7 @@ def cli(runner: CliRunner) -> CLI:
         result = runner.invoke(app, real_args)
         print("result:", result)
 
-        if result.exc_info is not None:
+        if result.exc_info is not None:  # pragma: debugging
             print("traceback:\n")
             exc_type, exc_val, exc_tb = result.exc_info
             traceback.print_exception(exc_val, exc_val, exc_tb, file=sys.stdout)
@@ -50,8 +51,22 @@ def three_slide_deck() -> Deck:
 
 
 @pytest.fixture
-def three_slide_state(three_slide_deck: Deck) -> State:
-    return State(console=Console(), deck=three_slide_deck)
+def output() -> StringIO:
+    return StringIO()
+
+
+@pytest.fixture
+def console(output: StringIO) -> Console:
+    return Console(
+        file=output,
+        force_terminal=True,
+        width=80,
+    )
+
+
+@pytest.fixture
+def three_slide_state(console: Console, three_slide_deck: Deck) -> State:
+    return State(console=console, deck=three_slide_deck)
 
 
 @pytest.fixture

@@ -125,6 +125,7 @@ InputHandler = Callable[[State], Optional[NoReturn]]
 InputHandlerKey = Tuple[Character, Mode]
 InputHandlerDecorator = Callable[[InputHandler], InputHandler]
 InputHandlers = MutableMapping[InputHandlerKey, InputHandler]
+
 INPUT_HANDLERS: InputHandlers = {}  # type: ignore
 
 

@@ -45,10 +45,10 @@ class Deck:
     def slide(
         self,
         title: str = "",
-        dynamic: bool = False,
+        from_function: bool = False,
     ) -> Callable[[MakeRenderable], MakeRenderable]:
         def decorator(slide_function: MakeRenderable) -> MakeRenderable:
-            if dynamic:
+            if from_function:
                 slide = Slide.from_function(slide_function, title=title)
             else:
                 slide = Slide(slide_function(), title=title)

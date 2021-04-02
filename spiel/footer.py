@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from datetime import date
 
+from pendulum import now
 from rich.console import ConsoleRenderable
 from rich.style import Style
 from rich.table import Column, Table
@@ -29,7 +29,7 @@ class Footer(Stateful):
             ),
             Column(
                 style=Style(dim=True),
-                justify="center",
+                justify="right",
             ),
             Column(
                 style=Style(dim=True),
@@ -46,7 +46,7 @@ class Footer(Stateful):
                 ],
             ),
             self.state.message,
-            date.today().isoformat(),
+            now().format("YYYY-MM-DD hh:mm A"),
             f"[{self.state.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.state.deck)}]",
         )
         return grid

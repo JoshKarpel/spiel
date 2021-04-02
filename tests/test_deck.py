@@ -9,3 +9,7 @@ def test_can_add_slide_to_deck(three_slide_deck: Deck) -> None:
 
     assert len(three_slide_deck) == initial_len + 1
     assert three_slide_deck[-1] is new_slide
+
+
+def test_iterate_yields_deck_slides(three_slide_deck: Deck) -> None:
+    assert list(iter(three_slide_deck)) == three_slide_deck.slides

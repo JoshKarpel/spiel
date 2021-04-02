@@ -4,6 +4,7 @@ import sys
 import termios
 from contextlib import contextmanager
 from enum import Enum, unique
+from io import UnsupportedOperation
 from itertools import product
 from typing import (
     Callable,
@@ -17,7 +18,7 @@ from typing import (
     Union,
 )
 
-from .exceptions import DuplicateInputHandler
+from .exceptions import DuplicateInputHandler, Quit
 from .modes import Mode
 from .state import State
 
@@ -32,7 +33,11 @@ CC = 6
 
 @contextmanager
 def no_echo() -> Iterator[None]:
-    fd = sys.stdin.fileno()
+    try:
+        fd = sys.stdin.fileno()
+    except UnsupportedOperation:
+        yield
+        return
 
     old = termios.tcgetattr(fd)
 
@@ -58,6 +63,7 @@ class SpecialCharacters(Enum):
     CtrlDown = "ctrl-down"
     CtrlRight = "ctrl-right"
     CtrlLeft = "ctrl-left"
+    CtrlK = "ctrl-k"
     ShiftUp = "shift-up"
     ShiftDown = "shift-down"
     ShiftRight = "shift-right"
@@ -80,6 +86,7 @@ SPECIAL_CHARACTERS = {
     "\x1b[B": SpecialCharacters.Down,
     "\x1b[C": SpecialCharacters.Right,
     "\x1b[D": SpecialCharacters.Left,
+    "\x0b": SpecialCharacters.CtrlK,
     "\x1b[1;5A": SpecialCharacters.CtrlUp,
     "\x1b[1;5B": SpecialCharacters.CtrlDown,
     "\x1b[1;5C": SpecialCharacters.CtrlRight,
@@ -107,6 +114,9 @@ ARROWS = [
 
 def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
     result = stream.read(1)
+
+    if result == "":  # this happens when stdin gets closed; equivalent to a quit
+        raise Quit()
 
     if result[-1] == "\x1b":
         result += stream.read(2)
@@ -140,7 +150,7 @@ def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
     return handler(state)
 
 
-def action(
+def input_handler(
     *characters: Character,
     modes: Optional[Iterable[Mode]] = None,
     handlers: InputHandlers = INPUT_HANDLERS,
@@ -158,31 +168,36 @@ def action(
     return decorator
 
 
-@action(SpecialCharacters.Right)
+@input_handler(SpecialCharacters.Right)
 def next_slide(state: State) -> None:
     state.next_slide()
 
 
-@action(SpecialCharacters.Left)
+@input_handler(SpecialCharacters.Left)
 def previous_slide(state: State) -> None:
     state.previous_slide()
 
 
-@action(SpecialCharacters.Up, modes=[Mode.DECK])
+@input_handler(SpecialCharacters.Up, modes=[Mode.DECK])
 def up_grid_row(state: State) -> None:
     state.previous_slide(move=state.deck_grid_width)
 
 
-@action(SpecialCharacters.Down, modes=[Mode.DECK])
+@input_handler(SpecialCharacters.Down, modes=[Mode.DECK])
 def down_grid_row(state: State) -> None:
     state.next_slide(move=state.deck_grid_width)
 
 
-@action("d")
+@input_handler("d")
 def deck_mode(state: State) -> None:
     state.mode = Mode.DECK
 
 
-@action("s")
+@input_handler("s")
 def slide_mode(state: State) -> None:
     state.mode = Mode.SLIDE
+
+
+@input_handler(SpecialCharacters.CtrlK)
+def kill(state: State) -> None:
+    raise Quit()

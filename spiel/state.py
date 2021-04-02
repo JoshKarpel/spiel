@@ -51,7 +51,7 @@ class State:
 
     @property
     def deck_grid_width(self) -> int:
-        return self.console.size.width // 30
+        return max(self.console.size.width // 30, 1)
 
 
 @dataclass

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, List, Union
+from typing import Callable, Iterator, List, Union
 
 from rich.console import ConsoleRenderable, RichCast
 from rich.text import Text
@@ -37,6 +37,9 @@ class Deck:
 
     def __len__(self) -> int:
         return len(self.slides)
+
+    def __iter__(self) -> Iterator[Slide]:
+        yield from self.slides
 
     def add_slides(self, *slides: Slide) -> Deck:
         self.slides.extend(slides)

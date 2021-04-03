@@ -1,6 +1,7 @@
-from enum import Enum
+from enum import Enum, unique
 
 
-class Mode(Enum):
+@unique
+class Mode(str, Enum):
     SLIDE = "slide"
     DECK = "deck"

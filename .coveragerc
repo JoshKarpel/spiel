@@ -22,6 +22,8 @@ exclude_lines =
     if 0:
     if False:
     if __name__ == .__main__.:
+    assert False
 
+    pragma: unreachable
     pragma: debugging
     pragma: never runs

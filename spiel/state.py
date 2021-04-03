@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Callable, Union
 
 from rich.console import Console
+from rich.style import Style
 from rich.text import Text
 
 from .modes import Mode
@@ -42,7 +43,13 @@ class State:
     @property
     def message(self) -> Text:
         if callable(self._message):
-            return self._message()
+            try:
+                return self._message()
+            except Exception:
+                return Text(
+                    "Internal Error: failed to display message.",
+                    style=Style(color="bright_red"),
+                )
         else:
             return self._message
 
@@ -51,7 +58,7 @@ class State:
 
     @property
     def deck_grid_width(self) -> int:
-        return self.console.size.width // 30
+        return max(self.console.size.width // 30, 1)
 
 
 @dataclass

@@ -1,4 +1,10 @@
-from spiel.state import State
+import pytest
+from rich.console import Console
+from rich.style import Style
+from rich.text import Text
+
+from spiel import Deck
+from spiel.state import State, TextLike
 
 
 def test_initial_state_has_first_slide_current(three_slide_state: State) -> None:
@@ -41,3 +47,42 @@ def test_previous_from_first_slide_stays_put(three_slide_state: State) -> None:
     three_slide_state.previous_slide()
 
     assert three_slide_state.current_slide is three_slide_state.deck[0]
+
+
+@pytest.mark.parametrize(
+    "width, expected",
+    [
+        (20, 1),
+        (30, 1),
+        (40, 1),
+        (60, 2),
+        (80, 2),
+        (95, 3),
+        (120, 4),
+    ],
+)
+def test_deck_grid_width(width: int, expected: int, three_slide_deck: Deck) -> None:
+    console = Console(width=width)
+    state = State(console=console, deck=three_slide_deck)
+
+    assert state.deck_grid_width == expected
+
+
+@pytest.mark.parametrize(
+    "message, expected",
+    [
+        (Text("foobar"), Text("foobar")),
+        (lambda: Text("wizbang"), Text("wizbang")),
+        (
+            lambda: 1 / 0,
+            Text(
+                "Internal Error: failed to display message.",
+                style=Style(color="bright_red"),
+            ),
+        ),
+    ],
+)
+def test_set_message(message: TextLike, expected: Text, three_slide_state: State) -> None:
+    three_slide_state.set_message(message)
+
+    assert three_slide_state.message == expected

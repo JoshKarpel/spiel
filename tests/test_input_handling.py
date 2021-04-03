@@ -1,7 +1,15 @@
+from io import StringIO
+
 import pytest
 
 from spiel.exceptions import DuplicateInputHandler
-from spiel.input import InputHandlers, input_handler
+from spiel.input import (
+    SPECIAL_CHARACTERS,
+    InputHandlers,
+    SpecialCharacters,
+    get_character,
+    input_handler,
+)
 from spiel.state import State
 
 
@@ -20,3 +28,12 @@ def test_register_already_registered_raises_error(handlers: InputHandlers) -> No
         @input_handler("a")
         def a(state: State) -> None:  # pragma: never runs
             pass
+
+
+@pytest.mark.parametrize("input, expected", SPECIAL_CHARACTERS.items())
+def test_get_character_recognizes_special_characters(
+    input: str, expected: SpecialCharacters
+) -> None:
+    io = StringIO(input)
+
+    assert get_character(io) == expected

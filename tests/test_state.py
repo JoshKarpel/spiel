@@ -1,7 +1,7 @@
-from typing import Text
-
 import pytest
 from rich.console import Console
+from rich.style import Style
+from rich.text import Text
 
 from spiel import Deck
 from spiel.state import State, TextLike
@@ -73,6 +73,13 @@ def test_deck_grid_width(width: int, expected: int, three_slide_deck: Deck) -> N
     [
         (Text("foobar"), Text("foobar")),
         (lambda: Text("wizbang"), Text("wizbang")),
+        (
+            lambda: 1 / 0,
+            Text(
+                "Internal Error: failed to display message.",
+                style=Style(color="bright_red"),
+            ),
+        ),
     ],
 )
 def test_set_message(message: TextLike, expected: Text, three_slide_state: State) -> None:

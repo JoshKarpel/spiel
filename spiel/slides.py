@@ -1,30 +1,25 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Iterator, List
+from typing import Callable, Iterator, List, Union
 
 from rich.console import ConsoleRenderable
 from rich.text import Text
 
 MakeRenderable = Callable[[], ConsoleRenderable]
+RenderableLike = Union[MakeRenderable, ConsoleRenderable]
 
 
 @dataclass
 class Slide:
-    content: ConsoleRenderable = field(default_factory=Text)
+    content: RenderableLike = field(default_factory=Text)
     title: str = ""
 
-    @classmethod
-    def from_function(
-        cls,
-        function: MakeRenderable,
-        title: str = "",
-    ) -> Slide:
-        class Dynamic(ConsoleRenderable):
-            def __rich__(self) -> ConsoleRenderable:
-                return function()
-
-        return cls(content=Dynamic(), title=title)
+    def render(self) -> ConsoleRenderable:
+        if callable(self.content):
+            return self.content()
+        else:
+            return self.content
 
 
 @dataclass
@@ -48,13 +43,9 @@ class Deck:
     def slide(
         self,
         title: str = "",
-        from_function: bool = False,
     ) -> Callable[[MakeRenderable], MakeRenderable]:
         def decorator(slide_function: MakeRenderable) -> MakeRenderable:
-            if from_function:
-                slide = Slide.from_function(slide_function, title=title)
-            else:
-                slide = Slide(slide_function(), title=title)
+            slide = Slide(slide_function, title=title)
             self.add_slides(slide)
             return slide_function
 

@@ -23,7 +23,7 @@ from .utils import clamp, joinify
 
 
 def render_slide(slide: Slide) -> ConsoleRenderable:
-    return Padding(slide.content, pad=1)
+    return Padding(slide.render(), pad=1)
 
 
 def split_layout_into_deck_grid(root: Layout, state: State) -> Layout:
@@ -51,7 +51,7 @@ def split_layout_into_deck_grid(root: Layout, state: State) -> Layout:
                 is_active_slide = slide is state.current_slide
                 layout.update(
                     Panel(
-                        slide.content,
+                        slide.render(),
                         title=joinify(" | ", [slide_number, slide.title]),
                         border_style=Style(
                             color="bright_cyan" if is_active_slide else None,

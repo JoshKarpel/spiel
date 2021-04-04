@@ -138,7 +138,7 @@ def code():
     return root
 
 
-@DECK.slide(title="Dynamic Content", from_function=True)
+@DECK.slide(title="Dynamic Content")
 def dynamic():
     home = Path.home()
     width = shutil.get_terminal_size().columns

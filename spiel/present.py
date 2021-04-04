@@ -82,7 +82,7 @@ def present_deck(state: State) -> None:
 
     with no_echo(), Live(
         get_renderable=get_renderable,
-        console=(state.console),
+        console=state.console,
         screen=True,
         auto_refresh=True,
         refresh_per_second=10,

@@ -10,18 +10,21 @@ from rich.box import SQUARE
 from rich.console import RenderGroup
 from rich.layout import Layout
 from rich.markdown import Markdown
+from rich.padding import Padding
 from rich.panel import Panel
 from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Deck, Slide, __version__
+from spiel import Deck, Image, Slide, __version__
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
 
 
 DECK = Deck(name=f"Spiel Demo Deck (v{__version__})")
+
+EXAMPLES_DIR = Path(__file__).resolve().parent
 
 
 @DECK.slide(title="What is Spiel?")
@@ -189,3 +192,24 @@ def watch():
     """
     )
     return Markdown(markup, justify="center")
+
+
+@DECK.slide(title="Displaying Images")
+def image():
+    markup = dedent(
+        f"""\
+    ## Images
+
+    {SPIEL} can display images... sort of!
+
+    If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
+    If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`, e.g. `export COLORTERM=truecolor` in `bash`.
+    """
+    )
+    root = Layout()
+    root.split_row(
+        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
+        Layout(Image(EXAMPLES_DIR / "img.jpg")),
+    )
+
+    return root

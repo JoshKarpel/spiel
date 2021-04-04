@@ -277,6 +277,11 @@ def help_mode(state: State) -> None:
     state.mode = Mode.HELP
 
 
+@input_handler("p", help="Toggle profiling information.")
+def toggle_profiling(state: State) -> None:
+    state.toggle_profiling()
+
+
 @input_handler(SpecialCharacters.CtrlK, SpecialCharacters.CtrlC, help=f"Exit {PACKAGE_NAME}.")
 def exit(state: State) -> None:
     raise Exit(code=0)

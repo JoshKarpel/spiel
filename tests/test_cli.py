@@ -35,7 +35,7 @@ def test_version(runner: CliRunner) -> None:
 
 
 @pytest.mark.parametrize("mode", list(Mode))
-@pytest.mark.parametrize("stdin", ["", "s", "d", "h"])
+@pytest.mark.parametrize("stdin", ["", "s", "d", "h", "p"])
 def test_display_demo_deck(runner: CliRunner, mode: Mode, stdin: str) -> None:
     result = runner.invoke(app, ["present", str(DEMO_SOURCE), "--mode", mode], input=stdin)
 

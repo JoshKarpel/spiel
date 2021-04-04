@@ -18,6 +18,7 @@ class State:
     _current_slide_idx: int = 0
     mode: Mode = Mode.SLIDE
     _message: TextLike = Text("")
+    profiling: bool = False
 
     @property
     def current_slide_idx(self) -> int:
@@ -63,7 +64,6 @@ class State:
     def deck_grid_width(self) -> int:
         return max(self.console.size.width // 30, 1)
 
-
-@dataclass
-class Stateful:
-    state: State
+    def toggle_profiling(self) -> bool:
+        self.profiling = not self.profiling
+        return self.profiling

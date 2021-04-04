@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from functools import cached_property
 from math import floor
 from pathlib import Path
 from typing import Iterable, NamedTuple
 
-from PIL import Image as _Image
+from PIL import Image as Img
 from rich.color import Color
 from rich.console import Console, ConsoleOptions, JustifyMethod
 from rich.segment import Segment
@@ -21,12 +22,12 @@ class ImageSize(NamedTuple):
 
 @dataclass
 class Image:
-    path: Path
+    img: Img
     justify: JustifyMethod = "center"
 
-    @cached_property
-    def img(self) -> _Image:
-        return _Image.open(self.path)
+    @classmethod
+    def from_file(cls, path: Path, justify: JustifyMethod = "center") -> Image:
+        return cls(img=Img.open(path), justify=justify)
 
     def _determine_size(self, options: ConsoleOptions) -> ImageSize:
         width, height = self.img.size
@@ -43,7 +44,7 @@ class Image:
 
         resized = self.img.resize(
             size=size,
-            resample=_Image.LANCZOS,
+            resample=Img.LANCZOS,
         )
 
         rows = [

@@ -240,7 +240,7 @@ def image():
     root = Layout()
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image(THIS_DIR / "img.jpg")),
+        Layout(Image.from_file(THIS_DIR / "img.jpg")),
     )
 
     return root

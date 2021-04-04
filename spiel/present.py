@@ -11,11 +11,13 @@ from rich.style import Style
 
 from spiel import Slide
 
+from .constants import TARGET_RPS
 from .exceptions import UnknownModeError
 from .footer import Footer
 from .help import Help
 from .input import handle_input, no_echo
 from .modes import Mode
+from .rps import RPSCounter
 from .state import State
 from .utils import clamp, joinify
 
@@ -63,7 +65,8 @@ def split_layout_into_deck_grid(root: Layout, state: State) -> Layout:
 
 
 def present_deck(state: State) -> None:
-    footer = Layout(Footer(state), name="footer", size=1)
+    rps_counter = RPSCounter()
+    footer = Layout(Footer(state, rps_counter), name="footer", size=1)
     help = Layout(Help(state), name="help")
 
     def get_renderable() -> Layout:
@@ -82,6 +85,8 @@ def present_deck(state: State) -> None:
         root = Layout(name="root")
         root.split_column(body, footer)
 
+        rps_counter.mark()
+
         return root
 
     with no_echo(), Live(
@@ -89,7 +94,7 @@ def present_deck(state: State) -> None:
         console=state.console,
         screen=True,
         auto_refresh=True,
-        refresh_per_second=10,
+        refresh_per_second=TARGET_RPS,
         vertical_overflow="visible",
     ) as live:
         while True:

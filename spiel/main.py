@@ -35,10 +35,26 @@ app = Typer(
 
 @app.command()
 def present(
-    path: Path = Argument(..., dir_okay=False, help="The path to the slide deck file."),
-    mode: Mode = Option(default=Mode.SLIDE, help="The mode to start presenting in."),
+    path: Path = Argument(
+        ...,
+        dir_okay=False,
+        help="The path to the slide deck file.",
+    ),
+    mode: Mode = Option(
+        default=Mode.SLIDE,
+        help="The mode to start presenting in.",
+    ),
+    slide: int = Option(
+        default=1,
+        help="The slide number to start the presentation on.",
+    ),
+    profiling: bool = Option(
+        default=False,
+        help="Whether to start presenting with profiling information enabled.",
+    ),
     watch: bool = Option(
-        default=False, help="If enabled, reload the deck when the slide deck file changes."
+        default=False,
+        help="If enabled, reload the deck when the slide deck file changes.",
     ),
     poll: bool = Option(
         default=False,
@@ -48,15 +64,18 @@ def present(
     """
     Present a deck.
     """
-    _present(path=path, mode=mode, watch=watch, poll=poll)
+    _present(path=path, mode=mode, slide=slide, profiling=profiling, watch=watch, poll=poll)
 
 
-def _present(path: Path, mode: Mode, watch: bool, poll: bool) -> None:
+def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, poll: bool) -> None:
     state = State(
         console=Console(),
         deck=load_deck(path),
         mode=mode,
+        profiling=profiling,
     )
+
+    state.jump_to_slide(slide - 1)
 
     watcher = (
         DeckWatcher(event_handler=DeckReloader(state, path), path=path, poll=poll)
@@ -74,7 +93,7 @@ def _present(path: Path, mode: Mode, watch: bool, poll: bool) -> None:
 @app.command()
 def version() -> None:
     """
-    Display version information for spiel and critical dependencies.
+    Display version and debugging information.
     """
     console = Console()
 
@@ -99,7 +118,7 @@ def present_demo() -> None:
     """
     Present the demo deck.
     """
-    _present(path=DEMO_SOURCE, mode=Mode.SLIDE, watch=False, poll=False)
+    _present(path=DEMO_SOURCE, mode=Mode.SLIDE, slide=0, profiling=False, watch=False, poll=False)
 
 
 @demo.command()

@@ -36,6 +36,7 @@ class Footer(Stateful):
                 justify="right",
             ),
             expand=True,
+            padding=1,
         )
         grid.add_row(
             joinify(

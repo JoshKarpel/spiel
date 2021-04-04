@@ -12,7 +12,3 @@ class UnknownModeError(SpielException):
 
 class NoDeckFound(SpielException):
     pass
-
-
-class Quit(SpielException):
-    pass

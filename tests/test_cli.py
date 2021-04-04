@@ -1,6 +1,5 @@
 import subprocess
 import sys
-import traceback
 from pathlib import Path
 
 import pytest
@@ -8,7 +7,6 @@ from typer.testing import CliRunner
 
 from spiel.constants import PACKAGE_NAME, __version__
 from spiel.main import app
-from spiel.modes import Mode
 
 
 @pytest.fixture
@@ -36,10 +34,40 @@ def test_version(runner: CliRunner) -> None:
     assert __version__ in result.stdout
 
 
-@pytest.mark.parametrize("deck_path", (Path(__file__).parents[1] / "examples").glob("*.py"))
-@pytest.mark.parametrize("mode", list(Mode))
-@pytest.mark.parametrize("stdin", ["", "s", "d"])
-def test_display_example_decks(runner: CliRunner, deck_path: Path, mode: Mode, stdin: str) -> None:
-    result = runner.invoke(app, ["present", str(deck_path), "--mode", mode], input=stdin)
+def test_demo_display(runner: CliRunner) -> None:
+    result = runner.invoke(app, ["demo", "present"])
 
     assert result.exit_code == 0
+
+
+def test_demo_source(runner: CliRunner) -> None:
+    result = runner.invoke(app, ["demo", "source"])
+
+    assert result.exit_code == 0
+
+
+def test_demo_copy_to_new_path(runner: CliRunner, tmp_path: Path) -> None:
+    target = tmp_path / "new"
+
+    result = runner.invoke(app, ["demo", "copy", str(target)])
+    print(result.stdout)
+
+    assert result.exit_code == 0
+
+
+def test_demo_copy_to_existing_file(runner: CliRunner, tmp_path: Path) -> None:
+    target = tmp_path / "new"
+    target.touch()
+
+    result = runner.invoke(app, ["demo", "copy", str(target)])
+
+    assert result.exit_code == 2
+
+
+def test_demo_copy_to_existing_dir(runner: CliRunner, tmp_path: Path) -> None:
+    target = tmp_path / "new"
+    target.mkdir(parents=True)
+
+    result = runner.invoke(app, ["demo", "copy", str(target)])
+
+    assert result.exit_code == 2

@@ -24,7 +24,7 @@ RICH = "[Rich](https://rich.readthedocs.io/)"
 
 DECK = Deck(name=f"Spiel Demo Deck (v{__version__})")
 
-EXAMPLES_DIR = Path(__file__).resolve().parent
+THIS_DIR = Path(__file__).resolve().parent
 
 
 @DECK.slide(title="What is Spiel?")
@@ -38,6 +38,8 @@ def what():
     Spiel uses {RICH} to render slide content.
 
     Anything you can display with Rich, you can display with Spiel (plus some other things)!
+
+    Use your right and left arrows keys (or 'f' and 'b') to go forwards and backwards through the deck. Press ctrl-k to exit.
     """
     )
 
@@ -65,7 +67,7 @@ def what():
 
         Brandon Rhodes' [PyCon 2017](https://youtu.be/66P5FMkWoVU) and [North Bay Python 2017](https://youtu.be/rrMnmLyYjU8) talks.
 
-        David Beazley's [Lambda Calculus from the Ground Up](https://youtu.be/pkCLMl0e_0k) tutorial at Pycon 2019
+        David Beazley's [Lambda Calculus from the Ground Up](https://youtu.be/pkCLMl0e_0k) tutorial at PyCon 2019.
 
         LaTeX's [Beamer](https://ctan.org/pkg/beamer) document class.
         """
@@ -201,7 +203,7 @@ def watch():
 
     {SPIEL} can reload your deck as you edit it if you add the `--watch` option to `present`:
 
-    `$ spiel present examples/demo.py --watch`
+    `$ spiel present path/to/deck.py --watch`
 
     If you're on a system without inotify support (e.g., Windows Subsystem for Linux), you may need to use the `--poll` option instead.
 
@@ -225,13 +227,13 @@ def image():
 
     `export COLORTERM=truecolor`
 
-    to your `.bashrc` file.
+    to your `.bashrc` file, then restart your shell.
     """
     )
     root = Layout()
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image(EXAMPLES_DIR / "img.jpg")),
+        Layout(Image(THIS_DIR / "img.jpg")),
     )
 
     return root

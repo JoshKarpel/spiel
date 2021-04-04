@@ -17,6 +17,7 @@ version = "0.1.0"
 description = "Present slides in your terminal."
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
 license = "MIT"
+include = ["demo/*"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -42,3 +43,4 @@ spiel = 'spiel.main:app'
 [tool.pytest.ini_options]
 addopts = ['--strict-markers', '--mypy']
 testpaths = ["tests", "spiel"]
+norecursedirs = ["demo"]

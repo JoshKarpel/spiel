@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Iterator, List, Union
+from typing import Callable, Iterator, List
 
-from rich.console import ConsoleRenderable, RichCast
+from rich.console import ConsoleRenderable
 from rich.text import Text
 
 MakeRenderable = Callable[[], ConsoleRenderable]

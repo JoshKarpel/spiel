@@ -33,13 +33,17 @@ def what():
         f"""\
     ## What is Spiel?
 
-    {SPIEL} is a framework for building slide decks in Python.
+    {SPIEL} is a framework for building presentations using Python.
 
     Spiel uses {RICH} to render slide content.
 
     Anything you can display with Rich, you can display with Spiel (plus some other things)!
 
-    Use your right and left arrows keys (or 'f' and 'b') to go forwards and backwards through the deck. Press ctrl-k to exit.
+    Use your right `→` and left `←` arrows keys (or `f` and `b`) to go forwards and backwards through the deck.
+
+    Press `ctrl-c` or `ctrl-k` to exit.
+
+    Press `h` at any time to see the help screen, which describes all of the actions you can take.
     """
     )
 

@@ -1,16 +1,14 @@
 import shutil
-import sys
 from contextlib import nullcontext
 from pathlib import Path
 
 from rich.console import Console
 from rich.style import Style
 from rich.syntax import Syntax
-from rich.table import Column, Table
 from rich.text import Text
 from typer import Argument, Exit, Option, Typer
 
-from spiel.constants import PACKAGE_NAME, __rich_version__, __version__
+from spiel.help import version_details
 from spiel.load import DeckReloader, DeckWatcher, load_deck
 from spiel.modes import Mode
 from spiel.present import present_deck
@@ -66,18 +64,7 @@ def version() -> None:
     """
     console = Console()
 
-    grid = Table(
-        Column(justify="right"),
-        Column(justify="left"),
-        show_header=False,
-        box=None,
-    )
-
-    grid.add_row(PACKAGE_NAME, __version__)
-    grid.add_row("rich", __rich_version__)
-    grid.add_row("python", ".".join(map(str, sys.version_info)))
-
-    console.print(grid)
+    console.print(version_details(console))
 
 
 demo = Typer(

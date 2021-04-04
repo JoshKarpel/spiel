@@ -30,7 +30,6 @@ def test_version(runner: CliRunner) -> None:
     result = runner.invoke(app, ["version"])
 
     assert result.exit_code == 0
-    assert PACKAGE_NAME in result.stdout
     assert __version__ in result.stdout
 
 

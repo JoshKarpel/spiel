@@ -13,6 +13,7 @@ from spiel import Slide
 
 from .exceptions import UnknownModeError
 from .footer import Footer
+from .help import Help
 from .input import handle_input, no_echo
 from .modes import Mode
 from .state import State
@@ -63,6 +64,7 @@ def split_layout_into_deck_grid(root: Layout, state: State) -> Layout:
 
 def present_deck(state: State) -> None:
     footer = Layout(Footer(state), name="footer", size=1)
+    help = Layout(Help(state), name="help")
 
     def get_renderable() -> Layout:
         current_slide = state.deck[state.current_slide_idx]
@@ -72,6 +74,8 @@ def present_deck(state: State) -> None:
             body.update(render_slide(current_slide))
         elif state.mode is Mode.DECK:
             split_layout_into_deck_grid(body, state)
+        elif state.mode is Mode.HELP:
+            body.update(help)
         else:  # pragma: unreachable
             raise UnknownModeError(f"Unrecognized mode: {state.mode!r}")
 

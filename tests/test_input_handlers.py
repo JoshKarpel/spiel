@@ -15,8 +15,8 @@ from spiel.input import (
     INPUT_HANDLERS,
     InputHandler,
     deck_mode,
+    exit,
     jump_to_slide,
-    kill,
     next_slide,
     previous_slide,
     slide_mode,
@@ -53,12 +53,12 @@ def test_enter_slide_mode(three_slide_state: State) -> None:
 
 def test_kill(three_slide_state: State) -> None:
     with pytest.raises(Exit):
-        kill(three_slide_state)
+        exit(three_slide_state)
 
 
 @given(
     input_handlers=st.lists(
-        st.sampled_from(list(set(INPUT_HANDLERS.values()) - {kill, jump_to_slide}))
+        st.sampled_from(list(set(INPUT_HANDLERS.values()) - {exit, jump_to_slide}))
     )
 )
 @settings(max_examples=1_000 if os.getenv("CI") else 100)

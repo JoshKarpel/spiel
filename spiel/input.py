@@ -4,6 +4,7 @@ import string
 import sys
 import termios
 from contextlib import contextmanager
+from dataclasses import dataclass
 from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
@@ -11,6 +12,7 @@ from typing import (
     Callable,
     Iterable,
     Iterator,
+    List,
     MutableMapping,
     NoReturn,
     Optional,
@@ -22,6 +24,7 @@ from typing import (
 from rich.text import Text
 from typer import Exit
 
+from .constants import PACKAGE_NAME
 from .exceptions import DuplicateInputHandler
 from .modes import Mode
 from .state import State
@@ -59,15 +62,16 @@ def no_echo() -> Iterator[None]:
 
 @unique
 class SpecialCharacters(Enum):
-    Up = "up"
-    Down = "down"
-    Right = "right"
-    Left = "left"
+    Up = "↑"
+    Down = "↓"
+    Right = "→"
+    Left = "←"
     CtrlUp = "ctrl-up"
     CtrlDown = "ctrl-down"
     CtrlRight = "ctrl-right"
     CtrlLeft = "ctrl-left"
     CtrlK = "ctrl-k"
+    CtrlC = "ctrl-c"
     ShiftUp = "shift-up"
     ShiftDown = "shift-down"
     ShiftRight = "shift-right"
@@ -143,6 +147,17 @@ InputHandlers = MutableMapping[InputHandlerKey, InputHandler]
 INPUT_HANDLERS: InputHandlers = {}  # type: ignore
 
 
+@dataclass(frozen=True)
+class InputHandlerHelpInfo:
+    name: str
+    help: str
+    characters: Tuple[Character, ...]
+    modes: List[Mode]
+
+
+INPUT_HANDLER_HELP: List[InputHandlerHelpInfo] = []
+
+
 def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
     character = get_character(stream)
 
@@ -158,46 +173,74 @@ def input_handler(
     *characters: Character,
     modes: Optional[Iterable[Mode]] = None,
     handlers: InputHandlers = INPUT_HANDLERS,
+    name: Optional[str] = None,
+    help: str,
 ) -> InputHandlerDecorator:
+    target_modes = list(modes or list(Mode))
+
     def decorator(func: InputHandler) -> InputHandler:
-        for character, mode in product(characters, modes or list(Mode)):
+        for character, mode in product(characters, target_modes):
             key: InputHandlerKey = (character, mode)
             if key in handlers:
                 raise DuplicateInputHandler(
                     f"{character} is already registered as an input handler for mode {mode}"
                 )
             handlers[key] = func
+
+        INPUT_HANDLER_HELP.append(
+            InputHandlerHelpInfo(
+                name=name or " ".join(word.capitalize() for word in func.__name__.split("_")),
+                help=help,
+                characters=characters,
+                modes=target_modes,
+            )
+        )
+
         return func
 
     return decorator
 
 
-@input_handler(SpecialCharacters.Right, "f")
+NOT_HELP = [Mode.SLIDE, Mode.DECK]
+
+
+@input_handler(SpecialCharacters.Right, "f", modes=NOT_HELP, help="Move to the next slide.")
 def next_slide(state: State) -> None:
     state.next_slide()
 
 
-@input_handler(SpecialCharacters.Left, "b")
+@input_handler(SpecialCharacters.Left, "b", modes=NOT_HELP, help="Move to the previous slide.")
 def previous_slide(state: State) -> None:
     state.previous_slide()
 
 
-@input_handler(SpecialCharacters.Up, modes=[Mode.DECK])
+@input_handler(SpecialCharacters.Up, modes=[Mode.DECK], help="Move to the previous deck grid row.")
 def up_grid_row(state: State) -> None:
     state.previous_slide(move=state.deck_grid_width)
 
 
-@input_handler(SpecialCharacters.Down, modes=[Mode.DECK])
+@input_handler(SpecialCharacters.Down, modes=[Mode.DECK], help="Move to the next deck grid row.")
 def down_grid_row(state: State) -> None:
     state.next_slide(move=state.deck_grid_width)
 
 
-@input_handler("j")
+@input_handler(
+    "j",
+    modes=NOT_HELP,
+    help="Press the action key, then a slide number (e.g., [bold]17[/bold]), then press [bold]enter[/bold], to jump to that slide.",
+)
 def jump_to_slide(state: State) -> None:
     slide_number = ""
 
     def display() -> None:
         state.set_message(Text(f"Jumping to slide {slide_number}..."))
+
+    def jump() -> None:
+        state.clear_message()
+        if slide_number == "":
+            return
+        state.jump_to_slide(int(slide_number) - 1)
+        return
 
     display()
 
@@ -207,9 +250,7 @@ def jump_to_slide(state: State) -> None:
         if char is SpecialCharacters.Backspace:
             slide_number = slide_number[:-1]
         elif char is SpecialCharacters.Enter:
-            state.current_slide_idx = int(slide_number) - 1
-            state.clear_message()
-            return
+            return jump()
         elif isinstance(char, SpecialCharacters):
             continue
         elif char in string.digits:
@@ -218,21 +259,24 @@ def jump_to_slide(state: State) -> None:
         display()
 
         if len(slide_number) == len(str(len(state.deck))):
-            state.current_slide_idx = int(slide_number) - 1
-            state.clear_message()
-            return
+            return jump()
 
 
-@input_handler("d")
-def deck_mode(state: State) -> None:
-    state.mode = Mode.DECK
-
-
-@input_handler("s")
+@input_handler("s", help=f"Enter {Mode.SLIDE} mode.")
 def slide_mode(state: State) -> None:
     state.mode = Mode.SLIDE
 
 
-@input_handler(SpecialCharacters.CtrlK)
-def kill(state: State) -> None:
+@input_handler("d", help=f"Enter {Mode.DECK} mode.")
+def deck_mode(state: State) -> None:
+    state.mode = Mode.DECK
+
+
+@input_handler("h", help=f"Enter {Mode.HELP} mode.")
+def help_mode(state: State) -> None:
+    state.mode = Mode.HELP
+
+
+@input_handler(SpecialCharacters.CtrlK, SpecialCharacters.CtrlC, help=f"Exit {PACKAGE_NAME}.")
+def exit(state: State) -> None:
     raise Exit(code=0)

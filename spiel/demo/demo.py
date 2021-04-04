@@ -201,7 +201,7 @@ def dynamic():
 
 
 @DECK.slide(title="Triggers")
-def triggers(trigger_times, now, time_since_last_trigger):
+def triggers(trigger_times, now, time_since_last_trigger, time_since_first_trigger):
     info = Markdown(
         dedent(
             f"""\
@@ -226,7 +226,7 @@ def triggers(trigger_times, now, time_since_last_trigger):
     width = 50
     half_width = width // 2
 
-    bounce_time = time_since_last_trigger % bounce_period
+    bounce_time = time_since_first_trigger % bounce_period
     bounce_character = "⁍" if bounce_time < (1 / 2) * bounce_period else "⁌"
     bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
     before = half_width + bounce_position
@@ -281,7 +281,7 @@ def triggers(trigger_times, now, time_since_last_trigger):
             title="Trigger Tracker",
         )
     )
-    return RenderGroup(info, ball, fun)
+    return RenderGroup(info, fun, ball if len(trigger_times) > 2 else Text(""))
 
 
 @DECK.slide(title="Views")

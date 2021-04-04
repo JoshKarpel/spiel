@@ -31,7 +31,7 @@ class Slide:
             if "time_since_last_trigger" in signature.parameters:
                 kwargs["time_since_last_trigger"] = now - trigger_times[-1]
             if "time_since_first_trigger" in signature.parameters:
-                kwargs["time_since_last_trigger"] = now - trigger_times[0]
+                kwargs["time_since_first_trigger"] = now - trigger_times[0]
 
             return self.content(**kwargs)
         else:

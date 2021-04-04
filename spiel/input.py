@@ -18,7 +18,9 @@ from typing import (
     Union,
 )
 
-from .exceptions import DuplicateInputHandler, Quit
+from typer import Exit
+
+from .exceptions import DuplicateInputHandler
 from .modes import Mode
 from .state import State
 
@@ -116,7 +118,7 @@ def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
     result = stream.read(1)
 
     if result == "":  # this happens when stdin gets closed; equivalent to a quit
-        raise Quit()
+        raise Exit(code=0)
 
     if result[-1] == "\x1b":
         result += stream.read(2)
@@ -168,12 +170,12 @@ def input_handler(
     return decorator
 
 
-@input_handler(SpecialCharacters.Right)
+@input_handler(SpecialCharacters.Right, "f")
 def next_slide(state: State) -> None:
     state.next_slide()
 
 
-@input_handler(SpecialCharacters.Left)
+@input_handler(SpecialCharacters.Left, "b")
 def previous_slide(state: State) -> None:
     state.previous_slide()
 
@@ -200,4 +202,4 @@ def slide_mode(state: State) -> None:
 
 @input_handler(SpecialCharacters.CtrlK)
 def kill(state: State) -> None:
-    raise Quit()
+    raise Exit(code=0)

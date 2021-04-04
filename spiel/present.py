@@ -11,7 +11,7 @@ from rich.style import Style
 
 from spiel import Slide
 
-from .exceptions import Quit, UnknownModeError
+from .exceptions import UnknownModeError
 from .footer import Footer
 from .input import handle_input, no_echo
 from .modes import Mode
@@ -88,9 +88,6 @@ def present_deck(state: State) -> None:
         refresh_per_second=10,
         vertical_overflow="visible",
     ) as live:
-        try:
-            while True:
-                handle_input(state, sys.stdin)
-                live.refresh()
-        except Quit:
-            return
+        while True:
+            handle_input(state, sys.stdin)
+            live.refresh()

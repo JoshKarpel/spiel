@@ -8,9 +8,9 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from rich.console import Console
 from rich.text import Text
+from typer import Exit
 
 from spiel import Deck, Slide
-from spiel.exceptions import Quit
 from spiel.input import (
     INPUT_HANDLERS,
     InputHandler,
@@ -51,7 +51,7 @@ def test_enter_slide_mode(three_slide_state: State) -> None:
 
 
 def test_kill(three_slide_state: State) -> None:
-    with pytest.raises(Quit):
+    with pytest.raises(Exit):
         kill(three_slide_state)
 
 

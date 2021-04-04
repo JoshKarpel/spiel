@@ -38,6 +38,8 @@ def what():
     Spiel uses {RICH} to render slide content.
 
     Anything you can display with Rich, you can display with Spiel (plus some other things)!
+
+    Use your right and left arrows keys (or 'f' and 'b') to go forwards and backwards through the deck. Press ctrl-k to exit.
     """
     )
 

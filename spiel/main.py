@@ -52,8 +52,11 @@ def _present(path: Path, mode: Mode, watch: bool, poll: bool) -> None:
         else nullcontext()
     )
 
-    with watcher:
-        present_deck(state)
+    try:
+        with watcher:
+            present_deck(state)
+    except KeyboardInterrupt:
+        raise Exit(code=0)
 
 
 @app.command()

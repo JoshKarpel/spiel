@@ -71,10 +71,10 @@ def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, p
     state = State(
         console=Console(),
         deck=load_deck(path),
-        mode=mode,
         profiling=profiling,
     )
 
+    state.mode = mode
     state.jump_to_slide(slide - 1)
 
     watcher = (

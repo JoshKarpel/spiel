@@ -8,4 +8,4 @@ __python_version__ = ".".join(map(str, sys.version_info))
 
 DECK = "DECK"
 
-TARGET_RPS = 20
+TARGET_RPS = 30

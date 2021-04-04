@@ -2,11 +2,13 @@ import inspect
 import shutil
 import socket
 from datetime import datetime
+from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
 
 from rich.align import Align
 from rich.box import SQUARE
+from rich.color import Color, blend_rgb
 from rich.console import RenderGroup
 from rich.layout import Layout
 from rich.markdown import Markdown
@@ -55,14 +57,25 @@ def what():
     It's fun!
 
     It's weird!
+
+    Why not?
+
+    Maybe you shouldn't.
+
+    Honestly, it's unclear whether it's a good idea.
+
+    There's always [Powerpoint](https://youtu.be/uNjxe8ShM-8)!
     """
     )
 
     lower_left_markup = dedent(
         f"""\
-        ## Reporting Bugs
+        ## Contributing
 
-        Please report bugs on the [GitHub Issue Tracker](https://github.com/JoshKarpel/spiel/issues).
+        Please report bugs via [GitHub Issues](https://github.com/JoshKarpel/spiel/issues).
+
+        If you have ideas about how Spiel can be improved or a cool deck to show off,
+        please post them via [GitHub Discussions](https://github.com/JoshKarpel/spiel/discussions).
         """
     )
 
@@ -187,16 +200,100 @@ def dynamic():
     )
 
 
+@DECK.slide(title="Triggers")
+def triggers(trigger_times, now, time_since_last_trigger):
+    info = Markdown(
+        dedent(
+            f"""\
+            ## Triggers
+
+            Triggers are a mechanism for making dynamic content that depends on *relative* time.
+
+            Triggers can be used to implement effects like fades, motion, and other "animated" effects.
+
+            Each slide is triggered once when it starts being displayed.
+            You can trigger it again (as many times as you'd like) by pressing `t`.
+            You can reset the trigger state by pressing `r`.
+
+            This slide has been triggered {len(trigger_times)} times.
+            It was last triggered {time_since_last_trigger:.2f} seconds ago.
+            """
+        ),
+        justify="center",
+    )
+
+    bounce_period = 10
+    width = 50
+    half_width = width // 2
+
+    bounce_time = time_since_last_trigger % bounce_period
+    bounce_character = "⁍" if bounce_time < (1 / 2) * bounce_period else "⁌"
+    bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
+    before = half_width + bounce_position
+    ball = Align.center(
+        Panel(
+            Padding(
+                bounce_character,
+                pad=(0, before, 0, (half_width - bounce_position - 1)),
+            ),
+            title="Bouncing Bullet",
+            padding=0,
+        )
+    )
+
+    white = Color.parse("bright_white")
+    black = Color.parse("black")
+    red = Color.parse("bright_red")
+    green = Color.parse("bright_green")
+
+    fade_time = 3
+
+    lines = [
+        Text(
+            "Triggered!",
+            style=Style(
+                color=(
+                    Color.from_triplet(
+                        blend_rgb(
+                            black.get_truecolor(),
+                            white.get_truecolor(),
+                            cross_fade=min((now - time) / fade_time, 1),
+                        )
+                    )
+                )
+            ),
+        )
+        for time in trigger_times
+    ]
+
+    fun = Align.center(
+        Panel(
+            Text("\n", justify="center").join(lines),
+            border_style=Style(
+                color=Color.from_triplet(
+                    blend_rgb(
+                        green.get_truecolor(),
+                        red.get_truecolor(),
+                        cross_fade=min(time_since_last_trigger / fade_time, 1),
+                    )
+                ),
+            ),
+            title="Trigger Tracker",
+        )
+    )
+    return RenderGroup(info, ball, fun)
+
+
 @DECK.slide(title="Views")
 def grid():
     markup = dedent(
         """\
     ## Multiple Views
 
-    Try pressing 'd' to go into "deck" view.
-    Press 's' to go back to "slide" view.
+    Try pressing `d` to go into "deck" view.
+    Press `s` to go back to "slide" view.
 
-    Press 'j', then enter a slide number (like '3') to jump to a slide.
+    Press `j`, then enter a slide number (like `3`) to jump to a slide.
     """
     )
     return Markdown(markup, justify="center")

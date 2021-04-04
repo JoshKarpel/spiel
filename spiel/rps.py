@@ -1,10 +1,15 @@
 from collections import deque
 from time import monotonic
-from typing import Deque
+from typing import Deque, Optional
+
+from spiel.constants import TARGET_RPS
 
 
 class RPSCounter:
-    def __init__(self, render_history_length: int = 100) -> None:
+    def __init__(self, render_history_length: Optional[int] = None) -> None:
+        if render_history_length is None:
+            render_history_length = 3 * TARGET_RPS
+
         self.render_time_history: Deque[float] = deque(maxlen=render_history_length)
 
     def mark(self) -> None:

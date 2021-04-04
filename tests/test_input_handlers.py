@@ -15,6 +15,7 @@ from spiel.input import (
     INPUT_HANDLERS,
     InputHandler,
     deck_mode,
+    jump_to_slide,
     kill,
     next_slide,
     previous_slide,
@@ -55,7 +56,11 @@ def test_kill(three_slide_state: State) -> None:
         kill(three_slide_state)
 
 
-@given(input_handlers=st.lists(st.sampled_from(list(set(INPUT_HANDLERS.values()) - {kill}))))
+@given(
+    input_handlers=st.lists(
+        st.sampled_from(list(set(INPUT_HANDLERS.values()) - {kill, jump_to_slide}))
+    )
+)
 @settings(max_examples=1_000 if os.getenv("CI") else 100)
 def test_input_sequences_dont_crash(input_handlers: List[InputHandler]) -> None:
     state = State(

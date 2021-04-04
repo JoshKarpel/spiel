@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Union
+from typing import Callable, Optional, Union
 
 from rich.console import Console
 from rich.style import Style
@@ -55,6 +55,9 @@ class State:
 
     def set_message(self, message: TextLike) -> None:
         self._message = message
+
+    def clear_message(self) -> None:
+        self.set_message(Text(""))
 
     @property
     def deck_grid_width(self) -> int:

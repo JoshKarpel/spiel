@@ -190,6 +190,8 @@ def grid():
 
     Try pressing 'd' to go into "deck" view.
     Press 's' to go back to "slide" view.
+
+    Press 'j', then enter a slide number (like '3') to jump to a slide.
     """
     )
     return Markdown(markup, justify="center")

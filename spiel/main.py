@@ -126,6 +126,8 @@ def copy(
         shutil.copytree(DEMO_DIR, path)
     except Exception as e:
         console.print(Text(f"Failed to copy demo deck directory: {e}", style=Style(color="red")))
+        raise Exit(code=1)
+
     console.print(
         Text(f"Wrote demo deck source code and assets to {path}", style=Style(color="green"))
     )

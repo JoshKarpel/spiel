@@ -86,3 +86,11 @@ def test_set_message(message: TextLike, expected: Text, three_slide_state: State
     three_slide_state.set_message(message)
 
     assert three_slide_state.message == expected
+
+
+def test_clear_message(three_slide_state: State) -> None:
+    three_slide_state.set_message(Text("foobar"))
+
+    three_slide_state.clear_message()
+
+    assert three_slide_state.message == Text("")

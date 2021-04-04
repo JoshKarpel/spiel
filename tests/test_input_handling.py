@@ -19,13 +19,13 @@ def handlers() -> InputHandlers:
 
 
 def test_register_already_registered_raises_error(handlers: InputHandlers) -> None:
-    @input_handler("a")
+    @input_handler("a", help="")
     def a(state: State) -> None:  # pragma: never runs
         pass
 
     with pytest.raises(DuplicateInputHandler):
 
-        @input_handler("a")
+        @input_handler("a", help="")
         def a(state: State) -> None:  # pragma: never runs
             pass
 

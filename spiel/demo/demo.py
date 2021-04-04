@@ -33,13 +33,18 @@ def what():
         f"""\
     ## What is Spiel?
 
-    {SPIEL} is a framework for building slide decks in Python.
+    {SPIEL} is a framework for building and presenting richly-styled presentations in your terminal using Python.
 
     Spiel uses {RICH} to render slide content.
-
     Anything you can display with Rich, you can display with Spiel (plus some other things)!
 
-    Use your right and left arrows keys (or 'f' and 'b') to go forwards and backwards through the deck. Press ctrl-k to exit.
+    Use your right `→` and left `←` arrows keys (or `f` and `b`) to go forwards and backwards through the deck.
+
+    Press `ctrl-c` or `ctrl-k` to exit.
+
+    Press `h` at any time to see the help screen, which describes all of the actions you can take.
+
+    To get a copy of the source code for this deck, use the `spiel demo copy` command.
     """
     )
 
@@ -150,9 +155,9 @@ def dynamic():
         Align(
             Panel(
                 Text(
-                    f"Your terminal is {width} characters wide."
+                    f"Your terminal is {width} cells wide."
                     if width > width_limit
-                    else f"Your terminal is only {width} characters wide! Get a bigger monitor!",
+                    else f"Your terminal is only {width} cells wide! Get a bigger monitor!",
                     style=Style(color="green1" if width > width_limit else "red"),
                     justify="center",
                 )
@@ -235,7 +240,7 @@ def image():
     root = Layout()
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image(THIS_DIR / "img.jpg")),
+        Layout(Image.from_file(THIS_DIR / "img.jpg")),
     )
 
     return root

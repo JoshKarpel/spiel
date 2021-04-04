@@ -1,16 +1,16 @@
 import shutil
-import sys
 from contextlib import nullcontext
 from pathlib import Path
+from textwrap import dedent
 
 from rich.console import Console
 from rich.style import Style
 from rich.syntax import Syntax
-from rich.table import Column, Table
 from rich.text import Text
 from typer import Argument, Exit, Option, Typer
 
-from spiel.constants import PACKAGE_NAME, __rich_version__, __version__
+from spiel.constants import PACKAGE_NAME
+from spiel.help import version_details
 from spiel.load import DeckReloader, DeckWatcher, load_deck
 from spiel.modes import Mode
 from spiel.present import present_deck
@@ -18,15 +18,43 @@ from spiel.state import State
 
 THIS_DIR = Path(__file__).resolve().parent
 
-app = Typer()
+app = Typer(
+    help=dedent(
+        f"""\
+        Display richly-styled presentations using your terminal.
+
+        To see what {PACKAGE_NAME.capitalize()} can do, take a look at the demo deck:
+
+            $ spiel demo present
+
+        A {PACKAGE_NAME.capitalize()} presentation (a "deck [of slides]") is defined programmatically using a Python script.
+        """
+    )
+)
 
 
 @app.command()
 def present(
-    path: Path = Argument(..., dir_okay=False, help="The path to the slide deck file."),
-    mode: Mode = Option(default=Mode.SLIDE, help="The mode to start presenting in."),
+    path: Path = Argument(
+        ...,
+        dir_okay=False,
+        help="The path to the slide deck file.",
+    ),
+    mode: Mode = Option(
+        default=Mode.SLIDE,
+        help="The mode to start presenting in.",
+    ),
+    slide: int = Option(
+        default=1,
+        help="The slide number to start the presentation on.",
+    ),
+    profiling: bool = Option(
+        default=False,
+        help="Whether to start presenting with profiling information enabled.",
+    ),
     watch: bool = Option(
-        default=False, help="If enabled, reload the deck when the slide deck file changes."
+        default=False,
+        help="If enabled, reload the deck when the slide deck file changes.",
     ),
     poll: bool = Option(
         default=False,
@@ -36,15 +64,18 @@ def present(
     """
     Present a deck.
     """
-    _present(path=path, mode=mode, watch=watch, poll=poll)
+    _present(path=path, mode=mode, slide=slide, profiling=profiling, watch=watch, poll=poll)
 
 
-def _present(path: Path, mode: Mode, watch: bool, poll: bool) -> None:
+def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, poll: bool) -> None:
     state = State(
         console=Console(),
         deck=load_deck(path),
         mode=mode,
+        profiling=profiling,
     )
+
+    state.jump_to_slide(slide - 1)
 
     watcher = (
         DeckWatcher(event_handler=DeckReloader(state, path), path=path, poll=poll)
@@ -62,27 +93,20 @@ def _present(path: Path, mode: Mode, watch: bool, poll: bool) -> None:
 @app.command()
 def version() -> None:
     """
-    Display version information for spiel and critical dependencies.
+    Display version and debugging information.
     """
     console = Console()
 
-    grid = Table(
-        Column(justify="right"),
-        Column(justify="left"),
-        show_header=False,
-        box=None,
-    )
-
-    grid.add_row(PACKAGE_NAME, __version__)
-    grid.add_row("rich", __rich_version__)
-    grid.add_row("python", ".".join(map(str, sys.version_info)))
-
-    console.print(grid)
+    console.print(version_details(console))
 
 
 demo = Typer(
     name="demo",
-    help="Use the demonstration deck (present it, display source, etc.)",
+    help=dedent(
+        """\
+        Use the demonstration deck (present it, display source, etc.).
+        """
+    ),
 )
 
 DEMO_DIR = THIS_DIR / "demo"
@@ -94,7 +118,7 @@ def present_demo() -> None:
     """
     Present the demo deck.
     """
-    _present(path=DEMO_SOURCE, mode=Mode.SLIDE, watch=False, poll=False)
+    _present(path=DEMO_SOURCE, mode=Mode.SLIDE, slide=0, profiling=False, watch=False, poll=False)
 
 
 @demo.command()

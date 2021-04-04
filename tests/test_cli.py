@@ -6,7 +6,8 @@ import pytest
 from typer.testing import CliRunner
 
 from spiel.constants import PACKAGE_NAME, __version__
-from spiel.main import app
+from spiel.main import DEMO_SOURCE, app
+from spiel.modes import Mode
 
 
 @pytest.fixture
@@ -31,6 +32,14 @@ def test_version(runner: CliRunner) -> None:
 
     assert result.exit_code == 0
     assert __version__ in result.stdout
+
+
+@pytest.mark.parametrize("mode", list(Mode))
+@pytest.mark.parametrize("stdin", ["", "s", "d", "h"])
+def test_display_demo_deck(runner: CliRunner, mode: Mode, stdin: str) -> None:
+    result = runner.invoke(app, ["present", str(DEMO_SOURCE), "--mode", mode], input=stdin)
+
+    assert result.exit_code == 0
 
 
 def test_demo_display(runner: CliRunner) -> None:

@@ -1,6 +1,7 @@
 import shutil
 from contextlib import nullcontext
 from pathlib import Path
+from textwrap import dedent
 
 from rich.console import Console
 from rich.style import Style
@@ -8,6 +9,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 from typer import Argument, Exit, Option, Typer
 
+from spiel.constants import PACKAGE_NAME
 from spiel.help import version_details
 from spiel.load import DeckReloader, DeckWatcher, load_deck
 from spiel.modes import Mode
@@ -16,7 +18,19 @@ from spiel.state import State
 
 THIS_DIR = Path(__file__).resolve().parent
 
-app = Typer()
+app = Typer(
+    help=dedent(
+        f"""\
+        Display richly-styled presentations using your terminal.
+
+        To see what {PACKAGE_NAME.capitalize()} can do, take a look at the demo deck:
+
+            $ spiel demo present
+
+        A {PACKAGE_NAME.capitalize()} presentation (a "deck [of slides]") is defined programmatically using a Python script.
+        """
+    )
+)
 
 
 @app.command()
@@ -69,7 +83,11 @@ def version() -> None:
 
 demo = Typer(
     name="demo",
-    help="Use the demonstration deck (present it, display source, etc.)",
+    help=dedent(
+        """\
+        Use the demonstration deck (present it, display source, etc.).
+        """
+    ),
 )
 
 DEMO_DIR = THIS_DIR / "demo"

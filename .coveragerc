@@ -6,6 +6,9 @@ source =
     spiel/
     tests/
 
+omit =
+    spiel/demo/*
+
 [report]
 
 skip_empty = True

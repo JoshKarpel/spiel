@@ -24,7 +24,7 @@ RICH = "[Rich](https://rich.readthedocs.io/)"
 
 DECK = Deck(name=f"Spiel Demo Deck (v{__version__})")
 
-EXAMPLES_DIR = Path(__file__).resolve().parent
+THIS_DIR = Path(__file__).resolve().parent
 
 
 @DECK.slide(title="What is Spiel?")
@@ -201,7 +201,7 @@ def watch():
 
     {SPIEL} can reload your deck as you edit it if you add the `--watch` option to `present`:
 
-    `$ spiel present examples/demo.py --watch`
+    `$ spiel present path/to/deck.py --watch`
 
     If you're on a system without inotify support (e.g., Windows Subsystem for Linux), you may need to use the `--poll` option instead.
 
@@ -225,13 +225,13 @@ def image():
 
     `export COLORTERM=truecolor`
 
-    to your `.bashrc` file.
+    to your `.bashrc` file, then restart your shell.
     """
     )
     root = Layout()
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image(EXAMPLES_DIR / "img.jpg")),
+        Layout(Image(THIS_DIR / "img.jpg")),
     )
 
     return root

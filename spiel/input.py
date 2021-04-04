@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import string
 import sys
 import termios
 from contextlib import contextmanager
@@ -18,6 +19,7 @@ from typing import (
     Union,
 )
 
+from rich.text import Text
 from typer import Exit
 
 from .exceptions import DuplicateInputHandler
@@ -123,7 +125,7 @@ def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
     if result[-1] == "\x1b":
         result += stream.read(2)
 
-    if result[-1] == "1":
+    if len(result) != 1 and result[-1] == "1":
         result += stream.read(3)
 
     try:
@@ -188,6 +190,37 @@ def up_grid_row(state: State) -> None:
 @input_handler(SpecialCharacters.Down, modes=[Mode.DECK])
 def down_grid_row(state: State) -> None:
     state.next_slide(move=state.deck_grid_width)
+
+
+@input_handler("j")
+def jump_to_slide(state: State) -> None:
+    slide_number = ""
+
+    def display() -> None:
+        state.set_message(Text(f"Jumping to slide {slide_number}..."))
+
+    display()
+
+    while True:
+        char = get_character(sys.stdin)
+
+        if char is SpecialCharacters.Backspace:
+            slide_number = slide_number[:-1]
+        elif char is SpecialCharacters.Enter:
+            state.current_slide_idx = int(slide_number) - 1
+            state.clear_message()
+            return
+        elif isinstance(char, SpecialCharacters):
+            continue
+        elif char in string.digits:
+            slide_number += char
+
+        display()
+
+        if len(slide_number) == len(str(len(state.deck))):
+            state.current_slide_idx = int(slide_number) - 1
+            state.clear_message()
+            return
 
 
 @input_handler("d")

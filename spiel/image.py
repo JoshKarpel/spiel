@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from functools import cached_property
-from itertools import zip_longest
 from math import floor
 from pathlib import Path
 from typing import Iterable, NamedTuple
@@ -12,12 +11,7 @@ from rich.segment import Segment
 from rich.style import Style
 from rich.text import Text
 
-
-def grouper(iterable, n, fillvalue=None):
-    "Collect data into fixed-length chunks or blocks"
-    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
-    args = [iter(iterable)] * n
-    return zip_longest(*args, fillvalue=fillvalue)
+from spiel.utils import chunks
 
 
 class ImageSize(NamedTuple):
@@ -65,8 +59,8 @@ class Image:
                 for top, bottom in zip(top_row, bottom_row)
             ]
             # for each pair of rows in the image...
-            for top_row, bottom_row in grouper(
-                grouper(resized.getdata(), size.width), 2, fillvalue=[None] * size.width
+            for top_row, bottom_row in chunks(
+                chunks(resized.getdata(), size.width), 2, fill_value=[None] * size.width
             )
         ]
 

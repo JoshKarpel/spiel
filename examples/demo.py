@@ -29,7 +29,7 @@ EXAMPLES_DIR = Path(__file__).resolve().parent
 
 @DECK.slide(title="What is Spiel?")
 def what():
-    left_markup = dedent(
+    upper_left_markup = dedent(
         f"""\
     ## What is Spiel?
 
@@ -37,11 +37,11 @@ def what():
 
     Spiel uses {RICH} to render slide content.
 
-    Anything you can display with Rich, you can display with Spiel!
+    Anything you can display with Rich, you can display with Spiel (plus some other things)!
     """
     )
 
-    right_markup = dedent(
+    upper_right_markup = dedent(
         """\
     ## Why use Spiel?
 
@@ -51,25 +51,42 @@ def what():
     """
     )
 
-    r = 3
-    root = Layout()
-    root.split_row(
-        Layout(
-            Markdown(
-                left_markup,
-                justify="center",
-            ),
-            ratio=r,
-        ),
-        Layout(" "),
-        Layout(
-            Markdown(
-                right_markup,
-                justify="center",
-            ),
-            ratio=r,
-        ),
+    lower_left_markup = dedent(
+        f"""\
+        ## Reporting Bugs
+
+        Please report bugs on the [GitHub Issue Tracker](https://github.com/JoshKarpel/spiel/issues).
+        """
     )
+
+    lower_right_markup = dedent(
+        f"""\
+        ## Inspirations
+
+        Brandon Rhodes' [PyCon 2017](https://youtu.be/66P5FMkWoVU) and [North Bay Python 2017](https://youtu.be/rrMnmLyYjU8) talks.
+
+        David Beazley's [Lambda Calculus from the Ground Up](https://youtu.be/pkCLMl0e_0k) tutorial at Pycon 2019
+
+        LaTeX's [Beamer](https://ctan.org/pkg/beamer) document class.
+        """
+    )
+
+    def pad_markdown(markup):
+        return Padding(Markdown(markup, justify="center"), pad=(0, 5))
+
+    root = Layout()
+    upper = Layout()
+    lower = Layout()
+
+    upper.split_row(
+        Layout(pad_markdown(upper_left_markup)),
+        Layout(pad_markdown(upper_right_markup)),
+    )
+    lower.split_row(
+        Layout(pad_markdown(lower_left_markup)),
+        Layout(pad_markdown(lower_right_markup)),
+    )
+    root.split_column(upper, lower)
 
     return root
 
@@ -203,7 +220,12 @@ def image():
     {SPIEL} can display images... sort of!
 
     If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
-    If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`, e.g. `export COLORTERM=truecolor` in `bash`.
+    If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
+    For example, for `bash`, you could add
+
+    `export COLORTERM=truecolor`
+
+    to your `.bashrc` file.
     """
     )
     root = Layout()

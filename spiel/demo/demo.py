@@ -201,7 +201,7 @@ def dynamic():
 
 
 @DECK.slide(title="Triggers")
-def triggers(trigger_times, now, time_since_last_trigger, time_since_first_trigger):
+def triggers(triggers):
     info = Markdown(
         dedent(
             f"""\
@@ -215,8 +215,8 @@ def triggers(trigger_times, now, time_since_last_trigger, time_since_first_trigg
             You can trigger it again (as many times as you'd like) by pressing `t`.
             You can reset the trigger state by pressing `r`.
 
-            This slide has been triggered {len(trigger_times)} times.
-            It was last triggered {time_since_last_trigger:.2f} seconds ago.
+            This slide has been triggered {len(triggers)} times.
+            It was last triggered {triggers.time_since_last_trigger:.2f} seconds ago.
             """
         ),
         justify="center",
@@ -226,7 +226,7 @@ def triggers(trigger_times, now, time_since_last_trigger, time_since_first_trigg
     width = 50
     half_width = width // 2
 
-    bounce_time = time_since_first_trigger % bounce_period
+    bounce_time = triggers.time_since_first_trigger % bounce_period
     bounce_character = "⁍" if bounce_time < (1 / 2) * bounce_period else "⁌"
     bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
     before = half_width + bounce_position
@@ -257,13 +257,13 @@ def triggers(trigger_times, now, time_since_last_trigger, time_since_first_trigg
                         blend_rgb(
                             black.get_truecolor(),
                             white.get_truecolor(),
-                            cross_fade=min((now - time) / fade_time, 1),
+                            cross_fade=min((triggers.now - time) / fade_time, 1),
                         )
                     )
                 )
             ),
         )
-        for time in trigger_times
+        for time in triggers.times
     ]
 
     fun = Align.center(
@@ -274,14 +274,14 @@ def triggers(trigger_times, now, time_since_last_trigger, time_since_first_trigg
                     blend_rgb(
                         green.get_truecolor(),
                         red.get_truecolor(),
-                        cross_fade=min(time_since_last_trigger / fade_time, 1),
+                        cross_fade=min(triggers.time_since_last_trigger / fade_time, 1),
                     )
                 ),
             ),
             title="Trigger Tracker",
         )
     )
-    return RenderGroup(info, fun, ball if len(trigger_times) > 2 else Text(""))
+    return RenderGroup(info, fun, ball if len(triggers) > 2 else Text(""))
 
 
 @DECK.slide(title="Views")

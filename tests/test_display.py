@@ -16,6 +16,7 @@ from spiel.state import State
     [
         lambda: Slide(Text("foobar")),
         lambda: Slide(lambda: Text("foobar")),
+        lambda: Slide(lambda triggers: Text("foobar")),
     ],
 )
 def test_can_render_slide(

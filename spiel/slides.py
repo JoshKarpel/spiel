@@ -2,14 +2,38 @@ from __future__ import annotations
 
 import inspect
 from dataclasses import dataclass, field
+from functools import cached_property
 from time import monotonic
-from typing import Any, Callable, Dict, Iterator, List, Union
+from typing import Any, Callable, Dict, Iterator, List, Tuple, Union
 
 from rich.console import ConsoleRenderable
 from rich.text import Text
 
 MakeRenderable = Callable[..., ConsoleRenderable]
 RenderableLike = Union[MakeRenderable, ConsoleRenderable]
+
+
+@dataclass(frozen=True)
+class Triggers:
+    times: Tuple[float, ...]
+    now: float = field(default_factory=monotonic)
+
+    def __len__(self) -> int:
+        return len(self.times)
+
+    def __getitem__(self, idx: int) -> float:
+        return self.times[idx]
+
+    def __iter__(self) -> Iterator[float]:
+        return iter(self.times)
+
+    @cached_property
+    def time_since_last_trigger(self) -> float:
+        return self.now - self.times[-1]
+
+    @cached_property
+    def time_since_first_trigger(self) -> float:
+        return self.now - self.times[0]
 
 
 @dataclass
@@ -21,17 +45,9 @@ class Slide:
         if callable(self.content):
             signature = inspect.signature(self.content)
 
-            now = monotonic()
-
             kwargs: Dict[str, Any] = {}
-            if "trigger_times" in signature.parameters:
-                kwargs["trigger_times"] = trigger_times
-            if "now" in signature.parameters:
-                kwargs["now"] = now
-            if "time_since_last_trigger" in signature.parameters:
-                kwargs["time_since_last_trigger"] = now - trigger_times[-1]
-            if "time_since_first_trigger" in signature.parameters:
-                kwargs["time_since_first_trigger"] = now - trigger_times[0]
+            if "triggers" in signature.parameters:
+                kwargs["triggers"] = Triggers(times=tuple(trigger_times))
 
             return self.content(**kwargs)
         else:

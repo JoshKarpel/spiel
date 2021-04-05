@@ -15,13 +15,17 @@ from spiel.state import State
     "make_slide",
     [
         lambda: Slide(Text("foobar")),
-        lambda: Slide.from_function(lambda: Text("foobar")),
+        lambda: Slide(lambda: Text("foobar")),
+        lambda: Slide(lambda triggers: Text("foobar")),
     ],
 )
 def test_can_render_slide(
-    make_slide: Callable[[], Slide], console: Console, output: StringIO
+    make_slide: Callable[[], Slide],
+    console: Console,
+    output: StringIO,
+    three_slide_state: State,
 ) -> None:
-    renderable = render_slide(make_slide())
+    renderable = render_slide(state=three_slide_state, slide=make_slide())
 
     console.print(renderable)
 

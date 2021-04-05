@@ -204,6 +204,21 @@ def input_handler(
 NOT_HELP = [Mode.SLIDE, Mode.DECK]
 
 
+@input_handler("h", help=f"Enter {Mode.HELP} mode.")
+def help_mode(state: State) -> None:
+    state.mode = Mode.HELP
+
+
+@input_handler("s", help=f"Enter {Mode.SLIDE} mode.")
+def slide_mode(state: State) -> None:
+    state.mode = Mode.SLIDE
+
+
+@input_handler("d", help=f"Enter {Mode.DECK} mode.")
+def deck_mode(state: State) -> None:
+    state.mode = Mode.DECK
+
+
 @input_handler(SpecialCharacters.Right, "f", modes=NOT_HELP, help="Move to the next slide.")
 def next_slide(state: State) -> None:
     state.next_slide()
@@ -262,19 +277,22 @@ def jump_to_slide(state: State) -> None:
             return jump()
 
 
-@input_handler("s", help=f"Enter {Mode.SLIDE} mode.")
-def slide_mode(state: State) -> None:
-    state.mode = Mode.SLIDE
+@input_handler(
+    "t",
+    modes=[Mode.SLIDE],
+    help="Trigger the slide: marks the current time and make it available to the slide's content rendering function.",
+)
+def trigger(state: State) -> None:
+    state.trigger()
 
 
-@input_handler("d", help=f"Enter {Mode.DECK} mode.")
-def deck_mode(state: State) -> None:
-    state.mode = Mode.DECK
-
-
-@input_handler("h", help=f"Enter {Mode.HELP} mode.")
-def help_mode(state: State) -> None:
-    state.mode = Mode.HELP
+@input_handler(
+    "r",
+    modes=[Mode.SLIDE],
+    help="Reset the trigger state to as if the slide just started being displayed.",
+)
+def reset_trigger(state: State) -> None:
+    state.reset_trigger()
 
 
 @input_handler("p", help="Toggle profiling information.")

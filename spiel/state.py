@@ -1,5 +1,6 @@
-from dataclasses import dataclass
-from typing import Callable, Union
+from dataclasses import dataclass, field
+from time import monotonic
+from typing import Callable, List, Union
 
 from rich.console import Console
 from rich.style import Style
@@ -16,9 +17,19 @@ class State:
     console: Console
     deck: Deck
     _current_slide_idx: int = 0
-    mode: Mode = Mode.SLIDE
+    _mode: Mode = Mode.SLIDE
     _message: TextLike = Text("")
+    trigger_times: List[float] = field(default_factory=list)
     profiling: bool = False
+
+    @property
+    def mode(self) -> Mode:
+        return self._mode
+
+    @mode.setter
+    def mode(self, mode: Mode) -> None:
+        self._mode = mode
+        self.reset_trigger()
 
     @property
     def current_slide_idx(self) -> int:
@@ -27,6 +38,7 @@ class State:
     @current_slide_idx.setter
     def current_slide_idx(self, idx: int) -> None:
         self._current_slide_idx = max(0, min(len(self.deck) - 1, idx))
+        self.reset_trigger()
 
     def next_slide(self, move: int = 1) -> None:
         self.current_slide_idx += move
@@ -63,6 +75,13 @@ class State:
     @property
     def deck_grid_width(self) -> int:
         return max(self.console.size.width // 30, 1)
+
+    def trigger(self) -> None:
+        self.trigger_times.append(monotonic())
+
+    def reset_trigger(self) -> None:
+        self.trigger_times.clear()
+        self.trigger()
 
     def toggle_profiling(self) -> bool:
         self.profiling = not self.profiling

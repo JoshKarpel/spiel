@@ -48,6 +48,7 @@ class DeckReloader(FileSystemEventHandler):
         self.last_reload = now()
         try:
             self.state.deck = load_deck(self.deck_path)
+            self.state.reset_trigger()
             self.state.set_message(
                 lambda: Text(
                     f"Reloaded deck from {self.deck_path} {self.last_reload.diff_for_humans(None, False)}",

@@ -1,30 +1,57 @@
 from __future__ import annotations
 
+import inspect
 from dataclasses import dataclass, field
-from typing import Callable, Iterator, List
+from functools import cached_property
+from time import monotonic
+from typing import Any, Callable, Dict, Iterator, List, Tuple, Union
 
 from rich.console import ConsoleRenderable
 from rich.text import Text
 
-MakeRenderable = Callable[[], ConsoleRenderable]
+MakeRenderable = Callable[..., ConsoleRenderable]
+RenderableLike = Union[MakeRenderable, ConsoleRenderable]
+
+
+@dataclass(frozen=True)
+class Triggers:
+    times: Tuple[float, ...]
+    now: float = field(default_factory=monotonic)
+
+    def __len__(self) -> int:
+        return len(self.times)
+
+    def __getitem__(self, idx: int) -> float:
+        return self.times[idx]
+
+    def __iter__(self) -> Iterator[float]:
+        return iter(self.times)
+
+    @cached_property
+    def time_since_last_trigger(self) -> float:
+        return self.now - self.times[-1]
+
+    @cached_property
+    def time_since_first_trigger(self) -> float:
+        return self.now - self.times[0]
 
 
 @dataclass
 class Slide:
-    content: ConsoleRenderable = field(default_factory=Text)
+    content: RenderableLike = field(default_factory=Text)
     title: str = ""
 
-    @classmethod
-    def from_function(
-        cls,
-        function: MakeRenderable,
-        title: str = "",
-    ) -> Slide:
-        class Dynamic(ConsoleRenderable):
-            def __rich__(self) -> ConsoleRenderable:
-                return function()
+    def render(self, trigger_times: List[float]) -> ConsoleRenderable:
+        if callable(self.content):
+            signature = inspect.signature(self.content)
 
-        return cls(content=Dynamic(), title=title)
+            kwargs: Dict[str, Any] = {}
+            if "triggers" in signature.parameters:
+                kwargs["triggers"] = Triggers(times=tuple(trigger_times))
+
+            return self.content(**kwargs)
+        else:
+            return self.content
 
 
 @dataclass
@@ -48,14 +75,10 @@ class Deck:
     def slide(
         self,
         title: str = "",
-        from_function: bool = False,
     ) -> Callable[[MakeRenderable], MakeRenderable]:
-        def decorator(slide_function: MakeRenderable) -> MakeRenderable:
-            if from_function:
-                slide = Slide.from_function(slide_function, title=title)
-            else:
-                slide = Slide(slide_function(), title=title)
+        def slideify(content: MakeRenderable) -> MakeRenderable:
+            slide = Slide(content=content, title=title)
             self.add_slides(slide)
-            return slide_function
+            return content
 
-        return decorator
+        return slideify

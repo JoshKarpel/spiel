@@ -29,7 +29,11 @@ def test_can_load_deck_from_valid_file(file_with_empty_deck: Path) -> None:
     assert isinstance(load_deck(file_with_empty_deck), Deck)
 
 
-def test_reloader_triggers_when_file_modified(file_with_empty_deck: Path) -> None:
+def test_reloader_triggers_when_file_modified(
+    file_with_empty_deck: Path,
+    console: Console,
+    output: StringIO,
+) -> None:
     state = State(console=Console(), deck=load_deck(file_with_empty_deck))
     reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)
 
@@ -49,7 +53,9 @@ def test_reloader_triggers_when_file_modified(file_with_empty_deck: Path) -> Non
         sleep(0.01)
 
         for attempt in range(10):
-            if state.deck.name == "modified":
+            console.print(state.message)
+            result = output.getvalue()
+            if state.deck.name == "modified" and "Reloaded deck" in result:
                 return  # test succeeded
             sleep(0.1)
 
@@ -59,7 +65,9 @@ def test_reloader_triggers_when_file_modified(file_with_empty_deck: Path) -> Non
 
 
 def test_reloader_captures_error_in_message(
-    file_with_empty_deck: Path, console: Console, output: StringIO
+    file_with_empty_deck: Path,
+    console: Console,
+    output: StringIO,
 ) -> None:
     state = State(console=Console(), deck=load_deck(file_with_empty_deck))
     reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)

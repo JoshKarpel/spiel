@@ -20,7 +20,7 @@ class ImageSize(NamedTuple):
     height: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class Image:
     img: Img
     justify: JustifyMethod = "center"
@@ -31,21 +31,26 @@ class Image:
 
     def _determine_size(self, options: ConsoleOptions) -> ImageSize:
         width, height = self.img.size
+
+        # multiply the max height by 2, because we're going to print 2 "pixels" per row
         max_height = options.height * 2 if options.height else None
         if max_height:
             width, height = width * max_height / self.img.height, max_height
+
         if width > options.max_width:
             width, height = options.max_width, height * options.max_width / width
 
         return ImageSize(floor(width), floor(height))
 
-    def __rich_console__(self, console: Console, options: ConsoleOptions) -> Iterable[Segment]:
-        size = self._determine_size(options)
-
-        resized = self.img.resize(
+    def _resize(self, size: ImageSize) -> Img:
+        return self.img.resize(
             size=size,
             resample=Img.LANCZOS,
         )
+
+    def __rich_console__(self, console: Console, options: ConsoleOptions) -> Iterable[Segment]:
+        size = self._determine_size(options)
+        resized = self._resize(size)
 
         rows = [
             [

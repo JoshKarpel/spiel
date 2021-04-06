@@ -1,0 +1,21 @@
+name: publish-to-pypi
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+    - uses: snok/install-poetry@v1.1.2
+      with:
+        virtualenvs-create: true
+    - name: Publish to PyPI
+      run: poetry publish --build --username __token__ --password ${{ secrets.pypi_token }}
+      working-directory: ${{ github.workspace }}

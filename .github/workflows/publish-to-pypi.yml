@@ -16,6 +16,8 @@ jobs:
     - uses: snok/install-poetry@v1.1.2
       with:
         virtualenvs-create: true
+    - name: Build the package
+      run: poetry build -vvv
     - name: Publish to PyPI
-      run: poetry publish --build --username __token__ --password ${{ secrets.pypi_token }}
+      run: poetry publish --username __token__ --password ${{ secrets.pypi_token }}
       working-directory: ${{ github.workspace }}

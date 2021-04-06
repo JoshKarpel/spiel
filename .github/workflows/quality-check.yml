@@ -43,7 +43,7 @@ jobs:
     - name: Install package
       run: poetry install --no-interaction
     - name: Make sure we can build the package
-      run: poetry build
+      run: poetry build -vvv
     - name: Run tests
       run: poetry run pytest --cov --cov-report=xml
     - name: Upload coverage

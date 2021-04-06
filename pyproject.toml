@@ -50,6 +50,8 @@ mypy = "^0.812"
 pytest-mypy = "^0.8.1"
 pytest-mock = "^3.5.1"
 hypothesis = "^6.8.3"
+Sphinx = "^3.5.3"
+sphinx-rtd-theme = "^0.5.2"
 
 [tool.poetry.scripts]
 spiel = 'spiel.main:app'

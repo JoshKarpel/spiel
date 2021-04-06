@@ -13,11 +13,25 @@ line_length = 100
 
 [tool.poetry]
 name = "spiel"
-version = "0.1.0"
-description = "Present slides in your terminal."
+version = "0.1.1"
+description = "A framework for building and presenting richly-styled presentations in your terminal using Python."
+readme="README.md"
+homepage="https://github.com/JoshKarpel/spiel"
+documentation="https://spiel.readthedocs.io/en/latest/"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Multimedia :: Graphics :: Presentation",
+    "Typing :: Typed",
+]
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
 license = "MIT"
-include = ["demo/*"]
+include = ["py.typed", "demo/*"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

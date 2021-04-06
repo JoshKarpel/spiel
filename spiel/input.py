@@ -29,12 +29,7 @@ from .exceptions import DuplicateInputHandler
 from .modes import Mode
 from .state import State
 
-IFLAG = 0
-OFLAG = 1
-CFLAG = 2
 LFLAG = 3
-ISPEED = 4
-OSPEED = 5
 CC = 6
 
 
@@ -112,13 +107,6 @@ SPECIAL_CHARACTERS = {
     "\n": SpecialCharacters.Enter,
 }
 
-ARROWS = [
-    SpecialCharacters.Up,
-    SpecialCharacters.Down,
-    SpecialCharacters.Right,
-    SpecialCharacters.Left,
-]
-
 
 def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
     result = stream.read(1)
@@ -158,11 +146,15 @@ class InputHandlerHelpInfo:
 INPUT_HANDLER_HELP: List[InputHandlerHelpInfo] = []
 
 
-def handle_input(state: State, stream: TextIO) -> Optional[NoReturn]:
+def handle_input(
+    state: State,
+    stream: TextIO,
+    handlers: InputHandlers = INPUT_HANDLERS,
+) -> Optional[NoReturn]:
     character = get_character(stream)
 
     try:
-        handler = INPUT_HANDLERS[(character, state.mode)]
+        handler = handlers[(character, state.mode)]
     except KeyError:
         return None
 
@@ -204,37 +196,64 @@ def input_handler(
 NOT_HELP = [Mode.SLIDE, Mode.DECK]
 
 
-@input_handler("h", help=f"Enter {Mode.HELP} mode.")
+@input_handler(
+    "h",
+    help=f"Enter {Mode.HELP} mode.",
+)
 def help_mode(state: State) -> None:
     state.mode = Mode.HELP
 
 
-@input_handler("s", help=f"Enter {Mode.SLIDE} mode.")
+@input_handler(
+    "s",
+    help=f"Enter {Mode.SLIDE} mode.",
+)
 def slide_mode(state: State) -> None:
     state.mode = Mode.SLIDE
 
 
-@input_handler("d", help=f"Enter {Mode.DECK} mode.")
+@input_handler(
+    "d",
+    help=f"Enter {Mode.DECK} mode.",
+)
 def deck_mode(state: State) -> None:
     state.mode = Mode.DECK
 
 
-@input_handler(SpecialCharacters.Right, "f", modes=NOT_HELP, help="Move to the next slide.")
+@input_handler(
+    SpecialCharacters.Right,
+    "f",
+    modes=NOT_HELP,
+    help="Move to the next slide.",
+)
 def next_slide(state: State) -> None:
     state.next_slide()
 
 
-@input_handler(SpecialCharacters.Left, "b", modes=NOT_HELP, help="Move to the previous slide.")
+@input_handler(
+    SpecialCharacters.Left,
+    "b",
+    modes=NOT_HELP,
+    help="Move to the previous slide.",
+)
 def previous_slide(state: State) -> None:
     state.previous_slide()
 
 
-@input_handler(SpecialCharacters.Up, modes=[Mode.DECK], help="Move to the previous deck grid row.")
+@input_handler(
+    SpecialCharacters.Up,
+    modes=[Mode.DECK],
+    help="Move to the previous deck grid row.",
+)
 def up_grid_row(state: State) -> None:
     state.previous_slide(move=state.deck_grid_width)
 
 
-@input_handler(SpecialCharacters.Down, modes=[Mode.DECK], help="Move to the next deck grid row.")
+@input_handler(
+    SpecialCharacters.Down,
+    modes=[Mode.DECK],
+    help="Move to the next deck grid row.",
+)
 def down_grid_row(state: State) -> None:
     state.next_slide(move=state.deck_grid_width)
 
@@ -295,11 +314,18 @@ def reset_trigger(state: State) -> None:
     state.reset_trigger()
 
 
-@input_handler("p", help="Toggle profiling information.")
+@input_handler(
+    "p",
+    help="Toggle profiling information.",
+)
 def toggle_profiling(state: State) -> None:
     state.toggle_profiling()
 
 
-@input_handler(SpecialCharacters.CtrlK, SpecialCharacters.CtrlC, help=f"Exit {PACKAGE_NAME}.")
+@input_handler(
+    SpecialCharacters.CtrlK,
+    SpecialCharacters.CtrlC,
+    help=f"Exit {PACKAGE_NAME}.",
+)
 def exit(state: State) -> None:
     raise Exit(code=0)

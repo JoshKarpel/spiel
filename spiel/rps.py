@@ -21,6 +21,3 @@ class RPSCounter:
             return 0
 
         return num_samples / (self.render_time_history[-1] - self.render_time_history[0])
-
-    def seconds_per_render(self) -> float:
-        return 1 / self.renders_per_second()

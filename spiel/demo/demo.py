@@ -31,31 +31,6 @@ DECK = Deck(name=f"Spiel Demo Deck (v{__version__})")
 THIS_DIR = Path(__file__).resolve().parent
 
 
-DECK.add_slides(
-    Example(
-        source=f"""\
-# This is an example showing how to use random.choice from the standard library.
-
-# The source code is embedded directly into the demo deck file,
-# but you could load it from another file if you wanted to.
-
-# Press t (same as trigger) to execute the example code and display the output.
-
-# Press e to open your $EDITOR ({os.getenv('EDITOR', 'not set')}) on the example code.
-# Save your changes and exit to come back to the presentation with your updated code.
-
-import random
-
-directions = ["North", "South", "East", "West"]
-
-print("Which way should we go?")
-print(random.choice(directions))
-""",
-        title="Examples",
-    ),
-)
-
-
 @DECK.slide(title="What is Spiel?")
 def what():
     upper_left_markup = dedent(
@@ -368,3 +343,28 @@ def image():
     )
 
     return root
+
+
+DECK.add_slides(
+    Example(
+        source=f"""\
+# This is an example showing how to use random.choice from the standard library.
+
+# The source code is embedded directly into the demo deck file,
+# but you could load it from another file if you wanted to.
+
+# Press t (same as trigger) to execute the example code and display the output.
+
+# Press e to open your $EDITOR ({os.getenv('EDITOR', 'not set')}) on the example code.
+# Save your changes and exit to come back to the presentation with your updated code.
+
+import random
+
+directions = ["North", "South", "East", "West"]
+
+print("Which way should we go?")
+print(random.choice(directions))
+""",
+        title="Examples",
+    ),
+)

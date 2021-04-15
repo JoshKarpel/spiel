@@ -1,13 +1,12 @@
 from __future__ import annotations
 
+import shlex
 import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from subprocess import CompletedProcess, run, STDOUT, PIPE
 from typing import NamedTuple, List, Optional, Callable
-
-import shlex
 
 from rich.align import Align
 from rich.console import ConsoleRenderable
@@ -16,7 +15,7 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Slide
+from spiel.slides import Presentable
 
 
 class ImageSize(NamedTuple):
@@ -35,7 +34,7 @@ NO_OUTPUT = object()
 
 
 @dataclass
-class Example(Slide):
+class Example(Presentable):
     source: str = ""
     command: List[str] = field(default_factory=lambda: [sys.executable])
     name: str = "example.py"

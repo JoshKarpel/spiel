@@ -6,11 +6,21 @@ from functools import cached_property
 from time import monotonic
 from typing import Any, Callable, Dict, Iterator, List, Tuple, Union
 
+from abc import ABC, abstractmethod
 from rich.console import ConsoleRenderable
 from rich.text import Text
 
 MakeRenderable = Callable[..., ConsoleRenderable]
 RenderableLike = Union[MakeRenderable, ConsoleRenderable]
+
+
+@dataclass
+class Presentable(ABC):
+    title: str = ""
+
+    @abstractmethod
+    def render(self, trigger_times: List[float]) -> ConsoleRenderable:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True)
@@ -37,9 +47,8 @@ class Triggers:
 
 
 @dataclass
-class Slide:
+class Slide(Presentable):
     content: RenderableLike = field(default_factory=Text)
-    title: str = ""
 
     def render(self, trigger_times: List[float]) -> ConsoleRenderable:
         if callable(self.content):
@@ -57,18 +66,18 @@ class Slide:
 @dataclass
 class Deck:
     name: str
-    slides: List[Slide] = field(default_factory=list)
+    slides: List[Presentable] = field(default_factory=list)
 
-    def __getitem__(self, idx: int) -> Slide:
+    def __getitem__(self, idx: int) -> Presentable:
         return self.slides[idx]
 
     def __len__(self) -> int:
         return len(self.slides)
 
-    def __iter__(self) -> Iterator[Slide]:
+    def __iter__(self) -> Iterator[Presentable]:
         yield from self.slides
 
-    def add_slides(self, *slides: Slide) -> Deck:
+    def add_slides(self, *slides: Presentable) -> Deck:
         self.slides.extend(slides)
         return self
 

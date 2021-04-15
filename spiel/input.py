@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import code
 import string
 import sys
 import termios
@@ -22,8 +23,12 @@ from typing import (
 )
 
 import os
+
+import contextlib
 import typer
 from pathlib import Path
+
+from rich.control import Control
 from rich.text import Text
 from typer import Exit
 
@@ -36,6 +41,8 @@ from .state import State
 LFLAG = 3
 CC = 6
 
+ORIGINAL_TCGETATTR = termios.tcgetattr(sys.stdin)
+
 
 @contextmanager
 def no_echo() -> Iterator[None]:
@@ -45,18 +52,25 @@ def no_echo() -> Iterator[None]:
         yield
         return
 
-    old = termios.tcgetattr(fd)
+    try:
+        start_no_echo(fd)
+        yield
+    finally:
+        reset_tty(fd)
 
-    mode = old.copy()
+
+def start_no_echo(fd: int) -> None:
+    mode = ORIGINAL_TCGETATTR.copy()
+
     mode[LFLAG] = mode[LFLAG] & ~(termios.ECHO | termios.ICANON)
     mode[CC][termios.VMIN] = 1
     mode[CC][termios.VTIME] = 0
 
-    try:
-        termios.tcsetattr(fd, termios.TCSADRAIN, mode)
-        yield
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+    termios.tcsetattr(fd, termios.TCSADRAIN, mode)
+
+
+def reset_tty(fd: int) -> None:
+    termios.tcsetattr(fd, termios.TCSADRAIN, ORIGINAL_TCGETATTR)
 
 
 @unique
@@ -318,6 +332,14 @@ def reset_trigger(state: State) -> None:
     state.reset_trigger()
 
 
+@contextlib.contextmanager
+def suspend_live(state: State):
+    live = state.console._live
+    live.stop()
+    yield
+    live.start(refresh=True)
+
+
 @input_handler(
     "e",
     modes=[Mode.SLIDE],
@@ -326,13 +348,50 @@ def reset_trigger(state: State) -> None:
 def edit_example(state: State) -> None:
     s = state.current_slide
     if isinstance(s, Example):
-        live = state.console._live
-        live.stop()
-        edited = typer.edit(text=s.source, extension=Path(s.name).suffix)
-        if edited:
-            s.source = edited
-        s.clear_output()
-        live.start(refresh=True)
+        with suspend_live(state):
+            s.source = typer.edit(text=s.source, extension=Path(s.name).suffix, require_save=False)
+            s.clear_output()
+
+
+def has_ipython() -> bool:
+    try:
+        import IPython
+
+        return True
+    except ImportError:
+        return False
+
+
+def has_ipython_help_message() -> str:
+    return "[green]it is[/green]" if has_ipython() else "[red]it is not[/red]"
+
+
+@input_handler(
+    "l",
+    name="Open REPL",
+    modes=NOT_HELP,
+    help=f"Open a REPL. Uses IPython if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
+)
+def open_repl(state: State):
+    with suspend_live(state):
+        reset_tty(sys.stdin.fileno())
+        state.console.print(Control.clear())
+        state.console.print(Control.move_to(0, 0))
+
+        try:
+            import IPython
+
+            from traitlets.config import Config
+
+            c = Config()
+
+            c.InteractiveShellEmbed.colors = "Neutral"
+
+            IPython.embed(config=c)
+        except ImportError:
+            code.InteractiveConsole().interact()
+
+        start_no_echo(sys.stdin.fileno())
 
 
 @input_handler(

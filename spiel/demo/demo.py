@@ -41,7 +41,7 @@ DECK.add_slides(
 
 # Press t (same as trigger) to execute the example code and display the output.
 
-# Press e to open your $EDITOR ({os.getenv('EDITOR', 'not set')} on the example code.
+# Press e to open your $EDITOR ({os.getenv('EDITOR', 'not set')}) on the example code.
 # Save your changes and exit to come back to the presentation with your updated code.
 
 import random

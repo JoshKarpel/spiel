@@ -1,4 +1,5 @@
 import inspect
+import os
 import shutil
 import socket
 from datetime import datetime
@@ -6,7 +7,6 @@ from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
 
-import os
 from rich.align import Align
 from rich.box import SQUARE
 from rich.color import Color, blend_rgb
@@ -36,7 +36,7 @@ DECK.add_slides(
         source=f"""\
 # This is an example showing how to use random.choice from the standard library.
 
-# The source code is embedded directly into the demo deck file, 
+# The source code is embedded directly into the demo deck file,
 # but you could load it from another file if you wanted to.
 
 # Press t (same as trigger) to execute the example code and display the output.

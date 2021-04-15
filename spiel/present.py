@@ -10,8 +10,6 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.style import Style
 
-from spiel import Slide
-
 from .constants import TARGET_RPS
 from .exceptions import UnknownModeError
 from .footer import Footer
@@ -19,13 +17,15 @@ from .help import Help
 from .input import handle_input, no_echo
 from .modes import Mode
 from .rps import RPSCounter
+from .slides import Presentable
 from .state import State
+from .triggers import Triggers
 from .utils import clamp, joinify
 
 
-def render_slide(state: State, slide: Slide) -> ConsoleRenderable:
+def render_slide(state: State, slide: Presentable) -> ConsoleRenderable:
     return Padding(
-        slide.render(trigger_times=state.trigger_times),
+        slide.render(triggers=Triggers(times=tuple(state.trigger_times))),
         pad=1,
     )
 
@@ -55,7 +55,7 @@ def split_layout_into_deck_grid(root: Layout, state: State) -> Layout:
                 is_active_slide = slide is state.current_slide
                 layout.update(
                     Panel(
-                        slide.render([monotonic()]),
+                        slide.render(triggers=Triggers(times=(monotonic(),))),
                         title=joinify(" | ", [slide_number, slide.title]),
                         border_style=Style(
                             color="bright_cyan" if is_active_slide else None,

@@ -5,8 +5,8 @@ import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from subprocess import CompletedProcess, run, STDOUT, PIPE
-from typing import NamedTuple, List, Optional, Callable
+from subprocess import PIPE, STDOUT, CompletedProcess, run
+from typing import Callable, List, NamedTuple, Optional
 
 from rich.align import Align
 from rich.console import ConsoleRenderable
@@ -15,6 +15,7 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.text import Text
 
+from spiel import Triggers
 from spiel.slides import Presentable
 
 
@@ -27,10 +28,7 @@ class ImageSize(NamedTuple):
 class CachedExample:
     trigger_number: int
     input: Syntax
-    output: Text
-
-
-NO_OUTPUT = object()
+    output: Optional[Text]
 
 
 @dataclass
@@ -39,7 +37,7 @@ class Example(Presentable):
     command: List[str] = field(default_factory=lambda: [sys.executable])
     name: str = "example.py"
     language: str = "python"
-    layout: Optional[Callable[[Syntax, Text], ConsoleRenderable]] = None
+    layout: Optional[Callable[[Syntax, Optional[Text]], ConsoleRenderable]] = None
 
     _cache: Optional[CachedExample] = None
 
@@ -62,10 +60,10 @@ class Example(Presentable):
 
         return Text(result.stdout)
 
-    def _render(self, input: Syntax, output: Text) -> ConsoleRenderable:
+    def _render(self, input: Syntax, output: Optional[Text]) -> ConsoleRenderable:
         if self.layout is None:
-            renderable = Layout()
-            renderable.split_column(
+            root = Layout()
+            root.split_column(
                 Layout(
                     Align.center(
                         Panel(
@@ -79,27 +77,27 @@ class Example(Presentable):
                 Layout(
                     Align.center(
                         Panel(
-                            output if output is not NO_OUTPUT else Text(" "),
+                            output,
                             title=f"{shlex.join([Path(self.command[0]).stem, *self.command[1:], self.name])}",
                             title_align="left",
                             expand=False,
                         )
-                        if output is not NO_OUTPUT
+                        if output is not None
                         else Text(" ")
                     )
                 ),
             )
+            return root
         else:
-            renderable = self.layout(input, output)
-        return renderable
+            return self.layout(input, output)
 
-    def clear_output(self):
+    def clear_output(self) -> None:
         self._cache = None
 
-    def render(self, trigger_times: List[float]) -> ConsoleRenderable:
+    def render(self, triggers: Triggers) -> ConsoleRenderable:
         if self._cache is None:
-            self._cache = CachedExample(len(trigger_times), self.input(), NO_OUTPUT)
-        if self._cache.trigger_number != len(trigger_times):
-            self._cache = CachedExample(len(trigger_times), self.input(), self.output())
+            self._cache = CachedExample(len(triggers), self.input(), None)
+        if self._cache.trigger_number != len(triggers):
+            self._cache = CachedExample(len(triggers), self.input(), self.output())
 
         return self._render(self._cache.input, self._cache.output)

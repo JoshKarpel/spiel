@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import code
+import contextlib
+import os
 import string
 import sys
 import termios
@@ -9,7 +11,9 @@ from dataclasses import dataclass
 from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
+from pathlib import Path
 from typing import (
+    Any,
     Callable,
     Iterable,
     Iterator,
@@ -22,12 +26,7 @@ from typing import (
     Union,
 )
 
-import os
-
-import contextlib
 import typer
-from pathlib import Path
-
 from rich.control import Control
 from rich.text import Text
 from typer import Exit
@@ -41,36 +40,39 @@ from .state import State
 LFLAG = 3
 CC = 6
 
-ORIGINAL_TCGETATTR = termios.tcgetattr(sys.stdin)
+try:
+    ORIGINAL_TCGETATTR: Optional[List[Any]] = termios.tcgetattr(sys.stdin)
+except (UnsupportedOperation, termios.error):
+    ORIGINAL_TCGETATTR = None
 
 
 @contextmanager
 def no_echo() -> Iterator[None]:
     try:
-        fd = sys.stdin.fileno()
-    except UnsupportedOperation:
-        yield
-        return
-
-    try:
-        start_no_echo(fd)
+        start_no_echo(sys.stdin)
         yield
     finally:
-        reset_tty(fd)
+        reset_tty(sys.stdin)
 
 
-def start_no_echo(fd: int) -> None:
+def start_no_echo(stream: TextIO) -> None:
+    if ORIGINAL_TCGETATTR is None:
+        return
+
     mode = ORIGINAL_TCGETATTR.copy()
 
     mode[LFLAG] = mode[LFLAG] & ~(termios.ECHO | termios.ICANON)
     mode[CC][termios.VMIN] = 1
     mode[CC][termios.VTIME] = 0
 
-    termios.tcsetattr(fd, termios.TCSADRAIN, mode)
+    termios.tcsetattr(stream.fileno(), termios.TCSADRAIN, mode)
 
 
-def reset_tty(fd: int) -> None:
-    termios.tcsetattr(fd, termios.TCSADRAIN, ORIGINAL_TCGETATTR)
+def reset_tty(stream: TextIO) -> None:
+    if ORIGINAL_TCGETATTR is None:
+        return
+
+    termios.tcsetattr(stream.fileno(), termios.TCSADRAIN, ORIGINAL_TCGETATTR)
 
 
 @unique
@@ -333,8 +335,13 @@ def reset_trigger(state: State) -> None:
 
 
 @contextlib.contextmanager
-def suspend_live(state: State):
+def suspend_live(state: State) -> Iterator[None]:
     live = state.console._live
+
+    if live is None:
+        yield
+        return
+
     live.stop()
     yield
     live.start(refresh=True)
@@ -372,15 +379,14 @@ def has_ipython_help_message() -> str:
     modes=NOT_HELP,
     help=f"Open a REPL. Uses IPython if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
 )
-def open_repl(state: State):
+def open_repl(state: State) -> None:
     with suspend_live(state):
-        reset_tty(sys.stdin.fileno())
+        reset_tty(sys.stdin)
         state.console.print(Control.clear())
         state.console.print(Control.move_to(0, 0))
 
         try:
             import IPython
-
             from traitlets.config import Config
 
             c = Config()
@@ -391,7 +397,7 @@ def open_repl(state: State):
         except ImportError:
             code.InteractiveConsole().interact()
 
-        start_no_echo(sys.stdin.fileno())
+        start_no_echo(sys.stdin)
 
 
 @input_handler(

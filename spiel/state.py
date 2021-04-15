@@ -7,7 +7,7 @@ from rich.style import Style
 from rich.text import Text
 
 from .modes import Mode
-from .slides import Deck, Slide
+from .slides import Deck, Presentable
 
 TextLike = Union[Text, Callable[[], Text]]
 
@@ -50,7 +50,7 @@ class State:
         self.current_slide_idx = idx
 
     @property
-    def current_slide(self) -> Slide:
+    def current_slide(self) -> Presentable:
         return self.deck[self.current_slide_idx]
 
     @property

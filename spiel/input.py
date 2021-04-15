@@ -21,10 +21,14 @@ from typing import (
     Union,
 )
 
+import os
+import typer
+from pathlib import Path
 from rich.text import Text
 from typer import Exit
 
 from .constants import PACKAGE_NAME
+from .example import Example
 from .exceptions import DuplicateInputHandler
 from .modes import Mode
 from .state import State
@@ -312,6 +316,23 @@ def trigger(state: State) -> None:
 )
 def reset_trigger(state: State) -> None:
     state.reset_trigger()
+
+
+@input_handler(
+    "e",
+    modes=[Mode.SLIDE],
+    help=f"Open your $EDITOR ({os.getenv('EDITOR', 'not set')}) on the source of an Example slide. If the current slide is not an Example, do nothing.",
+)
+def edit_example(state: State) -> None:
+    s = state.current_slide
+    if isinstance(s, Example):
+        live = state.console._live
+        live.stop()
+        edited = typer.edit(text=s.source, extension=Path(s.name).suffix)
+        if edited:
+            s.source = edited
+        s.clear_output()
+        live.start(refresh=True)
 
 
 @input_handler(

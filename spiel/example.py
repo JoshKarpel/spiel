@@ -6,7 +6,7 @@ import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from subprocess import PIPE, STDOUT, CompletedProcess, run
-from typing import Callable, List, NamedTuple, Optional
+from typing import Callable, NamedTuple, Optional, Sequence
 
 from rich.align import Align
 from rich.console import ConsoleRenderable
@@ -15,8 +15,8 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Triggers
-from spiel.slides import Presentable
+from .presentable import Presentable
+from .triggers import Triggers
 
 
 class ImageSize(NamedTuple):
@@ -34,7 +34,7 @@ class CachedExample:
 @dataclass
 class Example(Presentable):
     source: str = ""
-    command: List[str] = field(default_factory=lambda: [sys.executable])
+    command: Sequence[str] = field(default_factory=lambda: [sys.executable])
     name: str = "example.py"
     language: str = "python"
     layout: Optional[Callable[[Syntax, Optional[Text]], ConsoleRenderable]] = None

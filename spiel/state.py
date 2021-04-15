@@ -7,7 +7,8 @@ from rich.style import Style
 from rich.text import Text
 
 from .modes import Mode
-from .slides import Deck, Presentable
+from .presentable import Presentable
+from .slides import Deck
 
 TextLike = Union[Text, Callable[[], Text]]
 

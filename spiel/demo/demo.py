@@ -19,8 +19,7 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Deck, Image, Slide, __version__
-from spiel.example import Example
+from spiel import Deck, Example, Image, Slide, __version__
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
@@ -345,26 +344,21 @@ def image():
     return root
 
 
-DECK.add_slides(
-    Example(
-        source=f"""\
-# This is an example showing how to use random.choice from the standard library.
+@DECK.example(title="Examples")
+def examples():
+    # This is an example that shows how to use random.choice from the standard library.
 
-# The source code is embedded directly into the demo deck file,
-# but you could load it from another file if you wanted to.
+    # The source code is embedded directly into the demo deck file,
+    # but you could load it from another file if you wanted to.
 
-# Press t (same as trigger) to execute the example code and display the output.
+    # Press t (same as trigger) to execute the example code and display the output.
 
-# Press e to open your $EDITOR ({os.getenv('EDITOR', 'not set')}) on the example code.
-# Save your changes and exit to come back to the presentation with your updated code.
+    # Press e to open your $EDITOR on the example code.
+    # Save your changes and exit to come back to the presentation with your updated code.
 
-import random
+    import random
 
-directions = ["North", "South", "East", "West"]
+    directions = ["North", "South", "East", "West"]
 
-print("Which way should we go?")
-print(random.choice(directions))
-""",
-        title="Examples",
-    ),
-)
+    print("Which way should we go?")
+    print(random.choice(directions))

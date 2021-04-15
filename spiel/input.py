@@ -7,6 +7,7 @@ import string
 import sys
 import termios
 from contextlib import contextmanager
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum, unique
 from io import UnsupportedOperation
@@ -59,7 +60,7 @@ def start_no_echo(stream: TextIO) -> None:
     if ORIGINAL_TCGETATTR is None:
         return
 
-    mode = ORIGINAL_TCGETATTR.copy()
+    mode = deepcopy(ORIGINAL_TCGETATTR)
 
     mode[LFLAG] = mode[LFLAG] & ~(termios.ECHO | termios.ICANON)
     mode[CC][termios.VMIN] = 1

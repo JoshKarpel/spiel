@@ -16,8 +16,8 @@ from .footer import Footer
 from .help import Help
 from .input import handle_input, no_echo
 from .modes import Mode
+from .presentable import Presentable
 from .rps import RPSCounter
-from .slides import Presentable
 from .state import State
 from .triggers import Triggers
 from .utils import clamp, joinify

@@ -351,7 +351,7 @@ def suspend_live(state: State) -> Iterator[None]:
 @input_handler(
     "e",
     modes=[Mode.SLIDE],
-    help=f"Open your $EDITOR ({os.getenv('EDITOR', 'not set')}) on the source of an Example slide. If the current slide is not an Example, do nothing.",
+    help=f"Open your $EDITOR ([bold]{os.getenv('EDITOR', 'not set')}[/bold]) on the source of an [bold]Example[/bold] slide. If the current slide is not an [bold]Example[/bold], do nothing.",
 )
 def edit_example(state: State) -> None:
     s = state.current_slide
@@ -378,7 +378,7 @@ def has_ipython_help_message() -> str:
     "l",
     name="Open REPL",
     modes=NOT_HELP,
-    help=f"Open a REPL. Uses IPython if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
+    help=f"Open your REPL. Uses [bold]IPython[/bold] if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
 )
 def open_repl(state: State) -> None:
     with suspend_live(state):

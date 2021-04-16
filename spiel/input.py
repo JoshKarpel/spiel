@@ -358,7 +358,7 @@ def edit_example(state: State) -> None:
     if isinstance(s, Example):
         with suspend_live(state):
             s.source = typer.edit(text=s.source, extension=Path(s.name).suffix, require_save=False)
-            s.clear_output()
+            s.clear_cache()
 
 
 def has_ipython() -> bool:

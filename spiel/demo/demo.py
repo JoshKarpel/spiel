@@ -1,5 +1,4 @@
 import inspect
-import os
 import shutil
 import socket
 from datetime import datetime
@@ -19,7 +18,7 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Deck, Example, Image, Slide, __version__
+from spiel import Deck, Image, Slide, __version__, example_panels
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
@@ -351,14 +350,37 @@ def examples():
     # The source code is embedded directly into the demo deck file,
     # but you could load it from another file if you wanted to.
 
-    # Press t (same as trigger) to execute the example code and display the output.
-
-    # Press e to open your $EDITOR on the example code.
-    # Save your changes and exit to come back to the presentation with your updated code.
-
     import random
 
     directions = ["North", "South", "East", "West"]
 
     print("Which way should we go?")
     print(random.choice(directions))
+
+
+@examples.layout
+def _(example):
+    root = Layout()
+
+    markup = dedent(
+        f"""\
+    ## Examples
+
+    {SPIEL} can display and execute chunks of example code.
+
+    Example slides are driven by the trigger system.
+    Press `t` to execute the example code and display the output.
+
+    Examples can be modified during the talk.
+    Press `e` to open your `$EDITOR` on the example code.
+    Save your changes and exit to come back to the presentation with your updated code.
+
+    You can customize the example slide's content by providing a custom `layout` function.
+    If you don't, you'll get the default layout, which looks like just the right half of this slide.
+    """
+    )
+    markdown = Markdown(markup, justify="center")
+
+    root.split_row(Layout(markdown), example_panels(example))
+
+    return root

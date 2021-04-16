@@ -3,9 +3,9 @@ from __future__ import annotations
 import shlex
 import sys
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from subprocess import PIPE, STDOUT, CompletedProcess, run
+from subprocess import PIPE, STDOUT, run
 from typing import Callable, Optional, Sequence
 
 from rich.align import Align
@@ -22,11 +22,37 @@ from .triggers import Triggers
 @dataclass
 class CachedExample:
     trigger_number: int
-    input: Syntax
-    output: Optional[Text]
+    input: str
+    output: Optional[str]
 
 
-ExampleLayoutFunction = Callable[[Syntax, Optional[Text]], ConsoleRenderable]
+def example_panels(example: Example) -> ConsoleRenderable:
+    root = Layout()
+    root.split_column(
+        Layout(
+            Align.center(
+                Panel(
+                    example.input,
+                    title=example.name,
+                    title_align="left",
+                    expand=False,
+                )
+            )
+        ),
+        Layout(
+            Align.center(
+                Panel(
+                    example.output,
+                    title=example.display_command,
+                    title_align="left",
+                    expand=False,
+                )
+                if example.output is not None
+                else Text(" ")
+            )
+        ),
+    )
+    return root
 
 
 @dataclass
@@ -35,70 +61,51 @@ class Example(Presentable):
     command: Sequence[str] = (sys.executable,)
     name: str = "example.py"
     language: str = "python"
-    _layout: Optional[ExampleLayoutFunction] = None
+    _layout: Callable[[Example], ConsoleRenderable] = example_panels
     _cache: Optional[CachedExample] = None
 
-    def layout(self, function: ExampleLayoutFunction) -> ExampleLayoutFunction:
+    def layout(
+        self, function: Callable[[Example], ConsoleRenderable]
+    ) -> Callable[[Example], ConsoleRenderable]:
         self._layout = function
         return function
 
-    def input(self) -> Syntax:
-        return Syntax(
-            self.source,
-            lexer_name=self.language,
-            code_width=max(len(line) for line in self.source.splitlines()),
-        )
+    @property
+    def display_command(self) -> str:
+        return shlex.join([Path(self.command[0]).stem, *self.command[1:], self.name])
 
-    def execute(self) -> CompletedProcess:
+    def execute(self) -> str:
         with tempfile.TemporaryDirectory() as tmpdir:
             dir = Path(tmpdir)
             file = dir / self.name
             file.write_text(self.source)
-            return run([*self.command, file], stdout=PIPE, stderr=STDOUT, text=True)
+            result = run([*self.command, file], stdout=PIPE, stderr=STDOUT, text=True)
+        return result.stdout
 
-    def output(self) -> Text:
-        result = self.execute()
+    @property
+    def input(self) -> Syntax:
+        input = (self._cache.input or "") if self._cache is not None else ""
+        return Syntax(
+            input,
+            lexer_name=self.language,
+            code_width=max(len(line) for line in input.splitlines()),
+        )
 
-        return Text(result.stdout)
+    @property
+    def output(self) -> Optional[Text]:
+        return (
+            Text(self._cache.output)
+            if (self._cache is not None and self._cache.output is not None)
+            else None
+        )
 
-    def _render(self, input: Syntax, output: Optional[Text]) -> ConsoleRenderable:
-        if self._layout is None:
-            root = Layout()
-            root.split_column(
-                Layout(
-                    Align.center(
-                        Panel(
-                            input,
-                            title=self.name,
-                            title_align="left",
-                            expand=False,
-                        )
-                    )
-                ),
-                Layout(
-                    Align.center(
-                        Panel(
-                            output,
-                            title=f"{shlex.join([Path(self.command[0]).stem, *self.command[1:], self.name])}",
-                            title_align="left",
-                            expand=False,
-                        )
-                        if output is not None
-                        else Text(" ")
-                    )
-                ),
-            )
-            return root
-        else:
-            return self._layout(input, output)
-
-    def clear_output(self) -> None:
+    def clear_cache(self) -> None:
         self._cache = None
 
     def render(self, triggers: Triggers) -> ConsoleRenderable:
         if self._cache is None:
-            self._cache = CachedExample(len(triggers), self.input(), None)
+            self._cache = CachedExample(len(triggers), self.source, None)
         elif self._cache.trigger_number != len(triggers):
-            self._cache = CachedExample(len(triggers), self.input(), self.output())
+            self._cache = CachedExample(len(triggers), self.source, self.execute())
 
-        return self._render(self._cache.input, self._cache.output)
+        return self._layout(self)

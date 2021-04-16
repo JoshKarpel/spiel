@@ -5,7 +5,8 @@ from textwrap import dedent
 import pytest
 from rich.console import Console
 
-from spiel.slides import Deck, Slide
+from spiel import Deck
+from spiel.slides import Slide
 from spiel.state import State
 
 

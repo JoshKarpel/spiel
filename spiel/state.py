@@ -6,9 +6,9 @@ from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
+from . import Deck
 from .modes import Mode
 from .presentable import Presentable
-from .slides import Deck
 
 TextLike = Union[Text, Callable[[], Text]]
 

@@ -15,9 +15,9 @@ from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
 
+from spiel import Deck
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound
-from spiel.slides import Deck
 from spiel.state import State
 
 

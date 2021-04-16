@@ -6,10 +6,10 @@ from time import sleep
 import pytest
 from rich.console import Console
 
+from spiel import Deck
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound
 from spiel.load import DeckReloader, DeckWatcher, load_deck
-from spiel.slides import Deck
 from spiel.state import State
 
 

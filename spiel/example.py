@@ -6,7 +6,7 @@ import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from subprocess import PIPE, STDOUT, CompletedProcess, run
-from typing import Callable, NamedTuple, Optional, Sequence
+from typing import Callable, Optional, Sequence
 
 from rich.align import Align
 from rich.console import ConsoleRenderable
@@ -19,11 +19,6 @@ from .presentable import Presentable
 from .triggers import Triggers
 
 
-class ImageSize(NamedTuple):
-    width: int
-    height: int
-
-
 @dataclass
 class CachedExample:
     trigger_number: int
@@ -31,15 +26,21 @@ class CachedExample:
     output: Optional[Text]
 
 
+ExampleLayoutFunction = Callable[[Syntax, Optional[Text]], ConsoleRenderable]
+
+
 @dataclass
 class Example(Presentable):
     source: str = ""
-    command: Sequence[str] = field(default_factory=lambda: [sys.executable])
+    command: Sequence[str] = (sys.executable,)
     name: str = "example.py"
     language: str = "python"
-    layout: Optional[Callable[[Syntax, Optional[Text]], ConsoleRenderable]] = None
-
+    _layout: Optional[ExampleLayoutFunction] = None
     _cache: Optional[CachedExample] = None
+
+    def layout(self, function: ExampleLayoutFunction) -> ExampleLayoutFunction:
+        self._layout = function
+        return function
 
     def input(self) -> Syntax:
         return Syntax(
@@ -61,7 +62,7 @@ class Example(Presentable):
         return Text(result.stdout)
 
     def _render(self, input: Syntax, output: Optional[Text]) -> ConsoleRenderable:
-        if self.layout is None:
+        if self._layout is None:
             root = Layout()
             root.split_column(
                 Layout(
@@ -89,7 +90,7 @@ class Example(Presentable):
             )
             return root
         else:
-            return self.layout(input, output)
+            return self._layout(input, output)
 
     def clear_output(self) -> None:
         self._cache = None
@@ -97,7 +98,7 @@ class Example(Presentable):
     def render(self, triggers: Triggers) -> ConsoleRenderable:
         if self._cache is None:
             self._cache = CachedExample(len(triggers), self.input(), None)
-        if self._cache.trigger_number != len(triggers):
+        elif self._cache.trigger_number != len(triggers):
             self._cache = CachedExample(len(triggers), self.input(), self.output())
 
         return self._render(self._cache.input, self._cache.output)

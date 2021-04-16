@@ -36,11 +36,11 @@ class Deck(Collection):
     def slide(
         self,
         title: str = "",
-    ) -> Callable[[MakeRenderable], MakeRenderable]:
-        def slideify(content: MakeRenderable) -> MakeRenderable:
+    ) -> Callable[[MakeRenderable], Slide]:
+        def slideify(content: MakeRenderable) -> Slide:
             slide = Slide(content=content, title=title)
             self.add_slides(slide)
-            return content
+            return slide
 
         return slideify
 
@@ -50,8 +50,8 @@ class Deck(Collection):
         command: Sequence[str] = (sys.executable,),
         name: str = "example.py",
         language: str = "python",
-    ) -> Callable[[Callable], Callable]:
-        def exampleify(example: Callable) -> Callable:
+    ) -> Callable[[Callable], Example]:
+        def exampleify(example: Callable) -> Example:
             ex = Example(
                 source=get_function_body(example),
                 title=title,
@@ -60,7 +60,7 @@ class Deck(Collection):
                 language=language,
             )
             self.add_slides(ex)
-            return example
+            return ex
 
         return exampleify
 

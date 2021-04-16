@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import sys
+from collections.abc import Collection
 from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import Callable, Iterator, List, Sequence
@@ -12,7 +13,7 @@ from .slides import MakeRenderable, Slide
 
 
 @dataclass
-class Deck:
+class Deck(Collection):
     name: str
     slides: List[Presentable] = field(default_factory=list)
 
@@ -23,7 +24,10 @@ class Deck:
         return len(self.slides)
 
     def __iter__(self) -> Iterator[Presentable]:
-        yield from self.slides
+        return iter(self.slides)
+
+    def __contains__(self, obj: object) -> bool:
+        return obj in self.slides
 
     def add_slides(self, *slides: Presentable) -> Deck:
         self.slides.extend(slides)

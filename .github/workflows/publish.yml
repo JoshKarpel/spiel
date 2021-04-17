@@ -1,0 +1,48 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+    - uses: snok/install-poetry@v1.1.2
+      with:
+        virtualenvs-create: true
+    - name: Build the package
+      run: poetry build -vvv
+    - name: Publish to PyPI
+      run: poetry publish --username __token__ --password ${{ secrets.pypi_token }}
+      working-directory: ${{ github.workspace }}
+  ghcr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1.1.2
+      with:
+        install: true
+    - name: Log in to GHCR
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_TOKEN }}
+    - name: Build Image and Push to GHCR
+      uses: docker/build-push-action@v2.4.0
+      with:
+        file: ./docker/Dockerfile
+        repository: ${{ github.repository }}
+        pull: true
+        push: true
+        labels: |
+          org.opencontainers.image.source=https://github.com/${{ github.repository }}
+        tags: |
+          ${{ github.repository }}:latest
+          ${{ github.repository }}:${GITHUB_REF##*/}

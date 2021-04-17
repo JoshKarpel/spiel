@@ -6,8 +6,9 @@ from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
+from . import Deck
 from .modes import Mode
-from .slides import Deck, Slide
+from .presentable import Presentable
 
 TextLike = Union[Text, Callable[[], Text]]
 
@@ -41,16 +42,20 @@ class State:
         self.reset_trigger()
 
     def next_slide(self, move: int = 1) -> None:
+        if self.current_slide_idx == len(self.deck) - 1:
+            return
         self.current_slide_idx += move
 
     def previous_slide(self, move: int = 1) -> None:
+        if self.current_slide_idx == 0:
+            return
         self.current_slide_idx -= move
 
     def jump_to_slide(self, idx: int) -> None:
         self.current_slide_idx = idx
 
     @property
-    def current_slide(self) -> Slide:
+    def current_slide(self) -> Presentable:
         return self.deck[self.current_slide_idx]
 
     @property

@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+import code
+import contextlib
+import os
 import string
 import sys
 import termios
 from contextlib import contextmanager
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
+from pathlib import Path
 from typing import (
+    Any,
     Callable,
     Iterable,
     Iterator,
@@ -21,10 +27,13 @@ from typing import (
     Union,
 )
 
+import typer
+from rich.control import Control
 from rich.text import Text
 from typer import Exit
 
 from .constants import PACKAGE_NAME
+from .example import Example
 from .exceptions import DuplicateInputHandler
 from .modes import Mode
 from .state import State
@@ -32,27 +41,39 @@ from .state import State
 LFLAG = 3
 CC = 6
 
+try:
+    ORIGINAL_TCGETATTR: Optional[List[Any]] = termios.tcgetattr(sys.stdin)
+except (UnsupportedOperation, termios.error):
+    ORIGINAL_TCGETATTR = None
+
 
 @contextmanager
 def no_echo() -> Iterator[None]:
     try:
-        fd = sys.stdin.fileno()
-    except UnsupportedOperation:
+        start_no_echo(sys.stdin)
         yield
+    finally:
+        reset_tty(sys.stdin)
+
+
+def start_no_echo(stream: TextIO) -> None:
+    if ORIGINAL_TCGETATTR is None:
         return
 
-    old = termios.tcgetattr(fd)
+    mode = deepcopy(ORIGINAL_TCGETATTR)
 
-    mode = old.copy()
     mode[LFLAG] = mode[LFLAG] & ~(termios.ECHO | termios.ICANON)
     mode[CC][termios.VMIN] = 1
     mode[CC][termios.VTIME] = 0
 
-    try:
-        termios.tcsetattr(fd, termios.TCSADRAIN, mode)
-        yield
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+    termios.tcsetattr(stream.fileno(), termios.TCSADRAIN, mode)
+
+
+def reset_tty(stream: TextIO) -> None:
+    if ORIGINAL_TCGETATTR is None:
+        return
+
+    termios.tcsetattr(stream.fileno(), termios.TCSADRAIN, ORIGINAL_TCGETATTR)
 
 
 @unique
@@ -312,6 +333,72 @@ def trigger(state: State) -> None:
 )
 def reset_trigger(state: State) -> None:
     state.reset_trigger()
+
+
+@contextlib.contextmanager
+def suspend_live(state: State) -> Iterator[None]:
+    live = state.console._live
+
+    if live is None:
+        yield
+        return
+
+    live.stop()
+    yield
+    live.start(refresh=True)
+
+
+@input_handler(
+    "e",
+    modes=[Mode.SLIDE],
+    help=f"Open your $EDITOR ([bold]{os.getenv('EDITOR', 'not set')}[/bold]) on the source of an [bold]Example[/bold] slide. If the current slide is not an [bold]Example[/bold], do nothing.",
+)
+def edit_example(state: State) -> None:
+    s = state.current_slide
+    if isinstance(s, Example):
+        with suspend_live(state):
+            s.source = typer.edit(text=s.source, extension=Path(s.name).suffix, require_save=False)
+            s.clear_cache()
+
+
+def has_ipython() -> bool:
+    try:
+        import IPython
+
+        return True
+    except ImportError:
+        return False
+
+
+def has_ipython_help_message() -> str:
+    return "[green]it is[/green]" if has_ipython() else "[red]it is not[/red]"
+
+
+@input_handler(
+    "l",
+    name="Open REPL",
+    modes=NOT_HELP,
+    help=f"Open your REPL. Uses [bold]IPython[/bold] if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
+)
+def open_repl(state: State) -> None:
+    with suspend_live(state):
+        reset_tty(sys.stdin)
+        state.console.print(Control.clear())
+        state.console.print(Control.move_to(0, 0))
+
+        try:
+            import IPython
+            from traitlets.config import Config
+
+            c = Config()
+
+            c.InteractiveShellEmbed.colors = "Neutral"
+
+            IPython.embed(config=c)
+        except ImportError:
+            code.InteractiveConsole().interact()
+
+        start_no_echo(sys.stdin)
 
 
 @input_handler(

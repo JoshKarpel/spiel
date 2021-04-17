@@ -4,6 +4,7 @@ from pathlib import Path
 from textwrap import dedent
 
 from rich.console import Console
+from rich.control import Control
 from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
@@ -88,6 +89,9 @@ def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, p
             present_deck(state)
     except KeyboardInterrupt:
         raise Exit(code=0)
+    finally:
+        state.console.print(Control.clear())
+        state.console.print(Control.move_to(0, 0))
 
 
 @app.command()

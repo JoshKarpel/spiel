@@ -14,9 +14,9 @@ from spiel.state import State
 @pytest.mark.parametrize(
     "make_slide",
     [
-        lambda: Slide(Text("foobar")),
-        lambda: Slide(lambda: Text("foobar")),
-        lambda: Slide(lambda triggers: Text("foobar")),
+        lambda: Slide(content=Text("foobar")),
+        lambda: Slide(content=lambda: Text("foobar")),
+        lambda: Slide(content=lambda triggers: Text("foobar")),
     ],
 )
 def test_can_render_slide(

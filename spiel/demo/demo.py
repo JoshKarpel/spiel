@@ -18,7 +18,7 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Deck, Image, Slide, __version__
+from spiel import Deck, Image, Slide, __version__, example_panels
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
@@ -310,8 +310,6 @@ def watch():
     `$ spiel present path/to/deck.py --watch`
 
     If you're on a system without inotify support (e.g., Windows Subsystem for Linux), you may need to use the `--poll` option instead.
-
-    When you're ready to present your deck for real, just drop the `--watch` option.
     """
     )
     return Markdown(markup, justify="center")
@@ -339,5 +337,64 @@ def image():
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
         Layout(Image.from_file(THIS_DIR / "img.jpg")),
     )
+
+    return root
+
+
+@DECK.example(title="Examples")
+def examples():
+    # This is an example that shows how to use random.choice from the standard library.
+
+    # The source code is embedded directly into the demo deck file,
+    # but you could load it from another file if you wanted to.
+
+    import random
+
+    directions = ["North", "South", "East", "West"]
+
+    print("Which way should we go?")
+    print(random.choice(directions))
+
+
+@examples.layout
+def _(example, triggers):
+    root = Layout()
+
+    extra = (
+        f"""
+    ## Example Execution is Cached
+
+    Now that you've triggered the slide, {SPIEL} will execute the example once and display the output.
+    The result is cached, so the example is not executed on every frame, like code in normal slide content
+    functions is.
+
+    ## Editing Examples
+
+    Examples can be modified during the talk.
+    Press `e` to open your `$EDITOR` on the example code.
+    Save your changes and exit to come back to the presentation with your updated code.
+    You can then trigger the example again to run it with the new code.
+    """
+        if len(triggers) > 1
+        else ""
+    )
+
+    markup = dedent(
+        f"""\
+    ## Examples
+
+    {SPIEL} can display and execute chunks of example code.
+
+    Example slides are driven by the trigger system.
+    Press `t` to execute the example code and display the output.
+
+    You can customize the example slide's content by providing a custom `layout` function.
+    If you don't, you'll get the default layout, which looks like just the right half of this slide.
+    {extra}
+    """
+    )
+    markdown = Markdown(markup, justify="center")
+
+    root.split_row(Layout(markdown), example_panels(example))
 
     return root

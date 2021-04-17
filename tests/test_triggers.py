@@ -1,6 +1,6 @@
 import pytest
 
-from spiel.slides import Triggers
+from spiel import Triggers
 
 
 @pytest.mark.parametrize(

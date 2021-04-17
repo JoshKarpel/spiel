@@ -18,6 +18,7 @@ from spiel.input import (
     exit,
     jump_to_slide,
     next_slide,
+    open_repl,
     previous_slide,
     slide_mode,
 )
@@ -58,7 +59,7 @@ def test_kill(three_slide_state: State) -> None:
 
 @given(
     input_handlers=st.lists(
-        st.sampled_from(list(set(INPUT_HANDLERS.values()) - {exit, jump_to_slide}))
+        st.sampled_from(list(set(INPUT_HANDLERS.values()) - {exit, jump_to_slide, open_repl}))
     )
 )
 @settings(max_examples=1_000 if os.getenv("CI") else 100)
@@ -69,7 +70,8 @@ def test_input_sequences_dont_crash(input_handlers: List[InputHandler]) -> None:
             name="deck",
             slides=[
                 Slide(
-                    Text(f"This is slide {n + 1}"), title="".join(sample(string.ascii_letters, 30))
+                    content=Text(f"This is slide {n + 1}"),
+                    title="".join(sample(string.ascii_letters, 30)),
                 )
                 for n in range(30)
             ],

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from click._termui_impl import Editor
+from click._termui_impl import Editor  # type: ignore
 from rich.align import Align
 from rich.console import Console, ConsoleRenderable, RenderGroup
 from rich.padding import Padding
@@ -96,7 +96,7 @@ def version_details(console: Console) -> ConsoleRenderable:
     repl = "IPython" if has_ipython() else "builtin"
     table.add_row(
         "REPL",
-        Text(repl, style="green" if repl == "IPython" else None),
+        Text(repl, style=Style(color="green" if repl == "IPython" else None)),
         end_section=True,
     )
 

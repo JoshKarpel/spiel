@@ -17,3 +17,9 @@ To see what Spiel can do, install it (`pip install spiel`), then run this comman
 ```bash
 $ spiel demo present
 ```
+
+
+## Supported Systems
+
+Spiel relies on underlying terminal mechanisms that are only available on POSIX systems (e.g., Linux and MacOS).
+If you're on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/) to run Spiel.

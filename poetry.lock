@@ -141,7 +141,7 @@ python-versions = "*"
 
 [[package]]
 name = "hypothesis"
-version = "6.9.2"
+version = "6.10.0"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -830,8 +830,8 @@ filelock = [
     {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
 ]
 hypothesis = [
-    {file = "hypothesis-6.9.2-py3-none-any.whl", hash = "sha256:2da20c8a7d2185045961186cfe8da8bde795c8ca51ec6f9674da01d568f0da82"},
-    {file = "hypothesis-6.9.2.tar.gz", hash = "sha256:752ad0b7f26ece6a9f3688b1adfb29740fd631476fc4ea2db33b3d331f01ff2f"},
+    {file = "hypothesis-6.10.0-py3-none-any.whl", hash = "sha256:1a00a4e3ef40041b2c072deab9c71e307bc5354bb4a102ef22ae8c23fa8b3970"},
+    {file = "hypothesis-6.10.0.tar.gz", hash = "sha256:9f8c130b1278d30cb3cc64e3a4aacb88c4906155772beed90ce33e06794e1ee0"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},

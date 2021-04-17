@@ -10,7 +10,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 from typer import Argument, Exit, Option, Typer
 
-from spiel.constants import PACKAGE_NAME
+from spiel.constants import PACKAGE_NAME, __version__
 from spiel.help import version_details
 from spiel.load import DeckReloader, DeckWatcher, load_deck
 from spiel.modes import Mode
@@ -95,13 +95,21 @@ def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, p
 
 
 @app.command()
-def version() -> None:
+def version(
+    plain: bool = Option(
+        default=False,
+        help=f"Print only {PACKAGE_NAME}'s version.",
+    )
+) -> None:
     """
     Display version and debugging information.
     """
     console = Console()
 
-    console.print(version_details(console))
+    if plain:
+        print(__version__)
+    else:
+        console.print(version_details(console))
 
 
 demo = Typer(

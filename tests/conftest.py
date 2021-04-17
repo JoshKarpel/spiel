@@ -6,7 +6,7 @@ import pytest
 from rich.console import Console
 
 from spiel import Deck
-from spiel.slides import Slide
+from spiel.slide import Slide
 from spiel.state import State
 
 

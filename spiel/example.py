@@ -55,19 +55,20 @@ def example_panels(example: Example) -> ConsoleRenderable:
     return root
 
 
+ExampleLayout = Callable[["Example"], ConsoleRenderable]
+
+
 @dataclass
 class Example(Presentable):
     source: str = ""
     command: Sequence[str] = (sys.executable,)
     name: str = "example.py"
     language: str = "python"
-    _layout: Callable[[Example], ConsoleRenderable] = example_panels
+    _layout: ExampleLayout = example_panels
     _cache: Optional[CachedExample] = None
 
-    def layout(
-        self, function: Callable[[Example], ConsoleRenderable]
-    ) -> Callable[[Example], ConsoleRenderable]:
-        self._layout = function
+    def layout(self, function: ExampleLayout) -> ExampleLayout:
+        self._layout = function  # type: ignore
         return function
 
     @property
@@ -108,4 +109,4 @@ class Example(Presentable):
         elif self._cache.trigger_number != len(triggers):
             self._cache = CachedExample(len(triggers), self.source, self.execute())
 
-        return self._layout(self)
+        return self._layout(self, **self.get_render_kwargs(function=self._layout, triggers=triggers))  # type: ignore

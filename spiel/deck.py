@@ -9,7 +9,7 @@ from typing import Callable, Iterator, List, Sequence
 
 from .example import Example
 from .presentable import Presentable
-from .slides import MakeRenderable, Slide
+from .slide import MakeRenderable, Slide
 
 
 @dataclass

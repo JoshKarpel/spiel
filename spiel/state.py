@@ -42,9 +42,13 @@ class State:
         self.reset_trigger()
 
     def next_slide(self, move: int = 1) -> None:
+        if self.current_slide_idx == len(self.deck) - 1:
+            return
         self.current_slide_idx += move
 
     def previous_slide(self, move: int = 1) -> None:
+        if self.current_slide_idx == 0:
+            return
         self.current_slide_idx -= move
 
     def jump_to_slide(self, idx: int) -> None:

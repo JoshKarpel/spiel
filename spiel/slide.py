@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import inspect
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Union
+from typing import Callable, Union
 
 from rich.console import ConsoleRenderable
 from rich.text import Text
@@ -20,12 +19,6 @@ class Slide(Presentable):
 
     def render(self, triggers: Triggers) -> ConsoleRenderable:
         if callable(self.content):
-            signature = inspect.signature(self.content)
-
-            kwargs: Dict[str, Any] = {}
-            if "triggers" in signature.parameters:
-                kwargs["triggers"] = triggers
-
-            return self.content(**kwargs)
+            return self.content(**self.get_render_kwargs(function=self.content, triggers=triggers))
         else:
             return self.content

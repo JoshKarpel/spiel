@@ -48,5 +48,5 @@ jobs:
         labels: |
           org.opencontainers.image.source=https://github.com/${{ github.repository }}
         tags: |
-          ${{ steps.set-meta.outputs.repo }}:latest
-          ${{ steps.set-meta.outputs.repo }}:${{ steps.set-meta.outputs.tag }}
+          ghcr.io/${{ steps.set-meta.outputs.repo }}:latest
+          ghcr.io/${{ steps.set-meta.outputs.repo }}:${{ steps.set-meta.outputs.tag }}

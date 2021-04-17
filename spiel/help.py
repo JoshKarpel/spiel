@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from click._termui_impl import Editor
 from rich.align import Align
 from rich.console import Console, ConsoleRenderable, RenderGroup
 from rich.padding import Padding
@@ -8,7 +9,7 @@ from rich.table import Column, Table
 from rich.text import Text
 
 from spiel.constants import PACKAGE_NAME, __python_version__, __rich_version__, __version__
-from spiel.input import INPUT_HANDLER_HELP, SpecialCharacters
+from spiel.input import INPUT_HANDLER_HELP, SpecialCharacters, has_ipython
 from spiel.modes import Mode
 from spiel.state import State
 
@@ -71,6 +72,7 @@ def version_details(console: Console) -> ConsoleRenderable:
     table.add_row(f"{PACKAGE_NAME.capitalize()} Version", __version__)
     table.add_row("Rich Version", __rich_version__)
     table.add_row("Python Version", __python_version__, end_section=True)
+
     table.add_row(
         "Color System",
         Text(
@@ -81,6 +83,20 @@ def version_details(console: Console) -> ConsoleRenderable:
     table.add_row(
         "Console Dimensions",
         Text(f"{console.width} cells wide, {console.height} cells tall"),
+        end_section=True,
+    )
+
+    editor = Editor().get_editor()
+    table.add_row(
+        "Editor",
+        Text(editor),
+        end_section=True,
+    )
+
+    repl = "IPython" if has_ipython() else "builtin"
+    table.add_row(
+        "REPL",
+        Text(repl, style="green" if repl == "IPython" else None),
         end_section=True,
     )
 

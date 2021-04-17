@@ -1,4 +1,5 @@
 import inspect
+import os
 import shutil
 import socket
 from datetime import datetime
@@ -371,7 +372,7 @@ def _(example, triggers):
     ## Editing Examples
 
     Examples can be modified during the talk.
-    Press `e` to open your `$EDITOR` on the example code.
+    Press `e` to open your `$EDITOR` (`{os.getenv("EDITOR", "not set")}`) on the example code.
     Save your changes and exit to come back to the presentation with your updated code.
     You can then trigger the example again to run it with the new code.
     """

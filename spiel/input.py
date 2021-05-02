@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import code
 import contextlib
 import os
@@ -13,12 +14,6 @@ from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
 from pathlib import Path
-import IPython
-
-import asyncio
-from nbterm import Notebook
-from traitlets.config import Config
-
 from typing import (
     Any,
     Callable,
@@ -33,9 +28,12 @@ from typing import (
     Union,
 )
 
+import IPython
 import typer
+from nbterm import Notebook
 from rich.control import Control
 from rich.text import Text
+from traitlets.config import Config
 from typer import Exit
 
 from .constants import PACKAGE_NAME
@@ -366,6 +364,7 @@ def edit_example(state: State) -> None:
             s.source = typer.edit(text=s.source, extension=Path(s.name).suffix, require_save=False)
             s.clear_cache()
 
+
 @input_handler(
     "i",
     name="Start REPL",
@@ -387,7 +386,6 @@ def open_repl(state: State) -> None:
             start_no_echo(sys.stdin)
 
 
-
 @input_handler(
     "n",
     name="Open Notebook",
@@ -405,7 +403,6 @@ def open_notebook(state: State) -> None:
             nb.show()
         finally:
             start_no_echo(sys.stdin)
-
 
 
 @input_handler(

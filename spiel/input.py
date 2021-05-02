@@ -13,6 +13,12 @@ from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
 from pathlib import Path
+import IPython
+
+import asyncio
+from nbterm import Notebook
+from traitlets.config import Config
+
 from typing import (
     Any,
     Callable,
@@ -360,25 +366,11 @@ def edit_example(state: State) -> None:
             s.source = typer.edit(text=s.source, extension=Path(s.name).suffix, require_save=False)
             s.clear_cache()
 
-
-def has_ipython() -> bool:
-    try:
-        import IPython
-
-        return True
-    except ImportError:
-        return False
-
-
-def has_ipython_help_message() -> str:
-    return "[green]it is[/green]" if has_ipython() else "[red]it is not[/red]"
-
-
 @input_handler(
-    "l",
-    name="Open REPL",
+    "i",
+    name="Start REPL",
     modes=NOT_HELP,
-    help=f"Open your REPL. Uses [bold]IPython[/bold] if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
+    help=f"Start an IPython REPL.",
 )
 def open_repl(state: State) -> None:
     with suspend_live(state):
@@ -386,19 +378,34 @@ def open_repl(state: State) -> None:
         state.console.print(Control.clear())
         state.console.print(Control.move_to(0, 0))
 
+        c = Config()
+        c.InteractiveShellEmbed.colors = "Neutral"
+
         try:
-            import IPython
-            from traitlets.config import Config
-
-            c = Config()
-
-            c.InteractiveShellEmbed.colors = "Neutral"
-
             IPython.embed(config=c)
-        except ImportError:
-            code.InteractiveConsole().interact()
+        finally:
+            start_no_echo(sys.stdin)
 
-        start_no_echo(sys.stdin)
+
+
+@input_handler(
+    "n",
+    name="Open Notebook",
+    modes=NOT_HELP,
+    help=f"Open nbterm.",
+)
+def open_notebook(state: State) -> None:
+    with suspend_live(state):
+        reset_tty(sys.stdin)
+        state.console.print(Control.clear())
+        state.console.print(Control.move_to(0, 0))
+
+        try:
+            nb = Notebook("foo.ipynb")
+            nb.show()
+        finally:
+            start_no_echo(sys.stdin)
+
 
 
 @input_handler(

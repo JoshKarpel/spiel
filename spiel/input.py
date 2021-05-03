@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import asyncio
-import code
 import contextlib
 import os
 import string
@@ -14,6 +12,7 @@ from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
 from pathlib import Path
+from textwrap import dedent
 from typing import (
     Any,
     Callable,
@@ -186,6 +185,10 @@ def handle_input(
     return handler(state)
 
 
+def normalize_help(help: str) -> str:
+    return dedent(help).replace("\n", " ").strip()
+
+
 def input_handler(
     *characters: Character,
     modes: Optional[Iterable[Mode]] = None,
@@ -207,7 +210,7 @@ def input_handler(
         INPUT_HANDLER_HELP.append(
             InputHandlerHelpInfo(
                 name=name or " ".join(word.capitalize() for word in func.__name__.split("_")),
-                help=help,
+                help=normalize_help(help),
                 characters=characters,
                 modes=target_modes,
             )
@@ -286,7 +289,11 @@ def down_grid_row(state: State) -> None:
 @input_handler(
     "j",
     modes=NOT_HELP,
-    help="Press the action key, then a slide number (e.g., [bold]17[/bold]), then press [bold]enter[/bold], to jump to that slide.",
+    help="""\
+    Press the action key, then a slide number (e.g., [bold]17[/bold]), then press [bold]enter[/bold], to jump to that slide.
+    If the slide number is unambiguous, the jump will happen without needing to press [bold]enter[/bold]
+    (e.g., you enter [bold]3[/bold] and there are only [bold]8[/bold] slides).
+    """,
 )
 def jump_to_slide(state: State) -> None:
     slide_number = ""
@@ -369,7 +376,7 @@ def edit_example(state: State) -> None:
     "i",
     name="Start REPL",
     modes=NOT_HELP,
-    help=f"Start an IPython REPL.",
+    help=f"Start an [link=https://ipython.readthedocs.io/en/stable/overview.html]IPython REPL[/link].",
 )
 def open_repl(state: State) -> None:
     with suspend_live(state):
@@ -390,7 +397,7 @@ def open_repl(state: State) -> None:
     "n",
     name="Open Notebook",
     modes=NOT_HELP,
-    help=f"Open nbterm.",
+    help=f"Open a Jupyter Notebook in your terminal using [link=https://github.com/davidbrochart/nbterm]nbterm[/link].",
 )
 def open_notebook(state: State) -> None:
     with suspend_live(state):
@@ -398,11 +405,18 @@ def open_notebook(state: State) -> None:
         state.console.print(Control.clear())
         state.console.print(Control.move_to(0, 0))
 
+        save_path = state.tmp_dir / f"{id(state.current_slide)}.ipynb"
+
+        nb = Notebook(state.current_slide.notebook or save_path)
+
+        state.current_slide.notebook = save_path
+
         try:
-            nb = Notebook("foo.ipynb")
             nb.show()
         finally:
             start_no_echo(sys.stdin)
+
+        nb.save(save_path)
 
 
 @input_handler(

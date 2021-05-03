@@ -69,9 +69,17 @@ def present(
 
 
 def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, poll: bool) -> None:
+    console = Console()
+
+    try:
+        deck = load_deck(path)
+    except FileNotFoundError as e:
+        console.print(f"Error: {e}")
+        raise Exit(code=1)
+
     state = State(
-        console=Console(),
-        deck=load_deck(path),
+        console=console,
+        deck=deck,
         profiling=profiling,
     )
 
@@ -85,7 +93,7 @@ def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, p
     )
 
     try:
-        with watcher:
+        with state, watcher:
             present_deck(state)
     except KeyboardInterrupt:
         raise Exit(code=0)

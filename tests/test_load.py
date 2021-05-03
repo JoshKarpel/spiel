@@ -42,10 +42,10 @@ def test_reloader_triggers_when_file_modified(
 
         file_with_empty_deck.write_text(
             dedent(
-                """\
+                f"""\
     from spiel import Deck
 
-    DECK = Deck(name="modified")
+    {DECK} = Deck(name="modified")
     """
             )
         )
@@ -77,10 +77,10 @@ def test_reloader_captures_error_in_message(
 
         file_with_empty_deck.write_text(
             dedent(
-                """\
+                f"""\
     from spiel import Deck
 
-    DECK = Deck(name="modified")
+    {DECK} = Deck(name="modified")
     foobar
     """
             )

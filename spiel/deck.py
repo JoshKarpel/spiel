@@ -4,8 +4,9 @@ import inspect
 import sys
 from collections.abc import Collection
 from dataclasses import dataclass, field
+from pathlib import Path
 from textwrap import dedent
-from typing import Callable, Iterator, List, Sequence
+from typing import Callable, Iterator, List, Optional, Sequence
 
 from .example import Example
 from .presentable import Presentable
@@ -36,9 +37,14 @@ class Deck(Collection):
     def slide(
         self,
         title: str = "",
+        notebook: Optional[Path] = None,
     ) -> Callable[[MakeRenderable], Slide]:
         def slideify(content: MakeRenderable) -> Slide:
-            slide = Slide(content=content, title=title)
+            slide = Slide(
+                title=title,
+                notebook=notebook,
+                content=content,
+            )
             self.add_slides(slide)
             return slide
 
@@ -50,11 +56,13 @@ class Deck(Collection):
         command: Sequence[str] = (sys.executable,),
         name: str = "example.py",
         language: str = "python",
+        notebook: Optional[Path] = None,
     ) -> Callable[[Callable], Example]:
         def exampleify(example: Callable) -> Example:
             ex = Example(
-                source=get_function_body(example),
                 title=title,
+                notebook=notebook,
+                source=get_function_body(example),
                 command=command,
                 name=name,
                 language=language,

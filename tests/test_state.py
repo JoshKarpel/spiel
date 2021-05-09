@@ -94,3 +94,9 @@ def test_clear_message(three_slide_state: State) -> None:
     three_slide_state.clear_message()
 
     assert three_slide_state.message == Text("")
+
+
+def test_tmp_dir_lifecycle(three_slide_state: State) -> None:
+    with three_slide_state:
+        assert three_slide_state.tmp_dir.exists()
+    assert not three_slide_state.tmp_dir.exists()

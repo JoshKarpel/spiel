@@ -9,7 +9,7 @@ from rich.table import Column, Table
 from rich.text import Text
 
 from spiel.constants import PACKAGE_NAME, __python_version__, __rich_version__, __version__
-from spiel.input import INPUT_HANDLER_HELP, SpecialCharacters, has_ipython
+from spiel.input import INPUT_HANDLER_HELP, SpecialCharacters
 from spiel.modes import Mode
 from spiel.state import State
 
@@ -90,13 +90,6 @@ def version_details(console: Console) -> ConsoleRenderable:
     table.add_row(
         "Editor",
         Text(editor),
-        end_section=True,
-    )
-
-    repl = "IPython" if has_ipython() else "builtin"
-    table.add_row(
-        "REPL",
-        Text(repl, style=Style(color="green" if repl == "IPython" else None)),
         end_section=True,
     )
 

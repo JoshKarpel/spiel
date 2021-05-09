@@ -6,3 +6,4 @@ class Mode(str, Enum):
     SLIDE = "slide"
     DECK = "deck"
     HELP = "help"
+    OPTIONS = "options"

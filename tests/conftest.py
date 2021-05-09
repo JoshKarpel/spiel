@@ -6,6 +6,7 @@ import pytest
 from rich.console import Console
 
 from spiel import Deck
+from spiel.constants import DECK
 from spiel.slide import Slide
 from spiel.state import State
 
@@ -39,10 +40,10 @@ def three_slide_state(console: Console, three_slide_deck: Deck) -> State:
 @pytest.fixture
 def empty_deck_source() -> str:
     return dedent(
-        """\
+        f"""\
         from spiel import Deck
 
-        DECK = Deck(name="deck")
+        {DECK} = Deck(name="deck")
         """
     )
 

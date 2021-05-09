@@ -18,6 +18,7 @@ from spiel.input import (
     exit,
     jump_to_slide,
     next_slide,
+    open_notebook,
     open_repl,
     previous_slide,
     slide_mode,
@@ -59,7 +60,9 @@ def test_kill(three_slide_state: State) -> None:
 
 @given(
     input_handlers=st.lists(
-        st.sampled_from(list(set(INPUT_HANDLERS.values()) - {exit, jump_to_slide, open_repl}))
+        st.sampled_from(
+            list(set(INPUT_HANDLERS.values()) - {exit, jump_to_slide, open_repl, open_notebook})
+        )
     )
 )
 @settings(max_examples=1_000 if os.getenv("CI") else 100)

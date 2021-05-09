@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import code
 import contextlib
 import os
 import string
@@ -13,6 +12,7 @@ from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
 from pathlib import Path
+from textwrap import dedent
 from typing import (
     Any,
     Callable,
@@ -27,9 +27,12 @@ from typing import (
     Union,
 )
 
+import IPython
 import typer
+from nbterm import Notebook
 from rich.control import Control
 from rich.text import Text
+from traitlets.config import Config
 from typer import Exit
 
 from .constants import PACKAGE_NAME
@@ -182,6 +185,10 @@ def handle_input(
     return handler(state)
 
 
+def normalize_help(help: str) -> str:
+    return dedent(help).replace("\n", " ").strip()
+
+
 def input_handler(
     *characters: Character,
     modes: Optional[Iterable[Mode]] = None,
@@ -203,7 +210,7 @@ def input_handler(
         INPUT_HANDLER_HELP.append(
             InputHandlerHelpInfo(
                 name=name or " ".join(word.capitalize() for word in func.__name__.split("_")),
-                help=help,
+                help=normalize_help(help),
                 characters=characters,
                 modes=target_modes,
             )
@@ -239,6 +246,14 @@ def slide_mode(state: State) -> None:
 )
 def deck_mode(state: State) -> None:
     state.mode = Mode.DECK
+
+
+@input_handler(
+    "p",
+    help=f"Enter {Mode.OPTIONS} mode.",
+)
+def options_mode(state: State) -> None:
+    state.mode = Mode.OPTIONS
 
 
 @input_handler(
@@ -282,7 +297,11 @@ def down_grid_row(state: State) -> None:
 @input_handler(
     "j",
     modes=NOT_HELP,
-    help="Press the action key, then a slide number (e.g., [bold]17[/bold]), then press [bold]enter[/bold], to jump to that slide.",
+    help="""\
+    Press the action key, then a slide number (e.g., [bold]17[/bold]), then press [bold]enter[/bold], to jump to that slide.
+    If the slide number is unambiguous, the jump will happen without needing to press [bold]enter[/bold]
+    (e.g., you enter [bold]3[/bold] and there are only [bold]8[/bold] slides).
+    """,
 )
 def jump_to_slide(state: State) -> None:
     slide_number = ""
@@ -361,24 +380,11 @@ def edit_example(state: State) -> None:
             s.clear_cache()
 
 
-def has_ipython() -> bool:
-    try:
-        import IPython
-
-        return True
-    except ImportError:
-        return False
-
-
-def has_ipython_help_message() -> str:
-    return "[green]it is[/green]" if has_ipython() else "[red]it is not[/red]"
-
-
 @input_handler(
-    "l",
-    name="Open REPL",
+    "i",
+    name="Start REPL",
     modes=NOT_HELP,
-    help=f"Open your REPL. Uses [bold]IPython[/bold] if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
+    help=f"Start an [link=https://ipython.readthedocs.io/en/stable/overview.html]IPython REPL[/link].",
 )
 def open_repl(state: State) -> None:
     with suspend_live(state):
@@ -386,27 +392,39 @@ def open_repl(state: State) -> None:
         state.console.print(Control.clear())
         state.console.print(Control.move_to(0, 0))
 
+        c = Config()
+        c.InteractiveShellEmbed.colors = "Neutral"
+
         try:
-            import IPython
-            from traitlets.config import Config
-
-            c = Config()
-
-            c.InteractiveShellEmbed.colors = "Neutral"
-
             IPython.embed(config=c)
-        except ImportError:
-            code.InteractiveConsole().interact()
-
-        start_no_echo(sys.stdin)
+        finally:
+            start_no_echo(sys.stdin)
 
 
 @input_handler(
-    "p",
-    help="Toggle profiling information.",
+    "n",
+    name="Open Notebook",
+    modes=NOT_HELP,
+    help=f"Open a Jupyter Notebook in your terminal using [link=https://github.com/davidbrochart/nbterm]nbterm[/link].",
 )
-def toggle_profiling(state: State) -> None:
-    state.toggle_profiling()
+def open_notebook(state: State) -> None:
+    with suspend_live(state):
+        reset_tty(sys.stdin)
+        state.console.print(Control.clear())
+        state.console.print(Control.move_to(0, 0))
+
+        save_path = state.tmp_dir / f"{id(state.current_slide)}.ipynb"
+
+        nb = Notebook(state.current_slide.notebook or save_path)
+
+        state.current_slide.notebook = save_path
+
+        try:
+            nb.show()
+        finally:
+            start_no_echo(sys.stdin)
+
+        nb.save(save_path)
 
 
 @input_handler(

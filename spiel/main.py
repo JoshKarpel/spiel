@@ -10,12 +10,13 @@ from rich.syntax import Syntax
 from rich.text import Text
 from typer import Argument, Exit, Option, Typer
 
-from spiel.constants import PACKAGE_NAME, __version__
-from spiel.help import version_details
-from spiel.load import DeckReloader, DeckWatcher, load_deck
-from spiel.modes import Mode
-from spiel.present import present_deck
-from spiel.state import State
+from .constants import PACKAGE_NAME, __version__
+from .help import version_details
+from .load import DeckReloader, DeckWatcher, load_deck
+from .modes import Mode
+from .options import Options
+from .present import present_deck
+from .state import State
 
 THIS_DIR = Path(__file__).resolve().parent
 
@@ -49,10 +50,6 @@ def present(
         default=1,
         help="The slide number to start the presentation on.",
     ),
-    profiling: bool = Option(
-        default=False,
-        help="Whether to start presenting with profiling information enabled.",
-    ),
     watch: bool = Option(
         default=False,
         help="If enabled, reload the deck when the slide deck file changes.",
@@ -65,11 +62,12 @@ def present(
     """
     Present a deck.
     """
-    _present(path=path, mode=mode, slide=slide, profiling=profiling, watch=watch, poll=poll)
+    _present(path=path, mode=mode, slide=slide, watch=watch, poll=poll)
 
 
-def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, poll: bool) -> None:
+def _present(path: Path, mode: Mode, slide: int, watch: bool, poll: bool) -> None:
     console = Console()
+    options = Options()
 
     try:
         deck = load_deck(path)
@@ -80,7 +78,7 @@ def _present(path: Path, mode: Mode, slide: int, profiling: bool, watch: bool, p
     state = State(
         console=console,
         deck=deck,
-        profiling=profiling,
+        options=options,
     )
 
     state.mode = mode

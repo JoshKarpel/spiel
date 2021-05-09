@@ -15,6 +15,7 @@ from rich.text import Text
 from . import Deck
 from .constants import PACKAGE_NAME
 from .modes import Mode
+from .options import Options
 from .presentable import Presentable
 
 TextLike = Union[Text, Callable[[], Text]]
@@ -24,11 +25,11 @@ TextLike = Union[Text, Callable[[], Text]]
 class State:
     console: Console
     deck: Deck
+    options: Options
     _current_slide_idx: int = 0
     _mode: Mode = Mode.SLIDE
     _message: TextLike = Text("")
     trigger_times: List[float] = field(default_factory=list)
-    profiling: bool = False
 
     @property
     def mode(self) -> Mode:
@@ -94,10 +95,6 @@ class State:
     def reset_trigger(self) -> None:
         self.trigger_times.clear()
         self.trigger()
-
-    def toggle_profiling(self) -> bool:
-        self.profiling = not self.profiling
-        return self.profiling
 
     @cached_property
     def _tmp_dir(self) -> TemporaryDirectory:

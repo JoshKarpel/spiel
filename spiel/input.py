@@ -249,6 +249,14 @@ def deck_mode(state: State) -> None:
 
 
 @input_handler(
+    "p",
+    help=f"Enter {Mode.OPTIONS} mode.",
+)
+def options_mode(state: State) -> None:
+    state.mode = Mode.OPTIONS
+
+
+@input_handler(
     SpecialCharacters.Right,
     "f",
     modes=NOT_HELP,
@@ -417,14 +425,6 @@ def open_notebook(state: State) -> None:
             start_no_echo(sys.stdin)
 
         nb.save(save_path)
-
-
-@input_handler(
-    "p",
-    help="Toggle profiling information.",
-)
-def toggle_profiling(state: State) -> None:
-    state.toggle_profiling()
 
 
 @input_handler(

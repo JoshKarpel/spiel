@@ -6,10 +6,10 @@ from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
 
-from spiel.modes import Mode
-from spiel.rps import RPSCounter
-from spiel.state import State
-from spiel.utils import drop_nones, joinify
+from .modes import Mode
+from .rps import RPSCounter
+from .state import State
+from .utils import drop_nones, joinify
 
 
 @dataclass
@@ -37,7 +37,7 @@ class Footer:
                     style=Style(dim=True),
                     justify="right",
                 )
-                if self.state.profiling
+                if self.state.options.profiling
                 else None,
                 Column(
                     style=Style(dim=True),
@@ -66,7 +66,7 @@ class Footer:
                 ),
                 self.state.message,
                 Text(f"{self.rps_counter.renders_per_second() :.2f} RPS")
-                if self.state.profiling
+                if self.state.options.profiling
                 else None,
                 now().format("YYYY-MM-DD hh:mm A"),
                 Text(

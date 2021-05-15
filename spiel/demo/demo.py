@@ -7,6 +7,7 @@ from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
 
+import numpy as np
 from rich.align import Align
 from rich.box import SQUARE
 from rich.color import Color, blend_rgb
@@ -20,6 +21,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 
 from spiel import Deck, Image, Options, Slide, __version__, example_panels
+from spiel.plot import Plot
 
 deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
 options = Options()
@@ -27,6 +29,9 @@ options = Options()
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
 NBTERM = "[nbterm](https://github.com/davidbrochart/nbterm)"
+UNIPLOT = "[Uniplot](https://github.com/olavolav/uniplot)"
+IPYTHON = "[IPython](https://ipython.readthedocs.io)"
+WSL = "[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/)"
 
 THIS_DIR = Path(__file__).resolve().parent
 
@@ -311,7 +316,7 @@ def watch():
 
     `$ spiel present path/to/deck.py --watch`
 
-    If you're on a system without inotify support (e.g., Windows Subsystem for Linux), you may need to use the `--poll` option instead.
+    If you're on a system without inotify support (e.g., {WSL}), you may need to use the `--poll` option instead.
     """
     )
     return Markdown(markup, justify="center")
@@ -324,6 +329,8 @@ def image():
     ## Images
 
     {SPIEL} can display images... sort of!
+
+    Spiel includes an `Image` widget that can render images by interpolating pixel values.
 
     If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
     If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
@@ -338,6 +345,54 @@ def image():
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
         Layout(Image.from_file(THIS_DIR / "img.jpg")),
+    )
+
+    return root
+
+
+@deck.slide(title="Plots")
+def plots(triggers):
+    markup = dedent(
+        f"""\
+        ## Plots
+
+        {SPIEL} can display plots... sort of!
+
+        Spiel includes a `Plot` widget that uses {UNIPLOT} to render plots.
+
+        You can even make animated plots by using triggers! Try triggering this slide.
+        """
+    )
+
+    x = np.linspace(-3, 3, 1000)
+    hermite = 0.9 * np.polynomial.hermite.hermval(
+        x,
+        c=np.array([0, 2, -1, 3, -1, 1])
+        + (0.1 * np.sin(triggers.time_since_first_trigger) if len(triggers) > 1 else 0),
+    )
+    upper_plot = Plot(
+        xs=x, ys=hermite, title="Some Weird Hermite Polynomial", y_min=-100, y_max=100
+    )
+
+    theta = np.linspace(-3 * np.pi, 3 * np.pi, 1000)
+    theta += (
+        (1 if len(triggers) % 2 == 1 else -1)  # move forwards or backwards
+        * (1 if len(triggers) > 1 else 0)  # only move after the first trigger
+        * triggers.time_since_last_trigger
+    )
+    cos = np.cos(theta)
+    lower_plot = Plot(xs=[theta, theta], ys=[cos, -1.2 * cos], title="[cos(x), -1.2 * cos(x)]")
+
+    lower = Layout()
+    lower.split_column(
+        Layout(upper_plot),
+        Layout(lower_plot),
+    )
+
+    root = Layout()
+    root.split_row(
+        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
+        lower,
     )
 
     return root
@@ -397,7 +452,10 @@ def _(example, triggers):
     )
     markdown = Markdown(markup, justify="center")
 
-    root.split_row(Layout(markdown), example_panels(example))
+    root.split_row(
+        Layout(Padding(markdown, pad=(0, 2))),
+        example_panels(example),
+    )
 
     return root
 
@@ -413,7 +471,7 @@ def notebooks():
         just isn't interactive enough.
 
         To provide a more interactive experience,
-        {SPIEL} lets you open an IPython REPL on any slide by pressing `i`.
+        {SPIEL} lets you open an {IPYTHON} REPL on any slide by pressing `i`.
 
         When you exit the REPL (by pressing `ctrl-d` or executing `exit`),
         you'll be back at the same point in your presentation.

@@ -43,7 +43,7 @@ def example_panels(example: Example) -> ConsoleRenderable:
             Align.center(
                 Panel(
                     example.output,
-                    title=example.display_command,
+                    title=f"$ {example.display_command}",
                     title_align="left",
                     expand=False,
                 )

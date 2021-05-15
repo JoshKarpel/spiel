@@ -12,10 +12,11 @@ from typer import Argument, Exit, Option, Typer
 
 from .constants import PACKAGE_NAME, __version__
 from .help import version_details
-from .load import DeckReloader, DeckWatcher, load_deck
+from .load import DeckWatcher, load_deck_and_options
 from .modes import Mode
 from .options import Options
 from .present import present_deck
+from .reloader import DeckReloader
 from .state import State
 
 THIS_DIR = Path(__file__).resolve().parent
@@ -67,10 +68,9 @@ def present(
 
 def _present(path: Path, mode: Mode, slide: int, watch: bool, poll: bool) -> None:
     console = Console()
-    options = Options()
 
     try:
-        deck = load_deck(path)
+        deck, options = load_deck_and_options(path)
     except FileNotFoundError as e:
         console.print(Text(f"Error: {e}", style=Style(color="red")))
         raise Exit(code=1)

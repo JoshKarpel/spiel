@@ -68,7 +68,7 @@ class Footer:
                 Text(f"{self.rps_counter.renders_per_second() :.2f} RPS")
                 if self.state.options.profiling
                 else None,
-                now().format("YYYY-MM-DD hh:mm A"),
+                now().format(self.state.options.footer_time_format),
                 Text(
                     f"[{self.state.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.state.deck)}]"
                 )

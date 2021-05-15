@@ -16,9 +16,10 @@ from .repls import REPLS
 
 @dataclass
 class Options:
-    profiling: bool = False
     repl: str = "ipython"
     notebook: str = "nbterm"
+    footer_time_format: str = "YYYY-MM-DD hh:mm A"
+    profiling: bool = False
 
     def __post_init__(self) -> None:
         if self.repl not in REPLS:
@@ -54,8 +55,9 @@ class Options:
     def __rich__(self) -> ConsoleRenderable:
         table = Table(
             Column("Option"),
-            Column("Type"),
+            Column("Type", justify="center"),
             Column("Value"),
+            show_lines=True,
         )
 
         fields_by_name = {field.name: field for field in fields(self)}

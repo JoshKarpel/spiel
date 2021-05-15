@@ -81,9 +81,9 @@ def get_function_body(function: Callable) -> str:
         if prev_indent is None:
             prev_indent = count_leading_whitespace(line)
         elif count_leading_whitespace(line) > prev_indent:
-            lines = lines[idx:]
+            return dedent("".join(lines[idx:]))
 
-    return dedent("".join(lines))
+    raise ValueError(f"Could not extract function body from {function}")
 
 
 def count_leading_whitespace(s: str) -> int:

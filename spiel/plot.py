@@ -1,5 +1,5 @@
 import re
-from typing import Any, Iterable, Optional, Sequence, Union
+from typing import Any, Iterable, Sequence, Union
 
 import numpy as np
 import uniplot

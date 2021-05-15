@@ -27,20 +27,19 @@ from typing import (
     Union,
 )
 
-import IPython
 import typer
-from nbterm import Notebook
 from rich.control import Control
 from rich.text import Text
 from toml import TomlDecodeError
-from traitlets.config import Config
 from typer import Exit
 
 from .constants import EDITOR, PACKAGE_NAME
 from .example import Example
-from .exceptions import DuplicateInputHandler
+from .exceptions import DuplicateInputHandler, InvalidOptionValue
 from .modes import Mode
+from .notebooks import NOTEBOOKS
 from .options import Options
+from .repls import REPLS
 from .state import State
 
 LFLAG = 3
@@ -200,7 +199,7 @@ def input_handler(
 ) -> InputHandlerDecorator:
     target_modes = list(modes or list(Mode))
 
-    def decorator(func: InputHandler) -> InputHandler:
+    def registrar(func: InputHandler) -> InputHandler:
         for character, mode in product(characters, target_modes):
             key: InputHandlerKey = (character, mode)
             # Don't allow duplicate handlers to be registered inside this module,
@@ -222,7 +221,7 @@ def input_handler(
 
         return func
 
-    return decorator
+    return registrar
 
 
 NOT_HELP = [Mode.SLIDE, Mode.DECK]
@@ -269,14 +268,20 @@ def edit_options(state: State) -> None:
     with suspend_live(state):
         new_toml = state.options.as_toml()
         while True:
-            new_toml = _strip_toml_comments(
-                typer.edit(text=new_toml, extension=".toml", require_save=False)
-            )
+            new_toml = _clean_toml(typer.edit(text=new_toml, extension=".toml", require_save=False))
             try:
                 state.options = Options.from_toml(new_toml)
                 return
             except TomlDecodeError as e:
                 new_toml = f"{new_toml}\n\n# Parse Error: {e}\n"
+            except InvalidOptionValue as e:
+                new_toml = f"{new_toml}\n\n# Invalid Option Value: {e}\n"
+            except Exception as e:
+                new_toml = f"{new_toml}\n\n# Error: {e}\n"
+
+
+def _clean_toml(s: str) -> str:
+    return "\n".join(line for line in s.splitlines() if (line and not line.startswith("#")))
 
 
 @input_handler(
@@ -405,10 +410,6 @@ def edit_example(state: State) -> None:
             example.clear_cache()
 
 
-def _strip_toml_comments(s: str) -> str:
-    return "".join(line for line in s.splitlines(keepends=True) if not line.startswith("#"))
-
-
 @input_handler(
     "i",
     name="Start REPL",
@@ -421,11 +422,8 @@ def open_repl(state: State) -> None:
         state.console.print(Control.clear())
         state.console.print(Control.move_to(0, 0))
 
-        c = Config()
-        c.InteractiveShellEmbed.colors = "Neutral"
-
         try:
-            IPython.embed(config=c)
+            REPLS[state.options.repl]()
         finally:
             start_no_echo(sys.stdin)
 
@@ -442,18 +440,10 @@ def open_notebook(state: State) -> None:
         state.console.print(Control.clear())
         state.console.print(Control.move_to(0, 0))
 
-        save_path = state.tmp_dir / f"{id(state.current_slide)}.ipynb"
-
-        nb = Notebook(state.current_slide.notebook or save_path)
-
-        state.current_slide.notebook = save_path
-
         try:
-            nb.show()
+            NOTEBOOKS[state.options.notebook](state)
         finally:
             start_no_echo(sys.stdin)
-
-        nb.save(save_path)
 
 
 @input_handler(

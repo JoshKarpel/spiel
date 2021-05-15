@@ -8,12 +8,24 @@ from rich.console import ConsoleRenderable
 from rich.padding import Padding
 from rich.table import Column, Table
 
-from spiel.constants import PACKAGE_NAME
+from .constants import PACKAGE_NAME
+from .exceptions import InvalidOptionValue
+from .notebooks import NOTEBOOKS
+from .repls import REPLS
 
 
 @dataclass
 class Options:
     profiling: bool = False
+    repl: str = "ipython"
+    notebook: str = "nbterm"
+
+    def __post_init__(self) -> None:
+        if self.repl not in REPLS:
+            raise InvalidOptionValue(f"repl must be one of: {set(REPLS.keys())}")
+
+        if self.notebook not in NOTEBOOKS:
+            raise InvalidOptionValue(f"notebook must be one of: {set(NOTEBOOKS.keys())}")
 
     def as_dict(self) -> Mapping[str, Any]:
         return asdict(self)
@@ -41,12 +53,15 @@ class Options:
 
     def __rich__(self) -> ConsoleRenderable:
         table = Table(
-            Column("option"),
-            Column("value"),
+            Column("Option"),
+            Column("Type"),
+            Column("Value"),
         )
 
+        fields_by_name = {field.name: field for field in fields(self)}
+
         for key, value in self.as_dict().items():
-            table.add_row(key, str(value))
+            table.add_row(key, fields_by_name[key].type.__name__, str(value))
 
         return Padding(
             Align.center(table),

@@ -12,3 +12,7 @@ class UnknownModeError(SpielException):
 
 class NoDeckFound(SpielException):
     pass
+
+
+class InvalidOptionValue(SpielException):
+    pass

@@ -32,13 +32,9 @@ COLOR_MAP = {
 class Plot:
     def __init__(
         self,
-        xs: Optional[Plottable] = None,
-        ys: Optional[Plottable] = None,
-        **options: Any,
+        **plot_args: Any,
     ) -> None:
-        self.xs = xs
-        self.ys = ys if ys is not None else []
-        self.options = options
+        self.plot_args = plot_args
 
     def _ansi_to_text(self, s: str) -> Text:
         pieces = []
@@ -62,22 +58,23 @@ class Plot:
         return Text("", no_wrap=True).join(pieces)
 
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> Iterable[Segment]:
-        if self.options.get("height") is None and options.height is None:
+        if self.plot_args.get("height") is None and options.height is None:
             height = None
         else:
+            # 5 = title + top bar + bottom bar + bottom axis labels + 1
             height = max(
-                (options.height - 5) if options.height else 1, self.options.get("height", 1)
+                (options.height - 5) if options.height else 1, self.plot_args.get("height", 1)
             )
 
-        plot_options = {
-            **self.options,
+        plot_args = {
+            **self.plot_args,
             **dict(
                 height=height,
-                width=max(options.max_width - 10, self.options.get("width", 1)),
+                width=max(options.max_width - 10, self.plot_args.get("width", 1)),
             ),
         }
 
-        plot = "\n".join(uniplot.plot_to_string(xs=self.xs, ys=self.ys, **plot_options))
+        plot = "\n".join(uniplot.plot_to_string(**plot_args))
 
         text = self._ansi_to_text(plot)
 

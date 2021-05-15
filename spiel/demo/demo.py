@@ -368,20 +368,15 @@ def plots(triggers):
     hermite = 0.9 * np.polynomial.hermite.hermval(
         x,
         c=np.array([0, 2, -1, 3, -1, 1])
-        + (0.1 * np.sin(triggers.time_since_first_trigger) if len(triggers) > 1 else 0),
+        + (0.1 * np.sin(triggers.time_since_last_trigger) if len(triggers) > 1 else 0),
     )
-    upper_plot = Plot(
-        xs=x, ys=hermite, title="Some Weird Hermite Polynomial", y_min=-100, y_max=100
-    )
+    upper_plot = Plot(xs=x, ys=hermite, title="A Hermite Polynomial", y_min=-100, y_max=100)
 
     theta = np.linspace(-3 * np.pi, 3 * np.pi, 1000)
-    theta += (
-        (1 if len(triggers) % 2 == 1 else -1)  # move forwards or backwards
-        * (1 if len(triggers) > 1 else 0)  # only move after the first trigger
-        * triggers.time_since_last_trigger
-    )
-    cos = np.cos(theta)
-    lower_plot = Plot(xs=[theta, theta], ys=[cos, -1.2 * cos], title="[cos(x), -1.2 * cos(x)]")
+    phase = (1 if len(triggers) > 1 else 0) * triggers.time_since_last_trigger
+    cos = np.cos(theta + phase)
+    sin = 1.3 * np.sin(theta + phase)
+    lower_plot = Plot(xs=[theta, theta], ys=[cos, sin], title="[cos(x), 1.3 * sin(x)]")
 
     lower = Layout()
     lower.split_column(

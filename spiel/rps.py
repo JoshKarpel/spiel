@@ -2,7 +2,7 @@ from collections import deque
 from time import monotonic
 from typing import Deque, Optional
 
-from spiel.constants import TARGET_RPS
+from .constants import TARGET_RPS
 
 
 class RPSCounter:

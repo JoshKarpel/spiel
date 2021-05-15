@@ -15,10 +15,10 @@ from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
 
-from spiel import Deck
-from spiel.constants import DECK
-from spiel.exceptions import NoDeckFound
-from spiel.state import State
+from .constants import DECK
+from .deck import Deck
+from .exceptions import NoDeckFound
+from .state import State
 
 
 def load_deck(deck_path: Path) -> Deck:
@@ -26,7 +26,9 @@ def load_deck(deck_path: Path) -> Deck:
     spec = importlib.util.spec_from_file_location(module_name, deck_path)
 
     if spec is None:
-        raise FileNotFoundError(f"{deck_path} does not appear to be an importable Python module.")
+        raise FileNotFoundError(
+            f"{deck_path.resolve()} does not appear to be an importable Python module."
+        )
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
@@ -34,7 +36,7 @@ def load_deck(deck_path: Path) -> Deck:
 
     try:
         return getattr(module, DECK)
-    except AttributeError as e:
+    except AttributeError:
         raise NoDeckFound(f"The module at {deck_path} does not have an attribute named {DECK}.")
 
 

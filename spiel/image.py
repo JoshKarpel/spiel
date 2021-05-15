@@ -12,7 +12,7 @@ from rich.segment import Segment
 from rich.style import Style
 from rich.text import Text
 
-from spiel.utils import chunks
+from .utils import chunks
 
 
 class ImageSize(NamedTuple):

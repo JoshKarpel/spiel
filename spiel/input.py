@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import code
 import contextlib
-import os
+import inspect
 import string
 import sys
 import termios
@@ -13,6 +12,7 @@ from enum import Enum, unique
 from io import UnsupportedOperation
 from itertools import product
 from pathlib import Path
+from textwrap import dedent
 from typing import (
     Any,
     Callable,
@@ -30,12 +30,16 @@ from typing import (
 import typer
 from rich.control import Control
 from rich.text import Text
+from toml import TomlDecodeError
 from typer import Exit
 
-from .constants import PACKAGE_NAME
+from .constants import EDITOR, PACKAGE_NAME
 from .example import Example
-from .exceptions import DuplicateInputHandler
+from .exceptions import DuplicateInputHandler, InvalidOptionValue
 from .modes import Mode
+from .notebooks import NOTEBOOKS
+from .options import Options
+from .repls import REPLS
 from .state import State
 
 LFLAG = 3
@@ -182,6 +186,10 @@ def handle_input(
     return handler(state)
 
 
+def normalize_help(help: str) -> str:
+    return dedent(help).replace("\n", " ").strip()
+
+
 def input_handler(
     *characters: Character,
     modes: Optional[Iterable[Mode]] = None,
@@ -191,10 +199,12 @@ def input_handler(
 ) -> InputHandlerDecorator:
     target_modes = list(modes or list(Mode))
 
-    def decorator(func: InputHandler) -> InputHandler:
+    def registrar(func: InputHandler) -> InputHandler:
         for character, mode in product(characters, target_modes):
             key: InputHandlerKey = (character, mode)
-            if key in handlers:
+            # Don't allow duplicate handlers to be registered inside this module,
+            # but DO let end-users register them.
+            if key in handlers and inspect.getmodule(func) == inspect.getmodule(input_handler):
                 raise DuplicateInputHandler(
                     f"{character} is already registered as an input handler for mode {mode}"
                 )
@@ -203,7 +213,7 @@ def input_handler(
         INPUT_HANDLER_HELP.append(
             InputHandlerHelpInfo(
                 name=name or " ".join(word.capitalize() for word in func.__name__.split("_")),
-                help=help,
+                help=normalize_help(help),
                 characters=characters,
                 modes=target_modes,
             )
@@ -211,7 +221,7 @@ def input_handler(
 
         return func
 
-    return decorator
+    return registrar
 
 
 NOT_HELP = [Mode.SLIDE, Mode.DECK]
@@ -239,6 +249,39 @@ def slide_mode(state: State) -> None:
 )
 def deck_mode(state: State) -> None:
     state.mode = Mode.DECK
+
+
+@input_handler(
+    "p",
+    help=f"Enter {Mode.OPTIONS} mode.",
+)
+def options_mode(state: State) -> None:
+    state.mode = Mode.OPTIONS
+
+
+@input_handler(
+    "e",
+    modes=[Mode.OPTIONS],
+    help=f"Open your $EDITOR ([bold]{EDITOR}[/bold]) to edit options (as TOML).",
+)
+def edit_options(state: State) -> None:
+    with suspend_live(state):
+        new_toml = state.options.as_toml()
+        while True:
+            new_toml = _clean_toml(typer.edit(text=new_toml, extension=".toml", require_save=False))
+            try:
+                state.options = Options.from_toml(new_toml)
+                return
+            except TomlDecodeError as e:
+                new_toml = f"{new_toml}\n\n# Parse Error: {e}\n"
+            except InvalidOptionValue as e:
+                new_toml = f"{new_toml}\n\n# Invalid Option Value: {e}\n"
+            except Exception as e:
+                new_toml = f"{new_toml}\n\n# Error: {e}\n"
+
+
+def _clean_toml(s: str) -> str:
+    return "\n".join(line for line in s.splitlines() if (line and not line.startswith("#")))
 
 
 @input_handler(
@@ -282,7 +325,11 @@ def down_grid_row(state: State) -> None:
 @input_handler(
     "j",
     modes=NOT_HELP,
-    help="Press the action key, then a slide number (e.g., [bold]17[/bold]), then press [bold]enter[/bold], to jump to that slide.",
+    help="""\
+    Press the action key, then a slide number (e.g., [bold]17[/bold]), then press [bold]enter[/bold], to jump to that slide.
+    If the slide number is unambiguous, the jump will happen without needing to press [bold]enter[/bold]
+    (e.g., you enter [bold]3[/bold] and there are only [bold]8[/bold] slides).
+    """,
 )
 def jump_to_slide(state: State) -> None:
     slide_number = ""
@@ -351,34 +398,23 @@ def suspend_live(state: State) -> Iterator[None]:
 @input_handler(
     "e",
     modes=[Mode.SLIDE],
-    help=f"Open your $EDITOR ([bold]{os.getenv('EDITOR', 'not set')}[/bold]) on the source of an [bold]Example[/bold] slide. If the current slide is not an [bold]Example[/bold], do nothing.",
+    help=f"Open your $EDITOR ([bold]{EDITOR}[/bold]) on the source of an [bold]Example[/bold] slide. If the current slide is not an [bold]Example[/bold], do nothing.",
 )
 def edit_example(state: State) -> None:
-    s = state.current_slide
-    if isinstance(s, Example):
+    example = state.current_slide
+    if isinstance(example, Example):
         with suspend_live(state):
-            s.source = typer.edit(text=s.source, extension=Path(s.name).suffix, require_save=False)
-            s.clear_cache()
-
-
-def has_ipython() -> bool:
-    try:
-        import IPython
-
-        return True
-    except ImportError:
-        return False
-
-
-def has_ipython_help_message() -> str:
-    return "[green]it is[/green]" if has_ipython() else "[red]it is not[/red]"
+            example.source = typer.edit(
+                text=example.source, extension=Path(example.name).suffix, require_save=False
+            )
+            example.clear_cache()
 
 
 @input_handler(
-    "l",
-    name="Open REPL",
+    "i",
+    name="Start REPL",
     modes=NOT_HELP,
-    help=f"Open your REPL. Uses [bold]IPython[/bold] if it is installed ({has_ipython_help_message()}), otherwise the standard Python REPL.",
+    help=f"Start an [link=https://ipython.readthedocs.io/en/stable/overview.html]IPython REPL[/link].",
 )
 def open_repl(state: State) -> None:
     with suspend_live(state):
@@ -387,26 +423,27 @@ def open_repl(state: State) -> None:
         state.console.print(Control.move_to(0, 0))
 
         try:
-            import IPython
-            from traitlets.config import Config
-
-            c = Config()
-
-            c.InteractiveShellEmbed.colors = "Neutral"
-
-            IPython.embed(config=c)
-        except ImportError:
-            code.InteractiveConsole().interact()
-
-        start_no_echo(sys.stdin)
+            REPLS[state.options.repl]()
+        finally:
+            start_no_echo(sys.stdin)
 
 
 @input_handler(
-    "p",
-    help="Toggle profiling information.",
+    "n",
+    name="Open Notebook",
+    modes=NOT_HELP,
+    help=f"Open a Jupyter Notebook in your terminal using [link=https://github.com/davidbrochart/nbterm]nbterm[/link].",
 )
-def toggle_profiling(state: State) -> None:
-    state.toggle_profiling()
+def open_notebook(state: State) -> None:
+    with suspend_live(state):
+        reset_tty(sys.stdin)
+        state.console.print(Control.clear())
+        state.console.print(Control.move_to(0, 0))
+
+        try:
+            NOTEBOOKS[state.options.notebook](state)
+        finally:
+            start_no_echo(sys.stdin)
 
 
 @input_handler(

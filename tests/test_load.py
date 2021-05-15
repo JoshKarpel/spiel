@@ -6,7 +6,7 @@ from time import sleep
 import pytest
 from rich.console import Console
 
-from spiel import Deck
+from spiel import Deck, Options
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound
 from spiel.load import DeckReloader, DeckWatcher, load_deck
@@ -34,7 +34,7 @@ def test_reloader_triggers_when_file_modified(
     console: Console,
     output: StringIO,
 ) -> None:
-    state = State(console=Console(), deck=load_deck(file_with_empty_deck))
+    state = State(console=Console(), deck=load_deck(file_with_empty_deck), options=Options())
     reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)
 
     with DeckWatcher(event_handler=reloader, path=file_with_empty_deck, poll=True):
@@ -42,10 +42,10 @@ def test_reloader_triggers_when_file_modified(
 
         file_with_empty_deck.write_text(
             dedent(
-                """\
+                f"""\
     from spiel import Deck
 
-    DECK = Deck(name="modified")
+    {DECK} = Deck(name="modified")
     """
             )
         )
@@ -69,7 +69,7 @@ def test_reloader_captures_error_in_message(
     console: Console,
     output: StringIO,
 ) -> None:
-    state = State(console=Console(), deck=load_deck(file_with_empty_deck))
+    state = State(console=Console(), deck=load_deck(file_with_empty_deck), options=Options())
     reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)
 
     with DeckWatcher(event_handler=reloader, path=file_with_empty_deck, poll=True):
@@ -77,10 +77,10 @@ def test_reloader_captures_error_in_message(
 
         file_with_empty_deck.write_text(
             dedent(
-                """\
+                f"""\
     from spiel import Deck
 
-    DECK = Deck(name="modified")
+    {DECK} = Deck(name="modified")
     foobar
     """
             )

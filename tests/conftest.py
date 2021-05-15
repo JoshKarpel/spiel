@@ -5,7 +5,8 @@ from textwrap import dedent
 import pytest
 from rich.console import Console
 
-from spiel import Deck
+from spiel import Deck, Options
+from spiel.constants import DECK
 from spiel.slide import Slide
 from spiel.state import State
 
@@ -32,17 +33,24 @@ def console(output: StringIO) -> Console:
 
 
 @pytest.fixture
-def three_slide_state(console: Console, three_slide_deck: Deck) -> State:
-    return State(console=console, deck=three_slide_deck)
+def three_slide_options() -> Options:
+    return Options()
+
+
+@pytest.fixture
+def three_slide_state(
+    console: Console, three_slide_deck: Deck, three_slide_options: Options
+) -> State:
+    return State(console=console, deck=three_slide_deck, options=three_slide_options)
 
 
 @pytest.fixture
 def empty_deck_source() -> str:
     return dedent(
-        """\
+        f"""\
         from spiel import Deck
 
-        DECK = Deck(name="deck")
+        {DECK} = Deck(name="deck")
         """
     )
 

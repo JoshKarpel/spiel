@@ -83,6 +83,8 @@ def present_deck(state: State) -> None:
             split_layout_into_deck_grid(body, state)
         elif state.mode is Mode.HELP:
             body.update(help)
+        elif state.mode is Mode.OPTIONS:
+            body.update(state.options)
         else:  # pragma: unreachable
             raise UnknownModeError(f"Unrecognized mode: {state.mode!r}")
 

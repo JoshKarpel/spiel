@@ -19,18 +19,19 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Deck, Image, Slide, __version__, example_panels
+from spiel import Deck, Image, Options, Slide, __version__, example_panels
+
+deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
+options = Options()
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
-
-
-DECK = Deck(name=f"Spiel Demo Deck (v{__version__})")
+NBTERM = "[nbterm](https://github.com/davidbrochart/nbterm)"
 
 THIS_DIR = Path(__file__).resolve().parent
 
 
-@DECK.slide(title="What is Spiel?")
+@deck.slide(title="What is Spiel?")
 def what():
     upper_left_markup = dedent(
         f"""\
@@ -112,7 +113,7 @@ def what():
     return root
 
 
-@DECK.slide(title="Decks and Slides")
+@deck.slide(title="Decks and Slides")
 def code():
     markup = dedent(
         f"""\
@@ -152,7 +153,7 @@ def code():
     return root
 
 
-@DECK.slide(title="Dynamic Content")
+@deck.slide(title="Dynamic Content")
 def dynamic():
     home = Path.home()
     width = shutil.get_terminal_size().columns
@@ -201,7 +202,7 @@ def dynamic():
     )
 
 
-@DECK.slide(title="Triggers")
+@deck.slide(title="Triggers")
 def triggers(triggers):
     info = Markdown(
         dedent(
@@ -285,7 +286,7 @@ def triggers(triggers):
     return RenderGroup(info, fun, ball if len(triggers) > 2 else Text(""))
 
 
-@DECK.slide(title="Views")
+@deck.slide(title="Views")
 def grid():
     markup = dedent(
         """\
@@ -300,7 +301,7 @@ def grid():
     return Markdown(markup, justify="center")
 
 
-@DECK.slide(title="Watch Mode")
+@deck.slide(title="Watch Mode")
 def watch():
     markup = dedent(
         f"""\
@@ -316,7 +317,7 @@ def watch():
     return Markdown(markup, justify="center")
 
 
-@DECK.slide(title="Displaying Images")
+@deck.slide(title="Displaying Images")
 def image():
     markup = dedent(
         f"""\
@@ -342,7 +343,7 @@ def image():
     return root
 
 
-@DECK.example(title="Examples")
+@deck.example(title="Examples")
 def examples():
     # This is an example that shows how to use random.choice from the standard library.
 
@@ -399,3 +400,67 @@ def _(example, triggers):
     root.split_row(Layout(markdown), example_panels(example))
 
     return root
+
+
+@deck.slide(title="Live Coding with the REPL")
+def notebooks():
+    markup = dedent(
+        f"""\
+        ## Live Coding: REPL
+
+        Sometimes an static example,
+        or even an example that you're editing and running multiple times,
+        just isn't interactive enough.
+
+        To provide a more interactive experience,
+        {SPIEL} lets you open an IPython REPL on any slide by pressing `i`.
+
+        When you exit the REPL (by pressing `ctrl-d` or executing `exit`),
+        you'll be back at the same point in your presentation.
+
+        The state of the REPL is not persistent between invocations
+        (it will be completely fresh every time you enter it).
+        """
+    )
+    return Markdown(markup, justify="center")
+
+
+@deck.slide(title="Live Coding with Notebooks", notebook=THIS_DIR / "notebook.ipynb")
+def notebooks():
+    markup = dedent(
+        f"""\
+        ## Live Coding: Notebooks
+
+        For a more persistent live-coding experience than a REPL,
+        you can open a Jupyter Notebook via {NBTERM}
+        by pressing `n`.
+
+        Each slide has a notebook attached to it.
+        The notebook kernel will be restarted between invocations,
+        but changes made to the notebook contents
+        will persist throughout your presentation.
+
+        By default, the notebook will initially be blank,
+        but you can also provide a path to a notebook on disk to initialize from.
+
+        This slide has a small example notebook attached to it - try it out!
+        """
+    )
+    return Markdown(markup, justify="center")
+
+
+@deck.slide(title="Options")
+def notebooks():
+    markup = dedent(
+        f"""\
+        ## Options
+
+        {SPIEL} has a variety of options that can be adjusted at runtime.
+        For example,
+        profiling information can be displayed in the footer to help you debug a slides that is rendering too slowly.
+
+        To see your current options, press `p`.
+        From that mode you can edit your options by pressing `e`.
+        """
+    )
+    return Markdown(markup, justify="center")

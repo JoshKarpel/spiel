@@ -37,6 +37,13 @@ def test_version(runner: CliRunner) -> None:
     assert __version__ in result.stdout
 
 
+def test_plain_version(runner: CliRunner) -> None:
+    result = runner.invoke(app, ["version", "--plain"])
+
+    assert result.exit_code == 0
+    assert __version__ in result.stdout
+
+
 def test_clean_keyboard_interrupt(runner: CliRunner, mocker: MockFixture) -> None:
     mock = mocker.patch("spiel.main.present_deck", MagicMock(side_effect=KeyboardInterrupt()))
 
@@ -44,6 +51,12 @@ def test_clean_keyboard_interrupt(runner: CliRunner, mocker: MockFixture) -> Non
 
     assert mock.called
     assert result.exit_code == 0
+
+
+def test_present_deck_on_missing_file(runner: CliRunner, tmp_path: Path) -> None:
+    result = runner.invoke(app, ["present", str(tmp_path / "missing.py")])
+
+    assert result.exit_code == 1
 
 
 @pytest.mark.parametrize("mode", list(Mode))

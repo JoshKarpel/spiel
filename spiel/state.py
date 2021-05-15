@@ -1,13 +1,21 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
+from functools import cached_property
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from time import monotonic
-from typing import Callable, List, Union
+from types import TracebackType
+from typing import Callable, List, Optional, Type, Union
 
 from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
-from . import Deck
+from .constants import PACKAGE_NAME
+from .deck import Deck
 from .modes import Mode
+from .options import Options
 from .presentable import Presentable
 
 TextLike = Union[Text, Callable[[], Text]]
@@ -17,11 +25,11 @@ TextLike = Union[Text, Callable[[], Text]]
 class State:
     console: Console
     deck: Deck
+    options: Options
     _current_slide_idx: int = 0
     _mode: Mode = Mode.SLIDE
     _message: TextLike = Text("")
     trigger_times: List[float] = field(default_factory=list)
-    profiling: bool = False
 
     @property
     def mode(self) -> Mode:
@@ -88,6 +96,21 @@ class State:
         self.trigger_times.clear()
         self.trigger()
 
-    def toggle_profiling(self) -> bool:
-        self.profiling = not self.profiling
-        return self.profiling
+    @cached_property
+    def _tmp_dir(self) -> TemporaryDirectory:
+        return TemporaryDirectory(prefix=f"{PACKAGE_NAME}-")
+
+    @cached_property
+    def tmp_dir(self) -> Path:
+        return Path(self._tmp_dir.name)
+
+    def __enter__(self) -> State:
+        return self
+
+    def __exit__(
+        self,
+        exctype: Optional[Type[BaseException]],
+        excinst: Optional[BaseException],
+        exctb: Optional[TracebackType],
+    ) -> None:
+        self._tmp_dir.cleanup()

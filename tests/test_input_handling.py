@@ -4,34 +4,9 @@ import pytest
 from pytest_mock import MockFixture
 from rich.console import Console
 
-from spiel.exceptions import DuplicateInputHandler
-from spiel.input import (
-    SPECIAL_CHARACTERS,
-    InputHandlers,
-    SpecialCharacters,
-    get_character,
-    handle_input,
-    input_handler,
-)
+from spiel.input import SPECIAL_CHARACTERS, SpecialCharacters, get_character, handle_input
 from spiel.modes import Mode
 from spiel.state import State
-
-
-@pytest.fixture
-def handlers() -> InputHandlers:
-    return {}  # type: ignore
-
-
-def test_register_already_registered_raises_error(handlers: InputHandlers) -> None:
-    @input_handler("a", help="")
-    def a(state: State) -> None:  # pragma: never runs
-        pass
-
-    with pytest.raises(DuplicateInputHandler):
-
-        @input_handler("a", help="")
-        def a(state: State) -> None:  # pragma: never runs
-            pass
 
 
 @pytest.mark.parametrize("input, expected", SPECIAL_CHARACTERS.items())

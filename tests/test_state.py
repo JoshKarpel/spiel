@@ -3,7 +3,7 @@ from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
-from spiel import Deck
+from spiel import Deck, Options
 from spiel.state import State, TextLike
 
 
@@ -61,9 +61,9 @@ def test_previous_from_first_slide_stays_put(three_slide_state: State) -> None:
         (120, 4),
     ],
 )
-def test_deck_grid_width(width: int, expected: int, three_slide_deck: Deck) -> None:
+def test_deck_grid_width(width: int, expected: int) -> None:
     console = Console(width=width)
-    state = State(console=console, deck=three_slide_deck)
+    state = State(console=console, deck=Deck(name="deck"), options=Options())
 
     assert state.deck_grid_width == expected
 
@@ -94,3 +94,9 @@ def test_clear_message(three_slide_state: State) -> None:
     three_slide_state.clear_message()
 
     assert three_slide_state.message == Text("")
+
+
+def test_tmp_dir_lifecycle(three_slide_state: State) -> None:
+    with three_slide_state:
+        assert three_slide_state.tmp_dir.exists()
+    assert not three_slide_state.tmp_dir.exists()

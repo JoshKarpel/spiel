@@ -1,6 +1,7 @@
 import inspect
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Mapping
+from pathlib import Path
+from typing import Any, Callable, Dict, Mapping, Optional
 
 from rich.console import ConsoleRenderable
 
@@ -10,6 +11,7 @@ from .triggers import Triggers
 @dataclass
 class Presentable:  # Why not an ABC? https://github.com/python/mypy/issues/5374
     title: str = ""
+    notebook: Optional[Path] = None
 
     def render(self, triggers: Triggers) -> ConsoleRenderable:
         raise NotImplementedError

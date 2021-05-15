@@ -2,32 +2,28 @@ from __future__ import annotations
 
 import importlib.util
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from types import TracebackType
-from typing import ContextManager, Optional, Type
+from typing import ContextManager, Optional, Tuple, Type
 
-from pendulum import DateTime, now
-from rich.control import Control
-from rich.style import Style
-from rich.text import Text
-from watchdog.events import FileSystemEvent, FileSystemEventHandler
+from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
 
-from .constants import DECK
+from .constants import DECK, OPTIONS
 from .deck import Deck
 from .exceptions import NoDeckFound
-from .state import State
+from .options import Options
 
 
-def load_deck(deck_path: Path) -> Deck:
+def load_deck_and_options(path: Path) -> Tuple[Deck, Options]:
     module_name = "__deck"
-    spec = importlib.util.spec_from_file_location(module_name, deck_path)
+    spec = importlib.util.spec_from_file_location(module_name, path)
 
     if spec is None:
         raise FileNotFoundError(
-            f"{deck_path.resolve()} does not appear to be an importable Python module."
+            f"{path.resolve()} does not appear to be an importable Python module."
         )
 
     module = importlib.util.module_from_spec(spec)
@@ -35,39 +31,21 @@ def load_deck(deck_path: Path) -> Deck:
     spec.loader.exec_module(module)  # type: ignore
 
     try:
-        return getattr(module, DECK)
+        deck = getattr(module, DECK)
     except AttributeError:
-        raise NoDeckFound(f"The module at {deck_path} does not have an attribute named {DECK}.")
+        raise NoDeckFound(f"The module at {path} does not have an attribute named {DECK}.")
 
+    if not isinstance(deck, Deck):
+        raise NoDeckFound(
+            f"The module at {path} has an attribute named {DECK}, but it is a {type(deck).__name__}, not a {Deck.__name__}."
+        )
 
-@dataclass
-class DeckReloader(FileSystemEventHandler):
-    state: State
-    deck_path: Path
-    last_reload: DateTime = field(default_factory=now)
+    options = getattr(module, OPTIONS, Options())
 
-    def on_modified(self, event: FileSystemEvent) -> None:
-        self.last_reload = now()
-        try:
-            self.state.deck = load_deck(self.deck_path)
-            self.state.reset_trigger()
-            self.state.set_message(
-                lambda: Text(
-                    f"Reloaded deck from {self.deck_path} {self.last_reload.diff_for_humans(None, False)}",
-                    style=Style(color="bright_green"),
-                )
-            )
-        except Exception:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            self.state.set_message(
-                lambda: Text(
-                    f"Error: {self.last_reload.diff_for_humans(None, False)}: {exc_obj!r}{Control.bell()}",
-                    style=Style(color="bright_red"),
-                )
-            )
+    if not isinstance(options, Options):
+        options = Options()
 
-    def __hash__(self) -> int:
-        return hash((type(self), id(self)))
+    return deck, options
 
 
 @dataclass

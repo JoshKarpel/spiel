@@ -1,100 +1,76 @@
-from io import StringIO
 from pathlib import Path
 from textwrap import dedent
-from time import sleep
 
 import pytest
-from rich.console import Console
 
 from spiel import Deck, Options
 from spiel.constants import DECK
 from spiel.exceptions import NoDeckFound
-from spiel.load import DeckReloader, DeckWatcher, load_deck
-from spiel.state import State
+from spiel.load import load_deck_and_options
 
 
 def test_loading_from_empty_file_fails(empty_file: Path) -> None:
     with pytest.raises(NoDeckFound, match=DECK):
-        load_deck(empty_file)
+        load_deck_and_options(empty_file)
 
 
 def test_loading_from_missing_file_fails(tmp_path: Path) -> None:
     missing_file = tmp_path / "no-such-path"
 
     with pytest.raises(FileNotFoundError, match="no-such-path"):
-        load_deck(missing_file)
+        load_deck_and_options(missing_file)
 
 
 def test_can_load_deck_from_valid_file(file_with_empty_deck: Path) -> None:
-    assert isinstance(load_deck(file_with_empty_deck), Deck)
+    deck, options = load_deck_and_options(file_with_empty_deck)
+    assert isinstance(deck, Deck)
+    assert isinstance(options, Options)
 
 
-def test_reloader_triggers_when_file_modified(
-    file_with_empty_deck: Path,
-    console: Console,
-    output: StringIO,
-) -> None:
-    state = State(console=Console(), deck=load_deck(file_with_empty_deck), options=Options())
-    reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)
+def test_can_load_custom_options(empty_file: Path) -> None:
+    empty_file.write_text(
+        dedent(
+            """\
+            from spiel import Deck, Options
 
-    with DeckWatcher(event_handler=reloader, path=file_with_empty_deck, poll=True):
-        sleep(0.01)
-
-        file_with_empty_deck.write_text(
-            dedent(
-                f"""\
-    from spiel import Deck
-
-    {DECK} = Deck(name="modified")
-    """
-            )
+            deck = Deck(name="deck")
+            options = Options(footer_time_format="foobar")
+            """
         )
+    )
 
-        sleep(0.01)
+    _, options = load_deck_and_options(empty_file)
 
-        for attempt in range(10):
-            console.print(state.message)
-            result = output.getvalue()
-            if state.deck.name == "modified" and "Reloaded deck" in result:
-                return  # test succeeded
-            sleep(0.1)
-
-        assert (
-            False
-        ), f"Reloader never triggered, current file contents:\n{file_with_empty_deck.read_text()}"  # pragma: debugging
+    assert options.footer_time_format == "foobar"
 
 
-def test_reloader_captures_error_in_message(
-    file_with_empty_deck: Path,
-    console: Console,
-    output: StringIO,
-) -> None:
-    state = State(console=Console(), deck=load_deck(file_with_empty_deck), options=Options())
-    reloader = DeckReloader(state=state, deck_path=file_with_empty_deck)
+def test_fails_to_load_not_deck(empty_file: Path) -> None:
+    empty_file.write_text(
+        dedent(
+            """\
+            from spiel import Deck
 
-    with DeckWatcher(event_handler=reloader, path=file_with_empty_deck, poll=True):
-        sleep(0.01)
-
-        file_with_empty_deck.write_text(
-            dedent(
-                f"""\
-    from spiel import Deck
-
-    {DECK} = Deck(name="modified")
-    foobar
-    """
-            )
+            deck = "not a Deck"
+            """
         )
+    )
 
-        sleep(0.01)
+    with pytest.raises(NoDeckFound):
+        load_deck_and_options(empty_file)
 
-        for attempt in range(10):
-            console.print(state.message)
-            result = output.getvalue()
-            if "NameError" in result and "foobar" in result:
-                return  # test succeeded
-            sleep(0.1)
 
-        assert (
-            False
-        ), f"Reloader never triggered, current file contents:\n{file_with_empty_deck.read_text()}"  # pragma: debugging
+def test_can_load_not_options(empty_file: Path) -> None:
+    empty_file.write_text(
+        dedent(
+            """\
+            from spiel import Deck
+
+            deck = Deck(name="deck")
+            options = "not an Options"
+            """
+        )
+    )
+
+    _, options = load_deck_and_options(empty_file)
+
+    assert isinstance(options, Options)

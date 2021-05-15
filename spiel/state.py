@@ -14,6 +14,7 @@ from rich.text import Text
 
 from .constants import PACKAGE_NAME
 from .deck import Deck
+from .load import load_deck_and_options
 from .modes import Mode
 from .options import Options
 from .presentable import Presentable
@@ -30,6 +31,11 @@ class State:
     _mode: Mode = Mode.SLIDE
     _message: TextLike = Text("")
     trigger_times: List[float] = field(default_factory=list)
+
+    @classmethod
+    def from_file(cls, path: Path) -> State:
+        deck, options = load_deck_and_options(path)
+        return cls(console=Console(), deck=deck, options=options)
 
     @property
     def mode(self) -> Mode:

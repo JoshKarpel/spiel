@@ -523,6 +523,8 @@ def notebooks():
 
         To see your current options, press `p`.
         From that mode you can edit your options by pressing `e`.
+
+        Note that your `Options` are *not* reloaded when running with `--watch`.
         """
     )
     return Markdown(markup, justify="center")

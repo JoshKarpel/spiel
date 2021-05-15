@@ -8,6 +8,7 @@ __rich_version__ = metadata.version("rich")
 __python_version__ = ".".join(map(str, sys.version_info))
 
 DECK = "deck"
+OPTIONS = "options"
 
 TARGET_RPS = 30
 

@@ -12,8 +12,8 @@ from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
-from . import Deck
 from .constants import PACKAGE_NAME
+from .deck import Deck
 from .modes import Mode
 from .options import Options
 from .presentable import Presentable

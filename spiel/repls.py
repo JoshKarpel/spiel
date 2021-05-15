@@ -1,5 +1,5 @@
 import code
-from typing import Callable, MutableMapping, Union
+from typing import Callable, MutableMapping
 
 import IPython
 from traitlets.config import Config

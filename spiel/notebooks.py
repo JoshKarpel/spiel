@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable, MutableMapping, Union
+from typing import TYPE_CHECKING, Callable, MutableMapping
 
 if TYPE_CHECKING:
     from .state import State

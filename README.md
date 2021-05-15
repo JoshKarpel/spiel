@@ -41,5 +41,5 @@ Spiel's image itself inherits from the [Python base image](https://hub.docker.co
 
 ## Supported Systems
 
-Spiel relies on underlying terminal mechanisms that are only available on POSIX systems (e.g., Linux and MacOS).
+Spiel currently relies on underlying terminal mechanisms that are only available on POSIX systems (e.g., Linux and MacOS).
 If you're on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/) to run Spiel.

@@ -8,8 +8,8 @@ from rich.style import Style
 from rich.text import Text
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 
-from spiel.load import load_deck_and_options
-from spiel.state import State
+from .load import load_deck_and_options
+from .state import State
 
 
 @dataclass

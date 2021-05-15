@@ -12,9 +12,8 @@ from typer import Argument, Exit, Option, Typer
 
 from .constants import PACKAGE_NAME, __version__
 from .help import version_details
-from .load import DeckWatcher, load_deck_and_options
+from .load import DeckWatcher
 from .modes import Mode
-from .options import Options
 from .present import present_deck
 from .reloader import DeckReloader
 from .state import State
@@ -70,16 +69,10 @@ def _present(path: Path, mode: Mode, slide: int, watch: bool, poll: bool) -> Non
     console = Console()
 
     try:
-        deck, options = load_deck_and_options(path)
+        state = State.from_file(path)
     except FileNotFoundError as e:
         console.print(Text(f"Error: {e}", style=Style(color="red")))
         raise Exit(code=1)
-
-    state = State(
-        console=console,
-        deck=deck,
-        options=options,
-    )
 
     state.mode = mode
     state.jump_to_slide(slide - 1)

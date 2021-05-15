@@ -43,6 +43,8 @@ ipython = "^7.23.0"
 ipykernel = "^5.5.3"
 nbterm = "^0.0.7"
 toml = "^0.10.2"
+uniplot = "^0.4.4"
+numpy = "^1.20.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"

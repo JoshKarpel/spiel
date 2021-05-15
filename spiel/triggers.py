@@ -25,3 +25,7 @@ class Triggers:
     @cached_property
     def time_since_first_trigger(self) -> float:
         return self.now - self.times[0]
+
+    @cached_property
+    def triggered(self) -> bool:
+        return len(self) > 1

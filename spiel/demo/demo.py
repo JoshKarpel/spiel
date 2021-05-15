@@ -7,6 +7,7 @@ from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
 
+import numpy as np
 from rich.align import Align
 from rich.box import SQUARE
 from rich.color import Color, blend_rgb
@@ -20,6 +21,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 
 from spiel import Deck, Image, Options, Slide, __version__, example_panels
+from spiel.plot import Plot
 
 deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
 options = Options()
@@ -27,6 +29,9 @@ options = Options()
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
 NBTERM = "[nbterm](https://github.com/davidbrochart/nbterm)"
+UNIPLOT = "[Uniplot](https://github.com/olavolav/uniplot)"
+IPYTHON = "[IPython](https://ipython.readthedocs.io)"
+WSL = "[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/)"
 
 THIS_DIR = Path(__file__).resolve().parent
 
@@ -35,39 +40,39 @@ THIS_DIR = Path(__file__).resolve().parent
 def what():
     upper_left_markup = dedent(
         f"""\
-    ## What is Spiel?
+        ## What is Spiel?
 
-    {SPIEL} is a framework for building and presenting richly-styled presentations in your terminal using Python.
+        {SPIEL} is a framework for building and presenting richly-styled presentations in your terminal using Python.
 
-    Spiel uses {RICH} to render slide content.
-    Anything you can display with Rich, you can display with Spiel (plus some other things)!
+        Spiel uses {RICH} to render slide content.
+        Anything you can display with Rich, you can display with Spiel (plus some other things)!
 
-    Use your right `→` and left `←` arrows keys (or `f` and `b`) to go forwards and backwards through the deck.
+        Use your right `→` and left `←` arrows keys (or `f` and `b`) to go forwards and backwards through the deck.
 
-    Press `ctrl-c` or `ctrl-k` to exit.
+        Press `ctrl-c` or `ctrl-k` to exit.
 
-    Press `h` at any time to see the help screen, which describes all of the actions you can take.
+        Press `h` at any time to see the help screen, which describes all of the actions you can take.
 
-    To get a copy of the source code for this deck, use the `spiel demo copy` command.
-    """
+        To get a copy of the source code for this deck, use the `spiel demo copy` command.
+        """
     )
 
     upper_right_markup = dedent(
         """\
-    ## Why use Spiel?
+        ## Why use Spiel?
 
-    It's fun!
+        It's fun!
 
-    It's weird!
+        It's weird!
 
-    Why not?
+        Why not?
 
-    Maybe you shouldn't.
+        Maybe you shouldn't.
 
-    Honestly, it's unclear whether it's a good idea.
+        Honestly, it's unclear whether it's a good idea.
 
-    There's always [Powerpoint](https://youtu.be/uNjxe8ShM-8)!
-    """
+        There's always [Powerpoint](https://youtu.be/uNjxe8ShM-8)!
+        """
     )
 
     lower_left_markup = dedent(
@@ -76,8 +81,9 @@ def what():
 
         Please report bugs via [GitHub Issues](https://github.com/JoshKarpel/spiel/issues).
 
-        If you have ideas about how Spiel can be improved or a cool deck to show off,
-        please post them via [GitHub Discussions](https://github.com/JoshKarpel/spiel/discussions).
+        If you have ideas about how Spiel can be improved,
+        or you have a cool deck to show off,
+        please post to [GitHub Discussions](https://github.com/JoshKarpel/spiel/discussions).
         """
     )
 
@@ -211,7 +217,7 @@ def triggers(triggers):
 
             Triggers are a mechanism for making dynamic content that depends on *relative* time.
 
-            Triggers can be used to implement effects like fades, motion, and other "animated" effects.
+            Triggers can be used to implement effects like fades, motion, and other "animations".
 
             Each slide is triggered once when it starts being displayed.
             You can trigger it again (as many times as you'd like) by pressing `t`.
@@ -311,7 +317,7 @@ def watch():
 
     `$ spiel present path/to/deck.py --watch`
 
-    If you're on a system without inotify support (e.g., Windows Subsystem for Linux), you may need to use the `--poll` option instead.
+    If you're on a system without inotify support (e.g., {WSL}), you should use the `--poll` option instead.
     """
     )
     return Markdown(markup, justify="center")
@@ -324,6 +330,8 @@ def image():
     ## Images
 
     {SPIEL} can display images... sort of!
+
+    Spiel includes an `Image` widget that can render images by interpolating pixel values.
 
     If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
     If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
@@ -338,6 +346,47 @@ def image():
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
         Layout(Image.from_file(THIS_DIR / "img.jpg")),
+    )
+
+    return root
+
+
+@deck.slide(title="Plots")
+def plots(triggers):
+    markup = dedent(
+        f"""\
+        ## Plots
+
+        {SPIEL} can display plots... sort of!
+
+        Spiel includes a `Plot` widget that uses {UNIPLOT} to render plots.
+
+        You can even make animated plots by using triggers! Try triggering this slide.
+        """
+    )
+
+    x = np.linspace(-3, 3, 1000)
+    coefficients = np.array([0, 2, -1, 3, -1, 1])
+    dither = 0.1 * np.sin(triggers.time_since_last_trigger) if triggers.triggered else 0
+    hermite = 0.9 * np.polynomial.hermite.hermval(x, c=coefficients + dither)
+    upper_plot = Plot(xs=x, ys=hermite, title="A Hermite Polynomial", y_min=-100, y_max=100)
+
+    theta = np.linspace(-3 * np.pi, 3 * np.pi, 1000)
+    phase = (1 if triggers.triggered else 0) * triggers.time_since_last_trigger
+    cos = np.cos(theta + phase)
+    sin = 1.3 * np.sin(theta + phase)
+    lower_plot = Plot(xs=[theta, theta], ys=[cos, sin], title="[cos(x), 1.3 * sin(x)]")
+
+    lower = Layout()
+    lower.split_column(
+        Layout(upper_plot),
+        Layout(lower_plot),
+    )
+
+    root = Layout()
+    root.split_row(
+        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
+        lower,
     )
 
     return root
@@ -376,8 +425,13 @@ def _(example, triggers):
     Press `e` to open your `$EDITOR` (`{os.getenv("EDITOR", "not set")}`) on the example code.
     Save your changes and exit to come back to the presentation with your updated code.
     You can then trigger the example again to run it with the new code.
+
+    ## Layout Customization
+
+    You can customize the example slide's content by providing a custom `layout` function.
+    If you don't, you'll get the default layout, which looks like just the right half of this slide.
     """
-        if len(triggers) > 1
+        if triggers.triggered
         else ""
     )
 
@@ -390,14 +444,15 @@ def _(example, triggers):
     Example slides are driven by the trigger system.
     Press `t` to execute the example code and display the output.
 
-    You can customize the example slide's content by providing a custom `layout` function.
-    If you don't, you'll get the default layout, which looks like just the right half of this slide.
     {extra}
     """
     )
     markdown = Markdown(markup, justify="center")
 
-    root.split_row(Layout(markdown), example_panels(example))
+    root.split_row(
+        Layout(Padding(markdown, pad=(0, 2))),
+        example_panels(example),
+    )
 
     return root
 
@@ -413,7 +468,10 @@ def notebooks():
         just isn't interactive enough.
 
         To provide a more interactive experience,
-        {SPIEL} lets you open an IPython REPL on any slide by pressing `i`.
+        {SPIEL} lets you open a REPL on any slide by pressing `i`.
+
+        There are two REPLs available by default: the [builtin Python REPL](https://docs.python.org/3/tutorial/interpreter.html#interactive-mode) and {IPYTHON}.
+        You can change which REPL to use via `Options`, which will be discussed later.
 
         When you exit the REPL (by pressing `ctrl-d` or executing `exit`),
         you'll be back at the same point in your presentation.
@@ -444,6 +502,10 @@ def notebooks():
         but you can also provide a path to a notebook on disk to initialize from.
 
         This slide has a small example notebook attached to it - try it out!
+
+        (In theory, {SPIEL} will be able to support different kinds of terminal notebook viewers in the future,
+        but right now, only {NBTERM} is packaged by default, and the internal API is not stable or very generic.
+        Stay tuned!)
         """
     )
     return Markdown(markup, justify="center")

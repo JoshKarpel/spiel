@@ -14,10 +14,12 @@ Decks and Slides
 .. autoclass:: Example
 
 
-Extra Renderables
------------------
+Widgets
+-------
 
 .. autoclass:: Image
+
+.. autoclass:: Plot
 
 
 Triggers

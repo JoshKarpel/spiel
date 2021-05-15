@@ -10,11 +10,13 @@ from rich.console import Console
 from rich.text import Text
 from typer import Exit
 
-from spiel import Deck, Slide
+from spiel import Deck, Options, Slide
 from spiel.input import (
     INPUT_HANDLERS,
     InputHandler,
     deck_mode,
+    edit_example,
+    edit_options,
     exit,
     jump_to_slide,
     next_slide,
@@ -58,14 +60,22 @@ def test_kill(three_slide_state: State) -> None:
         exit(three_slide_state)
 
 
-@given(
-    input_handlers=st.lists(
-        st.sampled_from(
-            list(set(INPUT_HANDLERS.values()) - {exit, jump_to_slide, open_repl, open_notebook})
-        )
+TESTABLE_INPUT_HANDLERS = list(
+    set(INPUT_HANDLERS.values()).difference(
+        {
+            exit,
+            jump_to_slide,
+            open_repl,
+            open_notebook,
+            edit_options,
+            edit_example,
+        }
     )
 )
-@settings(max_examples=1_000 if os.getenv("CI") else 100)
+
+
+@given(input_handlers=st.lists(st.sampled_from(TESTABLE_INPUT_HANDLERS)))
+@settings(max_examples=2_000 if os.getenv("CI") else 200)
 def test_input_sequences_dont_crash(input_handlers: List[InputHandler]) -> None:
     state = State(
         console=Console(),
@@ -79,6 +89,7 @@ def test_input_sequences_dont_crash(input_handlers: List[InputHandler]) -> None:
                 for n in range(30)
             ],
         ),
+        options=Options(),
     )
 
     for input_handler in input_handlers:

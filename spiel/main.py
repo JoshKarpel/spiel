@@ -72,7 +72,7 @@ def _present(path: Path, mode: Mode, slide: int, watch: bool, poll: bool) -> Non
     try:
         deck = load_deck(path)
     except FileNotFoundError as e:
-        console.print(f"Error: {e}")
+        console.print(Text(f"Error: {e}", style=Style(color="red")))
         raise Exit(code=1)
 
     state = State(
@@ -136,7 +136,7 @@ def present_demo() -> None:
     """
     Present the demo deck.
     """
-    _present(path=DEMO_SOURCE, mode=Mode.SLIDE, slide=0, profiling=False, watch=False, poll=False)
+    _present(path=DEMO_SOURCE, mode=Mode.SLIDE, slide=0, watch=False, poll=False)
 
 
 @demo.command()

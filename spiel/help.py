@@ -54,8 +54,8 @@ class Help:
 
         return Padding(
             RenderGroup(
-                Align(action_table, align="center"),
-                Align(version_details(self.state.console), align="center"),
+                Align.center(action_table),
+                Align.center(version_details(self.state.console)),
             ),
             pad=(0, 1),
         )

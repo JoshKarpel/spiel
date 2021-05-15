@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-import os
+import inspect
 import string
 import sys
 import termios
@@ -32,13 +32,15 @@ import typer
 from nbterm import Notebook
 from rich.control import Control
 from rich.text import Text
+from toml import TomlDecodeError
 from traitlets.config import Config
 from typer import Exit
 
-from .constants import PACKAGE_NAME
+from .constants import EDITOR, PACKAGE_NAME
 from .example import Example
 from .exceptions import DuplicateInputHandler
 from .modes import Mode
+from .options import Options
 from .state import State
 
 LFLAG = 3
@@ -201,7 +203,9 @@ def input_handler(
     def decorator(func: InputHandler) -> InputHandler:
         for character, mode in product(characters, target_modes):
             key: InputHandlerKey = (character, mode)
-            if key in handlers:
+            # Don't allow duplicate handlers to be registered inside this module,
+            # but DO let end-users register them.
+            if key in handlers and inspect.getmodule(func) == inspect.getmodule(input_handler):
                 raise DuplicateInputHandler(
                     f"{character} is already registered as an input handler for mode {mode}"
                 )
@@ -254,6 +258,25 @@ def deck_mode(state: State) -> None:
 )
 def options_mode(state: State) -> None:
     state.mode = Mode.OPTIONS
+
+
+@input_handler(
+    "e",
+    modes=[Mode.OPTIONS],
+    help=f"Open your $EDITOR ([bold]{EDITOR}[/bold]) to edit options (as TOML).",
+)
+def edit_options(state: State) -> None:
+    with suspend_live(state):
+        new_toml = state.options.as_toml()
+        while True:
+            new_toml = _strip_toml_comments(
+                typer.edit(text=new_toml, extension=".toml", require_save=False)
+            )
+            try:
+                state.options = Options.from_toml(new_toml)
+                return
+            except TomlDecodeError as e:
+                new_toml = f"{new_toml}\n\n# Parse Error: {e}\n"
 
 
 @input_handler(
@@ -370,14 +393,20 @@ def suspend_live(state: State) -> Iterator[None]:
 @input_handler(
     "e",
     modes=[Mode.SLIDE],
-    help=f"Open your $EDITOR ([bold]{os.getenv('EDITOR', 'not set')}[/bold]) on the source of an [bold]Example[/bold] slide. If the current slide is not an [bold]Example[/bold], do nothing.",
+    help=f"Open your $EDITOR ([bold]{EDITOR}[/bold]) on the source of an [bold]Example[/bold] slide. If the current slide is not an [bold]Example[/bold], do nothing.",
 )
 def edit_example(state: State) -> None:
-    s = state.current_slide
-    if isinstance(s, Example):
+    example = state.current_slide
+    if isinstance(example, Example):
         with suspend_live(state):
-            s.source = typer.edit(text=s.source, extension=Path(s.name).suffix, require_save=False)
-            s.clear_cache()
+            example.source = typer.edit(
+                text=example.source, extension=Path(example.name).suffix, require_save=False
+            )
+            example.clear_cache()
+
+
+def _strip_toml_comments(s: str) -> str:
+    return "".join(line for line in s.splitlines(keepends=True) if not line.startswith("#"))
 
 
 @input_handler(

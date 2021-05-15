@@ -1,3 +1,4 @@
+import os
 import sys
 from importlib import metadata
 
@@ -9,3 +10,5 @@ __python_version__ = ".".join(map(str, sys.version_info))
 DECK = "deck"
 
 TARGET_RPS = 30
+
+EDITOR = os.getenv("EDITOR", "not set")

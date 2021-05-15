@@ -19,9 +19,10 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Deck, Image, Slide, __version__, example_panels
+from spiel import Deck, Image, Options, Slide, __version__, example_panels
 
 deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
+options = Options()
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
@@ -443,6 +444,23 @@ def notebooks():
         but you can also provide a path to a notebook on disk to initialize from.
 
         This slide has a small example notebook attached to it - try it out!
+        """
+    )
+    return Markdown(markup, justify="center")
+
+
+@deck.slide(title="Options")
+def notebooks():
+    markup = dedent(
+        f"""\
+        ## Options
+
+        {SPIEL} has a variety of options that can be adjusted at runtime.
+        For example,
+        profiling information can be displayed in the footer to help you debug a slides that is rendering too slowly.
+
+        To see your current options, press `p`.
+        From that mode you can edit your options by pressing `e`.
         """
     )
     return Markdown(markup, justify="center")

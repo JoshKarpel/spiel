@@ -42,6 +42,7 @@ Pillow = "^8.2.0"
 ipython = "^7.23.0"
 ipykernel = "^5.5.3"
 nbterm = "^0.0.7"
+toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"

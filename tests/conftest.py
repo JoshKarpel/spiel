@@ -4,11 +4,17 @@ from textwrap import dedent
 
 import pytest
 from rich.console import Console
+from typer.testing import CliRunner
 
 from spiel import Deck, Options
 from spiel.constants import DECK
 from spiel.slide import Slide
 from spiel.state import State
+
+
+@pytest.fixture
+def runner() -> CliRunner:
+    return CliRunner()
 
 
 @pytest.fixture

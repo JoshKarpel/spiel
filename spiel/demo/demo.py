@@ -458,7 +458,7 @@ def _(example, triggers):
 
 
 @deck.slide(title="Live Coding with the REPL")
-def notebooks():
+def repl():
     markup = dedent(
         f"""\
         ## Live Coding: REPL
@@ -512,7 +512,7 @@ def notebooks():
 
 
 @deck.slide(title="Options")
-def notebooks():
+def options_():
     markup = dedent(
         f"""\
         ## Options

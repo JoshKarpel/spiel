@@ -12,11 +12,6 @@ from spiel.main import DEMO_SOURCE, app
 from spiel.modes import Mode
 
 
-@pytest.fixture
-def runner() -> CliRunner:
-    return CliRunner()
-
-
 def test_help(runner: CliRunner) -> None:
     result = runner.invoke(app, ["--help"])
 

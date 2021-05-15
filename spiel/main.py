@@ -94,6 +94,81 @@ def _present(path: Path, mode: Mode, slide: int, watch: bool, poll: bool) -> Non
 
 
 @app.command()
+def init(
+    path: Path = Argument(
+        ...,
+        writable=True,
+        resolve_path=True,
+        help="The path to create a new deck script at.",
+    )
+) -> None:
+    """
+    Create a new deck script at the given path from a basic template.
+
+    This is a good starting point if you already know what you want to do.
+    If you're not so sure, consider taking a look at the demo deck to see what's possible:
+
+        $ spiel demo --help
+    """
+    console = Console()
+
+    if path.exists():
+        console.print(
+            Text(f"Error: {path} already exists, refusing to overwrite.", style=Style(color="red"))
+        )
+        raise Exit(code=1)
+
+    name = path.stem.replace("_", " ").title()
+
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        console.print(
+            Text(
+                f"Error: was not able to ensure that the parent directory {path.parent} exists due to: {e}.",
+                style=Style(color="red"),
+            )
+        )
+        raise Exit(code=1)
+
+    try:
+        path.write_text(
+            dedent(
+                f"""\
+                from textwrap import dedent
+
+                from spiel import Deck, Options
+
+                deck = Deck(name="{name}")
+                options = Options()
+
+                @deck.slide(title="Title")
+                def title():
+                    markup = dedent(
+                        \"""\\
+                        # {name}
+
+                        This is your title slide!
+                        \"""
+                    )
+
+                    return Markdown(markup, justify="center")
+                """
+            )
+        )
+    except Exception as e:
+        console.print(
+            Text(
+                f"Error: was not able to write template to {path} due to: {e}",
+                style=Style(color="red"),
+            )
+        )
+        raise Exit(code=1)
+
+    console.print(Text(f"Wrote deck template to {path}", style=Style(color="green")))
+
+
+@app.command()
 def version(
     plain: bool = Option(
         default=False,
@@ -153,6 +228,10 @@ def copy(
 ) -> None:
     """
     Copy the demo deck source code and assets to a new directory.
+
+    If you're looking for a more stripped-down starting point, try the init command:
+
+        $ spiel init --help
     """
     console = Console()
 

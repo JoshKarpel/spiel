@@ -1,4 +1,5 @@
 import re
+from functools import lru_cache
 from typing import Any, Iterable, Sequence, Union
 
 import numpy as np
@@ -30,10 +31,7 @@ COLOR_MAP = {
 
 
 class Plot:
-    def __init__(
-        self,
-        **plot_args: Any,
-    ) -> None:
+    def __init__(self, **plot_args: Any) -> None:
         self.plot_args = plot_args
 
     def _ansi_to_text(self, s: str) -> Text:

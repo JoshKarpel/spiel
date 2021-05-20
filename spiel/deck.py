@@ -76,7 +76,7 @@ class Deck(Collection):
 
 def get_function_body(function: Callable) -> str:
     lines, line_of_def_start = inspect.getsourcelines(function)
-    line_of_first_instruction = list(dis.Bytecode(function))[0].starts_line or 0
+    line_of_first_instruction = list(dis.Bytecode(function))[0].starts_line or line_of_def_start
     offset = line_of_first_instruction - line_of_def_start
     return dedent("".join(lines[offset:]))
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dis
 import inspect
 import sys
 from collections.abc import Collection
@@ -74,16 +75,10 @@ class Deck(Collection):
 
 
 def get_function_body(function: Callable) -> str:
-    lines, _ = inspect.getsourcelines(function)
-
-    prev_indent = None
-    for idx, line in enumerate(lines):
-        if prev_indent is None:
-            prev_indent = count_leading_whitespace(line)
-        elif count_leading_whitespace(line) > prev_indent:
-            return dedent("".join(lines[idx:]))
-
-    raise ValueError(f"Could not extract function body from {function}")
+    lines, line_of_def_start = inspect.getsourcelines(function)
+    line_of_first_instruction = list(dis.Bytecode(function))[0].starts_line or line_of_def_start
+    offset = line_of_first_instruction - line_of_def_start
+    return dedent("".join(lines[offset:]))
 
 
 def count_leading_whitespace(s: str) -> int:

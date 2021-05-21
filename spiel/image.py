@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import Iterable, List, NamedTuple, Tuple
+from typing import Iterable, List, NamedTuple, Tuple, Union
 
 from PIL import Image as Img
 from rich.color import Color
@@ -23,14 +23,16 @@ class ImageSize(NamedTuple):
 
 @lru_cache(maxsize=2 ** 8)
 def _pixels_to_ansi(
-    pixels: Tuple[Tuple[int, int, int], ...], size: ImageSize, justify: JustifyMethod
+    pixels: Tuple[Union[Tuple[int, int, int], None], ...],
+    size: ImageSize,
+    justify: JustifyMethod,
 ) -> Text:
     rows = [
         [
             Text(
                 "▀",
                 Style(
-                    color=Color.from_rgb(*top),
+                    color=Color.from_rgb(*top) if top else None,
                     bgcolor=Color.from_rgb(*bottom) if bottom else None,
                 ),
             )

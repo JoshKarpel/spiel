@@ -53,12 +53,11 @@ def _ansi_to_text(s: str) -> Text:
 
 
 @lru_cache(maxsize=2 ** 8)
-def _make_plot(plot_args: bytes) -> List[str]:
+def _make_plot(pickled_plot_args: bytes) -> List[str]:
     # This is kind of ugly, but we pickle the args before passing them as an easy
     # way to make them hashable. This helps a lot for performance on static plots,
     # and doesn't have toooooo much impact on dynamic plots.
-    plot_args = pickle.loads(plot_args)
-    return uniplot.plot_to_string(**plot_args)
+    return uniplot.plot_to_string(**pickle.loads(pickled_plot_args))
 
 
 class Plot:
@@ -85,6 +84,6 @@ class Plot:
             ),
         }
 
-        plot = "\n".join(_make_plot(pickle.dumps(plot_args)))
+        plot = "\n".join(_make_plot(pickled_plot_args=pickle.dumps(plot_args)))
 
         yield from _ansi_to_text(plot).__rich_console__(console, options)

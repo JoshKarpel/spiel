@@ -66,7 +66,7 @@ class Footer:
                 ),
                 self.state.message,
                 Text(
-                    f"Render Time: {self.rps_counter.last_elapsed_render_time() * 1e3:>3.3f} ms | {self.rps_counter.renders_per_second() :.2f} RPS"
+                    f"Render Time: {self.rps_counter.last_elapsed_render_time() * 1e3:>3.3f} ms | {self.rps_counter.renders_per_second():.2f} RPS"
                 )
                 if self.state.options.profiling
                 else None,

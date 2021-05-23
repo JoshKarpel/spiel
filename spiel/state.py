@@ -33,9 +33,9 @@ class State:
     trigger_times: List[float] = field(default_factory=list)
 
     @classmethod
-    def from_file(cls, path: Path) -> State:
+    def from_file(cls, path: Path, console: Optional[Console] = None) -> State:
         deck, options = load_deck_and_options(path)
-        return cls(console=Console(), deck=deck, options=options)
+        return cls(console=console or Console(), deck=deck, options=options)
 
     @property
     def mode(self) -> Mode:

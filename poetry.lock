@@ -179,7 +179,7 @@ python-versions = "*"
 
 [[package]]
 name = "hypothesis"
-version = "6.13.1"
+version = "6.13.2"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -363,6 +363,22 @@ rich = "*"
 
 [package.extras]
 test = ["xeus-python", "ipykernel", "pytest", "pytest-asyncio", "mypy", "flake8"]
+
+[[package]]
+name = "line-profiler"
+version = "3.2.6"
+description = "Line-by-line profiler."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+IPython = {version = ">=0.13", markers = "python_version >= \"3.7\""}
+
+[package.extras]
+all = ["cython", "scikit-build", "cmake", "ninja", "pytest (>=4.6.11)", "pytest-cov (>=2.10.1)", "coverage[toml] (>=5.3)", "ubelt (>=0.8.7)", "IPython (>=0.13,<=7.7.0)", "IPython (>=0.13)"]
+build = ["cython", "scikit-build", "cmake", "ninja"]
+tests = ["pytest (>=4.6.11)", "pytest-cov (>=2.10.1)", "coverage[toml] (>=5.3)", "ubelt (>=0.8.7)"]
 
 [[package]]
 name = "livereload"
@@ -755,15 +771,20 @@ version = "10.2.2"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
-python-versions = ">=3.6,<4.0"
+python-versions = "^3.6"
+develop = true
 
 [package.dependencies]
-colorama = ">=0.4.0,<0.5.0"
-commonmark = ">=0.9.0,<0.10.0"
-pygments = ">=2.6.0,<3.0.0"
+colorama = "^0.4.0"
+commonmark = "^0.9.0"
+pygments = "^2.6.0"
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
+
+[package.source]
+type = "directory"
+url = "../rich"
 
 [[package]]
 name = "six"
@@ -877,11 +898,11 @@ test = ["pytest"]
 
 [[package]]
 name = "sphinxcontrib-htmlhelp"
-version = "1.0.3"
+version = "2.0.0"
 description = "sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files"
 category = "dev"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 
 [package.extras]
 lint = ["flake8", "mypy", "docutils-stubs"]
@@ -912,7 +933,7 @@ test = ["pytest"]
 
 [[package]]
 name = "sphinxcontrib-serializinghtml"
-version = "1.1.4"
+version = "1.1.5"
 description = "sphinxcontrib-serializinghtml is a sphinx extension which outputs \"serialized\" HTML files (json and pickle)."
 category = "dev"
 optional = false
@@ -1034,7 +1055,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "533e48018a7ca2101e98d2b8643587bace73062096e54d4b9159017b8d868a6c"
+content-hash = "e50d1a9afac47856083de64cf3ec4edd02469ba691b691efd07a16947b16de28"
 
 [metadata.files]
 alabaster = [
@@ -1198,8 +1219,8 @@ filelock = [
     {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
 ]
 hypothesis = [
-    {file = "hypothesis-6.13.1-py3-none-any.whl", hash = "sha256:c703a8c274ce72f0bf87a2a1e2c24c41087ede2c4a340b9396bace758e4062fb"},
-    {file = "hypothesis-6.13.1.tar.gz", hash = "sha256:074e27e514b305ba0b0c6bc0037faad1abbe2ea641ab4a8ec90e12a5e3238009"},
+    {file = "hypothesis-6.13.2-py3-none-any.whl", hash = "sha256:7d3a1e75e3152be5a385dd367ba24ffb0156ba7cdd009ddfefc704d04e141909"},
+    {file = "hypothesis-6.13.2.tar.gz", hash = "sha256:b9921f1070ae2ae12d4cc3c21f05d4f2f70276c57a9bdb17ec1f686985a14eff"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -1244,6 +1265,17 @@ jupyter-core = [
 kernel-driver = [
     {file = "kernel_driver-0.0.5-py3-none-any.whl", hash = "sha256:ad607187d7dca9581a26ffa9a183ceae6a98f6ba12459331801deddab6cea031"},
     {file = "kernel_driver-0.0.5.tar.gz", hash = "sha256:f7c58743b1df06066beaed038804a30bebb05587fc014a94fa382e7bfba748ca"},
+]
+line-profiler = [
+    {file = "line_profiler-3.2.6-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:1bab74bb0943167ab4d3e75918fa57c57f8327d9c7955bec4d425e0578dfbc7c"},
+    {file = "line_profiler-3.2.6-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:27ec2092d19b94f36d4249806e2200647de2e22af8ac653f1c6a82075ee879cf"},
+    {file = "line_profiler-3.2.6-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:0365a1800980a53f9633453eae73a8bb7565f25443b0196acdf5144d2523301f"},
+    {file = "line_profiler-3.2.6-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:9454302cd20ed76d4f76081d35652df993f41f1d0a0f5765cb2ffe4198bced45"},
+    {file = "line_profiler-3.2.6-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:2511f25d26272749d3baa523f669a809e22a0ee6cca0f2b1dd37d36115b73e81"},
+    {file = "line_profiler-3.2.6-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:0e86f91b63629fa594cc9eed6d36625c9beb16a92cee7b55bf8fbc0657ebde3d"},
+    {file = "line_profiler-3.2.6-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:3f96ca5802eb144c1dd7857da1b2a06df4398d1a9f2a212c2f50edf8e5f00abc"},
+    {file = "line_profiler-3.2.6-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:4915a2731c95e584788513d340497f79a4e3a22ef78ecedb60816a71dc39529a"},
+    {file = "line_profiler-3.2.6.tar.gz", hash = "sha256:dbc831754699ef6a3ae16a38c79f87823380770cd41a6e4c02345be5a5ea4a0d"},
 ]
 livereload = [
     {file = "livereload-2.6.3.tar.gz", hash = "sha256:776f2f865e59fde56490a56bcc6773b6917366bce0c267c60ee8aaf1a0959869"},
@@ -1541,10 +1573,7 @@ requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
 ]
-rich = [
-    {file = "rich-10.2.2-py3-none-any.whl", hash = "sha256:203e79c9012f57e0148a2132d0b43fe070a5c213cf080982c186e1d3ae4f8e1d"},
-    {file = "rich-10.2.2.tar.gz", hash = "sha256:17b3f486c38e79cc219d8848974b277ef532a82d12b3ad6eb37bb8c6f22ab5fc"},
-]
+rich = []
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
@@ -1578,8 +1607,8 @@ sphinxcontrib-devhelp = [
     {file = "sphinxcontrib_devhelp-1.0.2-py2.py3-none-any.whl", hash = "sha256:8165223f9a335cc1af7ffe1ed31d2871f325254c0423bc0c4c7cd1c1e4734a2e"},
 ]
 sphinxcontrib-htmlhelp = [
-    {file = "sphinxcontrib-htmlhelp-1.0.3.tar.gz", hash = "sha256:e8f5bb7e31b2dbb25b9cc435c8ab7a79787ebf7f906155729338f3156d93659b"},
-    {file = "sphinxcontrib_htmlhelp-1.0.3-py2.py3-none-any.whl", hash = "sha256:3c0bc24a2c41e340ac37c85ced6dafc879ab485c095b1d65d2461ac2f7cca86f"},
+    {file = "sphinxcontrib-htmlhelp-2.0.0.tar.gz", hash = "sha256:f5f8bb2d0d629f398bf47d0d69c07bc13b65f75a81ad9e2f71a63d4b7a2f6db2"},
+    {file = "sphinxcontrib_htmlhelp-2.0.0-py2.py3-none-any.whl", hash = "sha256:d412243dfb797ae3ec2b59eca0e52dac12e75a241bf0e4eb861e450d06c6ed07"},
 ]
 sphinxcontrib-jsmath = [
     {file = "sphinxcontrib-jsmath-1.0.1.tar.gz", hash = "sha256:a9925e4a4587247ed2191a22df5f6970656cb8ca2bd6284309578f2153e0c4b8"},
@@ -1590,8 +1619,8 @@ sphinxcontrib-qthelp = [
     {file = "sphinxcontrib_qthelp-1.0.3-py2.py3-none-any.whl", hash = "sha256:bd9fc24bcb748a8d51fd4ecaade681350aa63009a347a8c14e637895444dfab6"},
 ]
 sphinxcontrib-serializinghtml = [
-    {file = "sphinxcontrib-serializinghtml-1.1.4.tar.gz", hash = "sha256:eaa0eccc86e982a9b939b2b82d12cc5d013385ba5eadcc7e4fed23f4405f77bc"},
-    {file = "sphinxcontrib_serializinghtml-1.1.4-py2.py3-none-any.whl", hash = "sha256:f242a81d423f59617a8e5cf16f5d4d74e28ee9a66f9e5b637a18082991db5a9a"},
+    {file = "sphinxcontrib-serializinghtml-1.1.5.tar.gz", hash = "sha256:aa5f6de5dfdf809ef505c4895e51ef5c9eac17d0f287933eb49ec495280b6952"},
+    {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},

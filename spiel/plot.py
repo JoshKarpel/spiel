@@ -10,7 +10,6 @@ from colorama import Style as CStyle
 from rich.console import Console, ConsoleOptions
 from rich.segment import Segment
 from rich.style import Style
-from rich.text import Text
 
 Plottable = Union[
     np.ndarray,

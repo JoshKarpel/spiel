@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import Iterable, Iterator, List, NamedTuple, Tuple, Union
+from typing import Iterable, List, NamedTuple, Tuple, Union
 
 from PIL import Image as Img
 from rich.color import Color

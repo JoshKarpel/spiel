@@ -179,7 +179,7 @@ python-versions = "*"
 
 [[package]]
 name = "hypothesis"
-version = "6.13.2"
+version = "6.13.3"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -771,20 +771,15 @@ version = "10.2.2"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
-python-versions = "^3.6"
-develop = true
+python-versions = ">=3.6,<4.0"
 
 [package.dependencies]
-colorama = "^0.4.0"
-commonmark = "^0.9.0"
-pygments = "^2.6.0"
+colorama = ">=0.4.0,<0.5.0"
+commonmark = ">=0.9.0,<0.10.0"
+pygments = ">=2.6.0,<3.0.0"
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
-
-[package.source]
-type = "directory"
-url = "../rich"
 
 [[package]]
 name = "six"
@@ -1055,7 +1050,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "e50d1a9afac47856083de64cf3ec4edd02469ba691b691efd07a16947b16de28"
+content-hash = "1902025d1f63c0be7fc1277e3c97d34aa0c1546ded48c24b69713d9a5e949169"
 
 [metadata.files]
 alabaster = [
@@ -1219,8 +1214,8 @@ filelock = [
     {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
 ]
 hypothesis = [
-    {file = "hypothesis-6.13.2-py3-none-any.whl", hash = "sha256:7d3a1e75e3152be5a385dd367ba24ffb0156ba7cdd009ddfefc704d04e141909"},
-    {file = "hypothesis-6.13.2.tar.gz", hash = "sha256:b9921f1070ae2ae12d4cc3c21f05d4f2f70276c57a9bdb17ec1f686985a14eff"},
+    {file = "hypothesis-6.13.3-py3-none-any.whl", hash = "sha256:63fa82cf29a5d0e169df1ede5d8d8c9e718d1213f3a3d9bf6879224886c2328c"},
+    {file = "hypothesis-6.13.3.tar.gz", hash = "sha256:49fbede48837cbee2160a83d1c99c0a9094d74bad0e2f6f5f351ac80ff559a79"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -1573,7 +1568,10 @@ requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
 ]
-rich = []
+rich = [
+    {file = "rich-10.2.2-py3-none-any.whl", hash = "sha256:203e79c9012f57e0148a2132d0b43fe070a5c213cf080982c186e1d3ae4f8e1d"},
+    {file = "rich-10.2.2.tar.gz", hash = "sha256:17b3f486c38e79cc219d8848974b277ef532a82d12b3ad6eb37bb8c6f22ab5fc"},
+]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},

@@ -12,12 +12,21 @@ class RPSCounter:
 
         self.render_time_history: Deque[float] = deque(maxlen=render_history_length)
 
+    @property
+    def num_samples(self) -> int:
+        return len(self.render_time_history)
+
     def mark(self) -> None:
         self.render_time_history.append(monotonic())
 
     def renders_per_second(self) -> float:
-        num_samples = len(self.render_time_history)
-        if num_samples < 2:
+        if self.num_samples < 2:
             return 0
 
-        return num_samples / (self.render_time_history[-1] - self.render_time_history[0])
+        return self.num_samples / (self.render_time_history[-1] - self.render_time_history[0])
+
+    def last_elapsed_render_time(self) -> float:
+        if self.num_samples < 2:
+            return 0
+
+        return self.render_time_history[-1] - self.render_time_history[-2]

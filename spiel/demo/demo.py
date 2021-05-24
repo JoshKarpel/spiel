@@ -519,7 +519,7 @@ def options_():
 
         {SPIEL} has a variety of options that can be adjusted at runtime.
         For example,
-        profiling information can be displayed in the footer to help you debug a slides that is rendering too slowly.
+        profiling information can be displayed in the footer to help you debug a slide that is rendering too slowly.
 
         To see your current options, press `p`.
         From that mode you can edit your options by pressing `e`.

@@ -19,7 +19,7 @@ class Options:
     repl: str = "ipython"
     notebook: str = "nbterm"
     footer_time_format: str = "YYYY-MM-DD hh:mm A"
-    profiling: bool = True
+    profiling: bool = False
 
     def __post_init__(self) -> None:
         if self.repl not in REPLS:

@@ -437,7 +437,7 @@ python-versions = "*"
 
 [[package]]
 name = "nbterm"
-version = "0.0.7"
+version = "0.0.10"
 description = "A tool for viewing, editing and executing Jupyter Notebooks in the terminal"
 category = "main"
 optional = false
@@ -1050,7 +1050,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "108438c1026e5f8a529bab9e4f6df8e43a6424b05e09c2ddb8dc4b97c70d657c"
+content-hash = "cbcbe6b9911126c2c1ff8fb499a118ff5165e4913a2ba71baba24e783ee17ba4"
 
 [metadata.files]
 alabaster = [
@@ -1356,8 +1356,8 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 nbterm = [
-    {file = "nbterm-0.0.7-py3-none-any.whl", hash = "sha256:dfbaae2b4990daae365d48889743305f63701f0ec7a02a0deee98bb208acf356"},
-    {file = "nbterm-0.0.7.tar.gz", hash = "sha256:8cf427520b2507cc064cb98c2789317583616481e6816abce930dd45073a6407"},
+    {file = "nbterm-0.0.10-py3-none-any.whl", hash = "sha256:6336c5dd93ac09623284e668a5548db6beb63a22ddd7751ed916ca3ab6f54a17"},
+    {file = "nbterm-0.0.10.tar.gz", hash = "sha256:2a2fe28dfaf979d4366dc5c669cd95abedb2494f016bbbc4e525af46c8eefdb1"},
 ]
 nest-asyncio = [
     {file = "nest_asyncio-1.5.1-py3-none-any.whl", hash = "sha256:76d6e972265063fe92a90b9cc4fb82616e07d586b346ed9d2c89a4187acea39c"},

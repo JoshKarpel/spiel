@@ -15,10 +15,13 @@ def render_image_repeatedly() -> None:
     with open(os.devnull, "w") as f:
         state = State.from_file(DEMO_SOURCE, console=Console(file=f))
 
+        state.trigger()
+        state.trigger()
         for _ in range(CYCLES_PER_SLIDE):
-            slide = [slide for slide in state.deck.slides if "Image" in slide.title][0]
+            slide = [slide for slide in state.deck.slides if "Plot" in slide.title][0]
             rendered = render_slide(state, slide)
             state.console.print(rendered)
+            state.trigger()
 
 
 if __name__ == "__main__":

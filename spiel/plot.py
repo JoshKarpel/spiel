@@ -33,23 +33,23 @@ ANSI_COLOR_TO_STYLE = {
 
 
 @lru_cache(maxsize=2 ** 8)
-def _ansi_to_text(s: str) -> Text:
-    pieces = []
+def _ansi_to_text(s: str) -> List[Segment]:
+    segments = []
     tmp = ""
     null_style = Style.null()
     style = null_style
     for char in RE_ANSI_ESCAPE.split(s):
         if char in ANSI_COLOR_TO_STYLE:
-            pieces.append(Text(tmp, style=style))
+            segments.append(Segment(tmp, style=style))
             style = ANSI_COLOR_TO_STYLE[char]
             tmp = ""
         else:
             tmp += char
 
     # catch leftovers
-    pieces.append(Text(tmp, style=style))
+    segments.append(Segment(tmp, style=style))
 
-    return Text("", no_wrap=True).join(pieces)
+    return list(Segment.simplify(segments))
 
 
 @lru_cache(maxsize=2 ** 8)
@@ -85,5 +85,6 @@ class Plot:
         }
 
         plot = "\n".join(_make_plot(pickled_plot_args=pickle.dumps(plot_args)))
+        # plot = "\n".join(uniplot.plot_to_string(plot_args))
 
-        yield from _ansi_to_text(plot).__rich_console__(console, options)
+        yield from _ansi_to_text(plot)

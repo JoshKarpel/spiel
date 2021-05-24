@@ -47,7 +47,7 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> List[Segment]:
 
 
 @lru_cache(maxsize=2 ** 4)
-def load_image(path: Path) -> Image:
+def _load_image(path: Path) -> Image:
     return Img.open(path)
 
 
@@ -57,7 +57,7 @@ class Image:
 
     @classmethod
     def from_file(cls, path: Path) -> Image:
-        return cls(img=load_image(path))
+        return cls(img=_load_image(path))
 
     def _determine_size(self, options: ConsoleOptions) -> ImageSize:
         width, height = self.img.size

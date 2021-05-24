@@ -35,7 +35,7 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> List[Segment]:
             segments.append(
                 Segment(
                     text="▀",
-                    style=Style(
+                    style=Style.from_color(
                         color=Color.from_rgb(*top_pixel) if top_pixel else None,
                         bgcolor=Color.from_rgb(*bottom_pixel) if bottom_pixel else None,
                     ),

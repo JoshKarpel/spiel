@@ -639,10 +639,7 @@ python-versions = ">=3.5"
 [package.dependencies]
 attrs = ">=19.0"
 filelock = ">=3.0"
-mypy = [
-    {version = ">=0.700", markers = "python_version >= \"3.8\" and python_version < \"3.9\""},
-    {version = ">=0.780", markers = "python_version >= \"3.9\""},
-]
+mypy = {version = ">=0.780", markers = "python_version >= \"3.9\""}
 pytest = ">=3.5"
 
 [[package]]
@@ -1017,8 +1014,8 @@ python-versions = "*"
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.8,<4"
-content-hash = "f9044ee2fdb6992f989f2c5281125ad204f41d86c07d0eafb320bb7173681664"
+python-versions = ">=3.9,<4"
+content-hash = "9360a63cd846d14cbf69857a690c167e575169f0334d70444c8f36b31e1c9515"
 
 [metadata.files]
 alabaster = [

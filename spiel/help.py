@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from click._termui_impl import Editor  # type: ignore
+from click._termui_impl import Editor
 from rich.align import Align
 from rich.console import Console, ConsoleRenderable, RenderGroup
 from rich.padding import Padding

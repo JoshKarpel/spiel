@@ -68,7 +68,7 @@ class Example(Presentable):
     _cache: Optional[CachedExample] = None
 
     def layout(self, function: ExampleLayout) -> ExampleLayout:
-        self._layout = function  # type: ignore
+        self._layout = function
         return function
 
     @property
@@ -109,4 +109,6 @@ class Example(Presentable):
         elif self._cache.trigger_number != len(triggers):
             self._cache = CachedExample(len(triggers), self.source, self.execute())
 
-        return self._layout(self, **self.get_render_kwargs(function=self._layout, triggers=triggers))  # type: ignore
+        return self._layout(
+            self, **self.get_render_kwargs(function=self._layout, triggers=triggers)
+        )

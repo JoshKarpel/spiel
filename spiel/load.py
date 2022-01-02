@@ -49,7 +49,7 @@ def load_deck_and_options(path: Path) -> Tuple[Deck, Options]:
 
 
 @dataclass
-class DeckWatcher(ContextManager):
+class DeckWatcher(ContextManager["DeckWatcher"]):
     event_handler: FileSystemEventHandler
     path: Path
     poll: bool = False

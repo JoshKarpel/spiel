@@ -7,15 +7,15 @@ RUN : \
  && rm -rf /var/lib/apt/lists/* \
  && :
 
+ENV COLORTERM=truecolor \
+    EDITOR=/usr/bin/vim
+
 WORKDIR /app
 
 COPY . /app/spiel
 RUN : \
- && pip install --no-cache-dir /app/spiel ipython \
+ && pip install --no-cache-dir /app/spiel[ipython] \
  && spiel version \
  && :
-
-ENV COLORTERM=truecolor \
-    EDITOR=/usr/bin/vim
 
 CMD ["spiel", "demo", "present"]

@@ -6,7 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from time import monotonic
 from types import TracebackType
-from typing import Callable, List, Optional, Type, Union
+from typing import Callable, ContextManager, List, Optional, Type, Union
 
 from rich.console import Console
 from rich.style import Style
@@ -23,7 +23,7 @@ TextLike = Union[Text, Callable[[], Text]]
 
 
 @dataclass
-class State:
+class State(ContextManager["State"]):
     console: Console
     deck: Deck
     options: Options
@@ -103,7 +103,7 @@ class State:
         self.trigger()
 
     @cached_property
-    def _tmp_dir(self) -> TemporaryDirectory:
+    def _tmp_dir(self) -> TemporaryDirectory[str]:
         return TemporaryDirectory(prefix=f"{PACKAGE_NAME}-")
 
     @cached_property

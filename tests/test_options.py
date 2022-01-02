@@ -9,7 +9,6 @@ from rich.console import Console
 
 from spiel import Options
 from spiel.exceptions import InvalidOptionValue
-from spiel.notebooks import NOTEBOOKS
 from spiel.repls import REPLS
 
 
@@ -18,7 +17,6 @@ def valid_options() -> SearchStrategy[Options]:
         Options,
         profiling=infer,
         repl=st.sampled_from(list(REPLS.keys())),
-        notebook=st.sampled_from(list(NOTEBOOKS.keys())),
     )
 
 
@@ -48,7 +46,6 @@ def test_can_render_options(console: Console, three_slide_options: Options) -> N
     "key, value",
     [
         ("repl", "foobar"),
-        ("notebook", "foobar"),
     ],
 )
 def test_reject_invalid_option_values(key: str, value: Any) -> None:

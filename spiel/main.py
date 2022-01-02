@@ -2,6 +2,7 @@ import shutil
 from contextlib import nullcontext
 from pathlib import Path
 from textwrap import dedent
+from typing import Union
 
 from rich.console import Console
 from rich.control import Control

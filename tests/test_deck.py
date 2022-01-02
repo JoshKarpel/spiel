@@ -33,4 +33,4 @@ def test_get_function_body() -> None:
 
 def test_get_function_body_raises_on_function_with_no_source() -> None:
     with pytest.raises(TypeError):
-        get_function_body(str)
+        get_function_body(str)  # type: ignore

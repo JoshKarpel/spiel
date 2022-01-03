@@ -33,13 +33,13 @@ from rich.text import Text
 from tomli import TOMLDecodeError
 from typer import Exit
 
-from .constants import EDITOR, PACKAGE_NAME
-from .example import Example
-from .exceptions import DuplicateInputHandler, InvalidOptionValue
-from .modes import Mode
-from .options import Options
-from .repls import REPLS
-from .state import State
+from spiel.constants import EDITOR, PACKAGE_NAME
+from spiel.example import Example
+from spiel.exceptions import DuplicateInputHandler, InvalidOptionValue
+from spiel.modes import Mode
+from spiel.options import Options
+from spiel.repls import REPLS
+from spiel.state import State
 
 LFLAG = 3
 CC = 6

@@ -14,7 +14,7 @@ WORKDIR /app
 
 COPY . /app/spiel
 RUN : \
- && pip install --no-cache-dir /app/spiel[ipython] \
+ && pip install --no-cache-dir /app/spiel \
  && spiel version \
  && :
 

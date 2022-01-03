@@ -12,7 +12,7 @@ from rich.console import Console, ConsoleOptions
 from rich.segment import Segment
 from rich.style import Style
 
-from .utils import chunks
+from spiel.utils import chunks
 
 
 class ImageSize(NamedTuple):

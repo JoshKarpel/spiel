@@ -11,10 +11,10 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
 
-from .constants import DECK, OPTIONS
-from .deck import Deck
-from .exceptions import NoDeckFound
-from .options import Options
+from spiel.constants import DECK, OPTIONS
+from spiel.deck import Deck
+from spiel.exceptions import NoDeckFound
+from spiel.options import Options
 
 
 def load_deck_and_options(path: Path) -> Tuple[Deck, Options]:

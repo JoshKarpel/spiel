@@ -9,9 +9,9 @@ from rich.console import ConsoleRenderable
 from rich.padding import Padding
 from rich.table import Column, Table
 
-from .constants import PACKAGE_NAME
-from .exceptions import InvalidOptionValue
-from .repls import REPLS
+from spiel.constants import PACKAGE_NAME
+from spiel.exceptions import InvalidOptionValue
+from spiel.repls import REPLS
 
 
 @dataclass

@@ -8,10 +8,10 @@ from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
 
-from .constants import PACKAGE_NAME, __python_version__, __rich_version__, __version__
-from .input import INPUT_HANDLER_HELP, SpecialCharacters
-from .modes import Mode
-from .state import State
+from spiel.constants import PACKAGE_NAME, __python_version__, __rich_version__, __version__
+from spiel.input import INPUT_HANDLER_HELP, SpecialCharacters
+from spiel.modes import Mode
+from spiel.state import State
 
 
 @dataclass

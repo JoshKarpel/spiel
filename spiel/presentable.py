@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from rich.console import ConsoleRenderable
 
-from .triggers import Triggers
+from spiel.triggers import Triggers
 
 
 @dataclass
@@ -15,7 +15,7 @@ class Presentable:  # Why not an ABC? https://github.com/python/mypy/issues/5374
         raise NotImplementedError
 
     def get_render_kwargs(
-        self, function: Callable[[Any], ConsoleRenderable], triggers: Triggers
+        self, function: Callable[..., ConsoleRenderable], triggers: Triggers
     ) -> Mapping[str, Any]:
         signature = inspect.signature(function)
 

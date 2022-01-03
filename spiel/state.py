@@ -12,12 +12,12 @@ from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
-from .constants import PACKAGE_NAME
-from .deck import Deck
-from .load import load_deck_and_options
-from .modes import Mode
-from .options import Options
-from .presentable import Presentable
+from spiel.constants import PACKAGE_NAME
+from spiel.deck import Deck
+from spiel.load import load_deck_and_options
+from spiel.modes import Mode
+from spiel.options import Options
+from spiel.presentable import Presentable
 
 TextLike = Union[Text, Callable[[], Text]]
 

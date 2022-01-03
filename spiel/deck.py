@@ -8,9 +8,9 @@ from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import Callable, Iterator, List, Sequence
 
-from .example import Example
-from .presentable import Presentable
-from .slide import MakeRenderable, Slide
+from spiel.example import Example
+from spiel.presentable import Presentable
+from spiel.slide import MakeRenderable, Slide
 
 
 @dataclass

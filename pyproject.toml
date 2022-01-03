@@ -13,7 +13,7 @@ line_length = 100
 
 [tool.poetry]
 name = "spiel"
-version = "0.2.1"
+version = "0.3.0"
 description = "A framework for building and presenting richly-styled presentations in your terminal using Python."
 readme="README.md"
 homepage="https://github.com/JoshKarpel/spiel"
@@ -33,33 +33,30 @@ license = "MIT"
 include = ["py.typed", "demo/*"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-rich = "^10.2.2"
-typer = "^0.3.2"
-watchdog = "^2.0.2"
-pendulum = "^2.1.2"
-Pillow = "^8.2.0"
-ipython = "^7.23.0"
-ipykernel = "^5.5.3"
-nbterm = ">=0.0.7,<0.0.11"
-toml = "^0.10.2"
-uniplot = "^0.4.4"
-numpy = "^1.20.3"
+python = ">=3.9,<4"
+rich = ">=10"
+typer = ">=0.3"
+watchdog = ">=2"
+pendulum = ">=2"
+Pillow = ">=8"
+tomli = ">=2"
+tomli-w = ">=1"
+ipython = ">= 7"
+ipykernel = ">= 5"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.2"
-pytest-watch = "^4.2.0"
-pytest-cov = "^2.11.1"
-pytest-xdist = "^2.2.1"
-mypy = "^0.900"
-pytest-mypy = "^0.8.1"
-pytest-mock = "^3.5.1"
-hypothesis = "^6.13.5"
-Sphinx = "^4.0.2"
-sphinx-rtd-theme = "^0.5.2"
-sphinx-autobuild = "^2021.3.14"
-line-profiler = "^3.2.6"
-types-toml = "^0.1.3"
+pytest = ">=6"
+pytest-watch = ">=4"
+pytest-cov = ">=3"
+pytest-xdist = ">=2"
+mypy = ">=0.900"
+pytest-mypy = ">=0.8"
+pytest-mock = ">=3"
+hypothesis = ">=6"
+Sphinx = ">=4"
+sphinx-rtd-theme = ">=0.5"
+sphinx-autobuild = ">=2021.3.14"
+line-profiler = ">=3"
 
 [tool.poetry.scripts]
 spiel = 'spiel.main:app'
@@ -80,4 +77,12 @@ check_untyped_defs = true
 disallow_incomplete_defs = true
 disallow_untyped_defs = true
 no_implicit_optional = true
+disallow_any_generics = true
+
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+warn_redundant_casts = true
+
 ignore_missing_imports = true

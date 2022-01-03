@@ -68,7 +68,7 @@ class Example(Presentable):
     _cache: Optional[CachedExample] = None
 
     def layout(self, function: ExampleLayout) -> ExampleLayout:
-        self._layout = function  # type: ignore
+        self._layout = function
         return function
 
     @property
@@ -87,7 +87,7 @@ class Example(Presentable):
     def input(self) -> Syntax:
         input = (self._cache.input or "") if self._cache is not None else ""
         return Syntax(
-            input,
+            input.strip(),
             lexer_name=self.language,
             code_width=max(len(line) for line in input.splitlines()),
         )
@@ -109,4 +109,6 @@ class Example(Presentable):
         elif self._cache.trigger_number != len(triggers):
             self._cache = CachedExample(len(triggers), self.source, self.execute())
 
-        return self._layout(self, **self.get_render_kwargs(function=self._layout, triggers=triggers))  # type: ignore
+        return self._layout(
+            self, **self.get_render_kwargs(function=self._layout, triggers=triggers)
+        )

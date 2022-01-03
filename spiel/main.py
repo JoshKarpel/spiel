@@ -10,13 +10,13 @@ from rich.syntax import Syntax
 from rich.text import Text
 from typer import Argument, Exit, Option, Typer
 
-from .constants import PACKAGE_NAME, __version__
-from .help import version_details
-from .load import DeckWatcher
-from .modes import Mode
-from .present import present_deck
-from .reloader import DeckReloader
-from .state import State
+from spiel.constants import PACKAGE_NAME, __version__
+from spiel.help import version_details
+from spiel.load import DeckWatcher
+from spiel.modes import Mode
+from spiel.present import present_deck
+from spiel.reloader import DeckReloader
+from spiel.state import State
 
 THIS_DIR = Path(__file__).resolve().parent
 
@@ -31,7 +31,8 @@ app = Typer(
 
         A {PACKAGE_NAME.capitalize()} presentation (a "deck [of slides]") is defined programmatically using a Python script.
         """
-    )
+    ),
+    no_args_is_help=True,
 )
 
 

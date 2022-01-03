@@ -7,7 +7,6 @@ from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
 
-import numpy as np
 from rich.align import Align
 from rich.box import SQUARE
 from rich.color import Color, blend_rgb
@@ -21,15 +20,12 @@ from rich.syntax import Syntax
 from rich.text import Text
 
 from spiel import Deck, Image, Options, Slide, __version__, example_panels
-from spiel.plot import Plot
 
 deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
 options = Options()
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
-NBTERM = "[nbterm](https://github.com/davidbrochart/nbterm)"
-UNIPLOT = "[Uniplot](https://github.com/olavolav/uniplot)"
 IPYTHON = "[IPython](https://ipython.readthedocs.io)"
 WSL = "[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/)"
 
@@ -164,46 +160,43 @@ def dynamic():
     home = Path.home()
     width = shutil.get_terminal_size().columns
     width_limit = 80
+    home_dir_contents = list(home.iterdir())
     return RenderGroup(
-        Align(
+        Align.center(
             Text(
                 f"Slides can have dynamic content!",
                 style=Style(color="bright_magenta", bold=True, italic=True),
                 justify="center",
             ),
-            align="center",
         ),
-        Align(
+        Align.center(
             Panel(
                 Text(
-                    f"Your terminal is {width} cells wide."
+                    f"Your terminal is {width} cells wide"
                     if width > width_limit
                     else f"Your terminal is only {width} cells wide! Get a bigger monitor!",
                     style=Style(color="green1" if width > width_limit else "red"),
                     justify="center",
                 )
             ),
-            align="center",
         ),
-        Align(
+        Align.center(
             Panel(
-                Text(
-                    f"The time on this computer, {socket.gethostname()}, is {datetime.now()}",
-                    style=Style(color="bright_cyan", bold=True, italic=True),
+                Text.from_markup(
+                    f"The time on this computer ([bold]{socket.gethostname()}[/bold]) is {datetime.now()}",
+                    style="bright_cyan",
                     justify="center",
                 )
             ),
-            align="center",
         ),
-        Align(
+        Align.center(
             Panel(
                 Text(
-                    f"There are {len([f for f in home.iterdir() if f.is_file()])} files in {home} right now.",
+                    f"There are {len([f for f in home_dir_contents if f.is_file()])} files and {len([f for f in home_dir_contents if f.is_dir()])} directories in {home}",
                     style=Style(color="yellow"),
                     justify="center",
                 )
             ),
-            align="center",
         ),
     )
 
@@ -345,48 +338,7 @@ def image():
     root = Layout()
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image.from_file(THIS_DIR / "img.jpg")),
-    )
-
-    return root
-
-
-@deck.slide(title="Plots")
-def plots(triggers):
-    markup = dedent(
-        f"""\
-        ## Plots
-
-        {SPIEL} can display plots... sort of!
-
-        Spiel includes a `Plot` widget that uses {UNIPLOT} to render plots.
-
-        You can even make animated plots by using triggers! Try triggering this slide.
-        """
-    )
-
-    x = np.linspace(-3, 3, 1000)
-    coefficients = np.array([0, 2, -1, 3, -1, 1])
-    dither = 0.1 * np.sin(triggers.time_since_last_trigger) if triggers.triggered else 0
-    hermite = 0.9 * np.polynomial.hermite.hermval(x, c=coefficients + dither)
-    upper_plot = Plot(xs=x, ys=hermite, title="A Hermite Polynomial", y_min=-100, y_max=100)
-
-    theta = np.linspace(-3 * np.pi, 3 * np.pi, 1000)
-    phase = (1 if triggers.triggered else 0) * triggers.time_since_last_trigger
-    cos = np.cos(theta + phase)
-    sin = 1.3 * np.sin(theta + phase)
-    lower_plot = Plot(xs=[theta, theta], ys=[cos, sin], title="[cos(x), 1.3 * sin(x)]")
-
-    lower = Layout()
-    lower.split_column(
-        Layout(upper_plot),
-        Layout(lower_plot),
-    )
-
-    root = Layout()
-    root.split_row(
-        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        lower,
+        Layout(Image.from_file(THIS_DIR / "tree.jpg")),
     )
 
     return root
@@ -463,7 +415,7 @@ def repl():
         f"""\
         ## Live Coding: REPL
 
-        Sometimes an static example,
+        Sometimes a static example,
         or even an example that you're editing and running multiple times,
         just isn't interactive enough.
 
@@ -473,39 +425,11 @@ def repl():
         There are two REPLs available by default: the [builtin Python REPL](https://docs.python.org/3/tutorial/interpreter.html#interactive-mode) and {IPYTHON}.
         You can change which REPL to use via `Options`, which will be discussed later.
 
-        When you exit the REPL (by pressing `ctrl-d` or executing `exit`),
+        When you exit the REPL (by pressing `ctrl-d` or running `exit()`),
         you'll be back at the same point in your presentation.
 
         The state of the REPL is not persistent between invocations
         (it will be completely fresh every time you enter it).
-        """
-    )
-    return Markdown(markup, justify="center")
-
-
-@deck.slide(title="Live Coding with Notebooks", notebook=THIS_DIR / "notebook.ipynb")
-def notebooks():
-    markup = dedent(
-        f"""\
-        ## Live Coding: Notebooks
-
-        For a more persistent live-coding experience than a REPL,
-        you can open a Jupyter Notebook via {NBTERM}
-        by pressing `n`.
-
-        Each slide has a notebook attached to it.
-        The notebook kernel will be restarted between invocations,
-        but changes made to the notebook contents
-        will persist throughout your presentation.
-
-        By default, the notebook will initially be blank,
-        but you can also provide a path to a notebook on disk to initialize from.
-
-        This slide has a small example notebook attached to it - try it out!
-
-        (In theory, {SPIEL} will be able to support different kinds of terminal notebook viewers in the future,
-        but right now, only {NBTERM} is packaged by default, and the internal API is not stable or very generic.
-        Stay tuned!)
         """
     )
     return Markdown(markup, justify="center")

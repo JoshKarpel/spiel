@@ -36,6 +36,6 @@ def test_render_image(image: Image, console: Console) -> None:
 
 
 def test_render_image_from_file(console: Console) -> None:
-    image = Image.from_file(DEMO_DIR / "img.jpg")
+    image = Image.from_file(DEMO_DIR / "tree.jpg")
 
     console.print(image)

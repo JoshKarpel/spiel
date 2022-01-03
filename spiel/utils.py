@@ -4,8 +4,8 @@ from typing import Any, Iterable, Iterator, Optional, TypeVar
 T = TypeVar("T")
 
 
-def joinify(joiner: str, items: Iterable[Optional[Any]]) -> str:
-    return joiner.join(map(str, filter(None, items)))
+def filter_join(separator: str, items: Iterable[Optional[Any]]) -> str:
+    return separator.join(map(str, filter(None, items)))
 
 
 def drop_nones(*items: Optional[T]) -> Iterator[T]:

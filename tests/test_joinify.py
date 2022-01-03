@@ -2,7 +2,7 @@ from typing import Any, Iterable, Optional
 
 import pytest
 
-from spiel.utils import joinify
+from spiel.utils import filter_join
 
 
 @pytest.mark.parametrize(
@@ -15,5 +15,5 @@ from spiel.utils import joinify
         (".", iter(["a", None, "b"]), "a.b"),
     ],
 )
-def test_joinify(joiner: str, items: Iterable[Optional[Any]], expected: str) -> None:
-    assert joinify(joiner, items) == expected
+def test_filter_join(joiner: str, items: Iterable[Optional[Any]], expected: str) -> None:
+    assert filter_join(joiner, items) == expected

@@ -30,17 +30,16 @@ from typing import (
 import typer
 from rich.control import Control
 from rich.text import Text
-from toml import TomlDecodeError
+from tomli import TOMLDecodeError
 from typer import Exit
 
-from .constants import EDITOR, PACKAGE_NAME
-from .example import Example
-from .exceptions import DuplicateInputHandler, InvalidOptionValue
-from .modes import Mode
-from .notebooks import NOTEBOOKS
-from .options import Options
-from .repls import REPLS
-from .state import State
+from spiel.constants import EDITOR, PACKAGE_NAME
+from spiel.example import Example
+from spiel.exceptions import DuplicateInputHandler, InvalidOptionValue
+from spiel.modes import Mode
+from spiel.options import Options
+from spiel.repls import REPLS
+from spiel.state import State
 
 LFLAG = 3
 CC = 6
@@ -268,11 +267,13 @@ def edit_options(state: State) -> None:
     with suspend_live(state):
         new_toml = state.options.as_toml()
         while True:
-            new_toml = _clean_toml(typer.edit(text=new_toml, extension=".toml", require_save=False))
+            new_toml = _clean_toml(
+                typer.edit(text=new_toml, extension=".toml", require_save=False) or ""
+            )
             try:
                 state.options = Options.from_toml(new_toml)
                 return
-            except TomlDecodeError as e:
+            except TOMLDecodeError as e:
                 new_toml = f"{new_toml}\n\n# Parse Error: {e}\n"
             except InvalidOptionValue as e:
                 new_toml = f"{new_toml}\n\n# Invalid Option Value: {e}\n"
@@ -404,8 +405,11 @@ def edit_example(state: State) -> None:
     example = state.current_slide
     if isinstance(example, Example):
         with suspend_live(state):
-            example.source = typer.edit(
-                text=example.source, extension=Path(example.name).suffix, require_save=False
+            example.source = (
+                typer.edit(
+                    text=example.source, extension=Path(example.name).suffix, require_save=False
+                )
+                or ""
             )
             example.clear_cache()
 
@@ -424,24 +428,6 @@ def open_repl(state: State) -> None:
 
         try:
             REPLS[state.options.repl]()
-        finally:
-            start_no_echo(sys.stdin)
-
-
-@input_handler(
-    "n",
-    name="Open Notebook",
-    modes=NOT_HELP,
-    help=f"Open a Jupyter Notebook in your terminal using [link=https://github.com/davidbrochart/nbterm]nbterm[/link].",
-)
-def open_notebook(state: State) -> None:
-    with suspend_live(state):
-        reset_tty(sys.stdin)
-        state.console.print(Control.clear())
-        state.console.print(Control.move_to(0, 0))
-
-        try:
-            NOTEBOOKS[state.options.notebook](state)
         finally:
             start_no_echo(sys.stdin)
 

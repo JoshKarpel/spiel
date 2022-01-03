@@ -6,8 +6,8 @@ from typing import Callable, Union
 from rich.console import ConsoleRenderable
 from rich.text import Text
 
-from .presentable import Presentable
-from .triggers import Triggers
+from spiel.presentable import Presentable
+from spiel.triggers import Triggers
 
 MakeRenderable = Callable[..., ConsoleRenderable]
 RenderableLike = Union[MakeRenderable, ConsoleRenderable]

@@ -10,11 +10,11 @@ REPLS: MutableMapping[str, REPLExecutor] = {}
 
 
 def repl(name: str) -> Callable[[REPLExecutor], REPLExecutor]:
-    def registrar(executor: REPLExecutor) -> REPLExecutor:
+    def register(executor: REPLExecutor) -> REPLExecutor:
         REPLS[name] = executor
         return executor
 
-    return registrar
+    return register
 
 
 @repl("builtin")

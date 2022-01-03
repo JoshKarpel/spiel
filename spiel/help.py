@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from click._termui_impl import Editor  # type: ignore
+from click._termui_impl import Editor
 from rich.align import Align
 from rich.console import Console, ConsoleRenderable, RenderGroup
 from rich.padding import Padding
@@ -8,10 +8,10 @@ from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
 
-from .constants import PACKAGE_NAME, __python_version__, __rich_version__, __version__
-from .input import INPUT_HANDLER_HELP, SpecialCharacters
-from .modes import Mode
-from .state import State
+from spiel.constants import PACKAGE_NAME, __python_version__, __rich_version__, __version__
+from spiel.input import INPUT_HANDLER_HELP, SpecialCharacters
+from spiel.modes import Mode
+from spiel.state import State
 
 
 @dataclass

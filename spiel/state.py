@@ -6,24 +6,24 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from time import monotonic
 from types import TracebackType
-from typing import Callable, List, Optional, Type, Union
+from typing import Callable, ContextManager, List, Optional, Type, Union
 
 from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
-from .constants import PACKAGE_NAME
-from .deck import Deck
-from .load import load_deck_and_options
-from .modes import Mode
-from .options import Options
-from .presentable import Presentable
+from spiel.constants import PACKAGE_NAME
+from spiel.deck import Deck
+from spiel.load import load_deck_and_options
+from spiel.modes import Mode
+from spiel.options import Options
+from spiel.presentable import Presentable
 
 TextLike = Union[Text, Callable[[], Text]]
 
 
 @dataclass
-class State:
+class State(ContextManager["State"]):
     console: Console
     deck: Deck
     options: Options
@@ -103,7 +103,7 @@ class State:
         self.trigger()
 
     @cached_property
-    def _tmp_dir(self) -> TemporaryDirectory:
+    def _tmp_dir(self) -> TemporaryDirectory[str]:
         return TemporaryDirectory(prefix=f"{PACKAGE_NAME}-")
 
     @cached_property

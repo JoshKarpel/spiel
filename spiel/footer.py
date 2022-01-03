@@ -6,10 +6,10 @@ from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
 
-from .modes import Mode
-from .rps import RPSCounter
-from .state import State
-from .utils import drop_nones, joinify
+from spiel.modes import Mode
+from spiel.rps import RPSCounter
+from spiel.state import State
+from spiel.utils import drop_nones, filter_join
 
 
 @dataclass
@@ -54,7 +54,7 @@ class Footer:
         grid.add_row(
             *drop_nones(
                 Text(
-                    joinify(
+                    filter_join(
                         " | ",
                         [
                             self.state.deck.name,

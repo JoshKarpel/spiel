@@ -20,7 +20,6 @@ from spiel.input import (
     exit,
     jump_to_slide,
     next_slide,
-    open_notebook,
     open_repl,
     previous_slide,
     slide_mode,
@@ -66,7 +65,6 @@ TESTABLE_INPUT_HANDLERS = list(
             exit,
             jump_to_slide,
             open_repl,
-            open_notebook,
             edit_options,
             edit_example,
         }

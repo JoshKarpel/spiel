@@ -87,7 +87,7 @@ class Example(Presentable):
     def input(self) -> Syntax:
         input = (self._cache.input or "") if self._cache is not None else ""
         return Syntax(
-            input,
+            input.strip(),
             lexer_name=self.language,
             code_width=max(len(line) for line in input.splitlines()),
         )

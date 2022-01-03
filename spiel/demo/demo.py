@@ -26,8 +26,6 @@ options = Options()
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
-NBTERM = "[nbterm](https://github.com/davidbrochart/nbterm)"
-UNIPLOT = "[Uniplot](https://github.com/olavolav/uniplot)"
 IPYTHON = "[IPython](https://ipython.readthedocs.io)"
 WSL = "[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/)"
 
@@ -162,46 +160,43 @@ def dynamic():
     home = Path.home()
     width = shutil.get_terminal_size().columns
     width_limit = 80
+    home_dir_contents = list(home.iterdir())
     return RenderGroup(
-        Align(
+        Align.center(
             Text(
                 f"Slides can have dynamic content!",
                 style=Style(color="bright_magenta", bold=True, italic=True),
                 justify="center",
             ),
-            align="center",
         ),
-        Align(
+        Align.center(
             Panel(
                 Text(
-                    f"Your terminal is {width} cells wide."
+                    f"Your terminal is {width} cells wide"
                     if width > width_limit
                     else f"Your terminal is only {width} cells wide! Get a bigger monitor!",
                     style=Style(color="green1" if width > width_limit else "red"),
                     justify="center",
                 )
             ),
-            align="center",
         ),
-        Align(
+        Align.center(
             Panel(
-                Text(
-                    f"The time on this computer, {socket.gethostname()}, is {datetime.now()}",
-                    style=Style(color="bright_cyan", bold=True, italic=True),
+                Text.from_markup(
+                    f"The time on this computer ([bold]{socket.gethostname()}[/bold]) is {datetime.now()}",
+                    style="bright_cyan",
                     justify="center",
                 )
             ),
-            align="center",
         ),
-        Align(
+        Align.center(
             Panel(
                 Text(
-                    f"There are {len([f for f in home.iterdir() if f.is_file()])} files in {home} right now.",
+                    f"There are {len([f for f in home_dir_contents if f.is_file()])} files and {len([f for f in home_dir_contents if f.is_dir()])} directories in {home}",
                     style=Style(color="yellow"),
                     justify="center",
                 )
             ),
-            align="center",
         ),
     )
 
@@ -343,7 +338,7 @@ def image():
     root = Layout()
     root.split_row(
         Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image.from_file(THIS_DIR / "img.jpg")),
+        Layout(Image.from_file(THIS_DIR / "tree.jpg")),
     )
 
     return root

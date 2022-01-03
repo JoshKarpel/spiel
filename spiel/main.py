@@ -31,7 +31,8 @@ app = Typer(
 
         A {PACKAGE_NAME.capitalize()} presentation (a "deck [of slides]") is defined programmatically using a Python script.
         """
-    )
+    ),
+    no_args_is_help=True,
 )
 
 

@@ -23,7 +23,7 @@ class ImageSize(NamedTuple):
 Pixels = Tuple[Union[Tuple[int, int, int], None], ...]
 
 
-@lru_cache(maxsize=2 ** 8)
+@lru_cache(maxsize=2**8)
 def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> List[Segment]:
     line = Segment.line()
 
@@ -46,7 +46,7 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> List[Segment]:
     return list(Segment.simplify(segments))
 
 
-@lru_cache(maxsize=2 ** 4)
+@lru_cache(maxsize=2**4)
 def _load_image(path: Path) -> Image:
     return Img.open(path)
 

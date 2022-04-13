@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from click._termui_impl import Editor
 from rich.align import Align
-from rich.console import Console, ConsoleRenderable, RenderGroup
+from rich.console import Console, ConsoleRenderable, Group
 from rich.padding import Padding
 from rich.style import Style
 from rich.table import Column, Table
@@ -53,7 +53,7 @@ class Help:
             )
 
         return Padding(
-            RenderGroup(
+            Group(
                 Align.center(action_table),
                 Align.center(version_details(self.state.console)),
             ),

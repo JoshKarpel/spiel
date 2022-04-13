@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.2.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -28,11 +28,11 @@ repos:
       - id: rst-directive-colons
       - id: rst-inline-touching-normal
   - repo: https://github.com/psf/black
-    rev: 21.12b0
+    rev: 22.3.0
     hooks:
       - id: black
   - repo: https://github.com/hadialqattan/pycln
-    rev: v1.1.0
+    rev: v1.2.5
     hooks:
       - id: pycln
         args: [ --config=pyproject.toml ]
@@ -41,6 +41,6 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.10
+    rev: v1.1.13
     hooks:
       - id: remove-crlf

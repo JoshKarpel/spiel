@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 from _pytest.tmpdir import TempPathFactory
-from hypothesis import given, infer
+from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.strategies import SearchStrategy
 from rich.console import Console
@@ -15,7 +15,7 @@ from spiel.repls import REPLS
 def valid_options() -> SearchStrategy[Options]:
     return st.builds(
         Options,
-        profiling=infer,
+        profiling=st.booleans(),
         repl=st.sampled_from(list(REPLS.keys())),
     )
 

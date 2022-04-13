@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Iterable, List, NamedTuple, Tuple, Union
 
 from PIL import Image as Img
+from PIL.Image import Resampling
 from rich.color import Color
 from rich.console import Console, ConsoleOptions
 from rich.segment import Segment
@@ -23,7 +24,7 @@ class ImageSize(NamedTuple):
 Pixels = Tuple[Union[Tuple[int, int, int], None], ...]
 
 
-@lru_cache(maxsize=2 ** 8)
+@lru_cache(maxsize=2**8)
 def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> List[Segment]:
     line = Segment.line()
 
@@ -46,7 +47,7 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> List[Segment]:
     return list(Segment.simplify(segments))
 
 
-@lru_cache(maxsize=2 ** 4)
+@lru_cache(maxsize=2**4)
 def _load_image(path: Path) -> Image:
     return Img.open(path)
 
@@ -75,7 +76,7 @@ class Image:
     def _resize(self, size: ImageSize) -> Img:
         return self.img.resize(
             size=size,
-            resample=Img.LANCZOS,
+            resample=Resampling.LANCZOS,
         )
 
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> Iterable[Segment]:

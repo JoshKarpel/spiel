@@ -1,8 +1,10 @@
+import os
 from io import StringIO
 from pathlib import Path
 from textwrap import dedent
 
 import pytest
+from hypothesis import settings
 from rich.console import Console
 from typer.testing import CliRunner
 
@@ -10,6 +12,9 @@ from spiel import Deck, Options
 from spiel.constants import DECK
 from spiel.slide import Slide
 from spiel.state import State
+
+settings.register_profile("default", deadline=None)
+settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
 
 
 @pytest.fixture

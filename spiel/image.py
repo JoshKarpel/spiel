@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Iterable, List, NamedTuple, Tuple, Union
 
 from PIL import Image as Img
+from PIL.Image import Resampling
 from rich.color import Color
 from rich.console import Console, ConsoleOptions
 from rich.segment import Segment
@@ -75,7 +76,7 @@ class Image:
     def _resize(self, size: ImageSize) -> Img:
         return self.img.resize(
             size=size,
-            resample=Img.LANCZOS,
+            resample=Resampling.LANCZOS,
         )
 
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> Iterable[Segment]:

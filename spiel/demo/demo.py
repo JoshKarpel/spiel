@@ -138,7 +138,7 @@ def code():
         return Panel(
             Syntax(
                 "".join(lines),
-                lexer_name="python",
+                lexer="python",
                 line_numbers=True,
                 start_line=line_number,
             ),

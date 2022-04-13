@@ -216,7 +216,7 @@ def source() -> None:
     console = Console()
 
     with console.pager(styles=True):
-        console.print(Syntax(DEMO_SOURCE.read_text(), lexer_name="python"))
+        console.print(Syntax(DEMO_SOURCE.read_text(), lexer="python"))
 
 
 @demo.command()

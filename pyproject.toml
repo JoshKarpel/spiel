@@ -34,15 +34,15 @@ include = ["py.typed", "demo/*"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4"
-rich = ">=10"
+rich = ">=12"
 typer = ">=0.3"
 watchdog = ">=2"
 pendulum = ">=2"
 Pillow = ">=8"
 tomli = ">=2"
 tomli-w = ">=1"
-ipython = ">= 7"
-ipykernel = ">= 5"
+ipython = ">=7"
+ipykernel = ">=5"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=6"

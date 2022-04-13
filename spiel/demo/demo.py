@@ -10,7 +10,7 @@ from textwrap import dedent
 from rich.align import Align
 from rich.box import SQUARE
 from rich.color import Color, blend_rgb
-from rich.console import RenderGroup
+from rich.console import Group
 from rich.layout import Layout
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -161,7 +161,7 @@ def dynamic():
     width = shutil.get_terminal_size().columns
     width_limit = 80
     home_dir_contents = list(home.iterdir())
-    return RenderGroup(
+    return Group(
         Align.center(
             Text(
                 f"Slides can have dynamic content!",
@@ -282,7 +282,7 @@ def triggers(triggers):
             title="Trigger Tracker",
         )
     )
-    return RenderGroup(info, fun, ball if len(triggers) > 2 else Text(""))
+    return Group(info, fun, ball if len(triggers) > 2 else Text(""))
 
 
 @deck.slide(title="Views")

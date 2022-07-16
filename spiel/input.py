@@ -103,10 +103,6 @@ class SpecialCharacters(Enum):
     CtrlSpace = "ctrl-space"
     Enter = "enter"
 
-    @classmethod
-    def from_character(cls, character: str) -> SpecialCharacters:
-        return SPECIAL_CHARACTERS[character]
-
 
 SPECIAL_CHARACTERS = {
     "\x1b[A": SpecialCharacters.Up,
@@ -144,10 +140,7 @@ def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
     if len(result) != 1 and result[-1] == "1":
         result += stream.read(3)
 
-    try:
-        return SpecialCharacters.from_character(result)
-    except KeyError:
-        return result
+    return SPECIAL_CHARACTERS.get(result, result)
 
 
 Character = Union[str, SpecialCharacters]

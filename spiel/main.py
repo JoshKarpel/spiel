@@ -20,18 +20,20 @@ from spiel.state import State
 
 THIS_DIR = Path(__file__).resolve().parent
 
+
 app = Typer(
     help=dedent(
         f"""\
-        Display richly-styled presentations using your terminal.
+        Display [italic yellow]Rich[/italic yellow]ly-styled presentations using your terminal.
 
         To see what {PACKAGE_NAME.capitalize()} can do, take a look at the demo deck:
 
             $ spiel demo present
 
-        A {PACKAGE_NAME.capitalize()} presentation (a "deck [of slides]") is defined programmatically using a Python script.
+        A {PACKAGE_NAME.capitalize()} presentation (a "[italic green]deck[/italic green] of slides") is defined programmatically using a Python script.
         """
     ),
+    rich_markup_mode="rich",
     no_args_is_help=True,
 )
 
@@ -194,6 +196,8 @@ demo = Typer(
         Use the demonstration deck (present it, display source, etc.).
         """
     ),
+    rich_markup_mode="rich",
+    no_args_is_help=True,
 )
 
 DEMO_DIR = THIS_DIR / "demo"

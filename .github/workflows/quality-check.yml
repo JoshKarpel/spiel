@@ -45,7 +45,7 @@ jobs:
     - name: Make sure we can build the package
       run: poetry build -vvv
     - name: Run tests
-      run: poetry run pytest --cov --cov-report=xml
+      run: poetry run pytest --cov --cov-report=xml -n auto
     - name: Upload coverage
       uses: codecov/codecov-action@v3.1.0
       with:

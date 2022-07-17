@@ -18,5 +18,5 @@ T = TypeVar("T")
         ("", 2, None, []),
     ],
 )
-def test_chunks(items: List[T], n: int, fill: T | None, expected: list[list[T]]) -> None:
+def test_chunks(items: list[T], n: int, fill: T | None, expected: list[list[T]]) -> None:
     assert [list(chunk) for chunk in chunks(items, n, fill_value=fill)] == expected

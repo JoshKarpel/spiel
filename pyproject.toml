@@ -2,18 +2,6 @@
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
-line-length = 100
-target-version = ["py39", "py310"]
-include = "\\.pyi?$"
-
-[tool.isort]
-profile = "black"
-line_length = 100
-
-[tool.pycln]
-all = true
-
 [tool.poetry]
 name = "spiel"
 version = "0.3.0"
@@ -58,6 +46,18 @@ hypothesis = ">=6"
 
 [tool.poetry.scripts]
 spiel = 'spiel.main:app'
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310"]
+include = "\\.pyi?$"
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pycln]
+all = true
 
 [tool.pytest.ini_options]
 addopts = ["--strict-markers", "--mypy", "-n", "auto"]

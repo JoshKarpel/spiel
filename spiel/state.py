@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from time import monotonic
 from types import TracebackType
-from typing import Callable, ContextManager, List, Optional, Type, Union
+from typing import ContextManager, Type
 
 from rich.console import Console
 from rich.style import Style
@@ -19,7 +20,7 @@ from spiel.modes import Mode
 from spiel.options import Options
 from spiel.presentable import Presentable
 
-TextLike = Union[Text, Callable[[], Text]]
+TextLike = Text | Callable[[], Text]
 
 
 @dataclass
@@ -30,10 +31,10 @@ class State(ContextManager["State"]):
     _current_slide_idx: int = 0
     _mode: Mode = Mode.SLIDE
     _message: TextLike = Text("")
-    trigger_times: List[float] = field(default_factory=list)
+    trigger_times: list[float] = field(default_factory=list)
 
     @classmethod
-    def from_file(cls, path: Path, console: Optional[Console] = None) -> State:
+    def from_file(cls, path: Path, console: Console | None = None) -> State:
         deck, options = load_deck_and_options(path)
         return cls(console=console or Console(), deck=deck, options=options)
 
@@ -115,8 +116,8 @@ class State(ContextManager["State"]):
 
     def __exit__(
         self,
-        exctype: Optional[Type[BaseException]],
-        excinst: Optional[BaseException],
-        exctb: Optional[TracebackType],
+        exctype: Type[BaseException] | None,
+        excinst: BaseException | None,
+        exctb: TracebackType | None,
     ) -> None:
         self._tmp_dir.cleanup()

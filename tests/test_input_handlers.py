@@ -1,7 +1,6 @@
 import os
 import string
 from random import sample
-from typing import List
 
 import pytest
 from hypothesis import given, settings
@@ -74,7 +73,7 @@ TESTABLE_INPUT_HANDLERS = list(
 
 @given(input_handlers=st.lists(st.sampled_from(TESTABLE_INPUT_HANDLERS)))
 @settings(max_examples=2_000 if os.getenv("CI") else 200)
-def test_input_sequences_dont_crash(input_handlers: List[InputHandler]) -> None:
+def test_input_sequences_dont_crash(input_handlers: list[InputHandler]) -> None:
     state = State(
         console=Console(),
         deck=Deck(

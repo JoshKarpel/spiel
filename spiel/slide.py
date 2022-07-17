@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Union
 
 from rich.console import ConsoleRenderable
 from rich.text import Text
@@ -10,7 +10,7 @@ from spiel.presentable import Presentable
 from spiel.triggers import Triggers
 
 MakeRenderable = Callable[..., ConsoleRenderable]
-RenderableLike = Union[MakeRenderable, ConsoleRenderable]
+RenderableLike = MakeRenderable | ConsoleRenderable
 
 
 @dataclass

@@ -5,7 +5,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from types import TracebackType
-from typing import ContextManager, Optional, Tuple, Type
+from typing import ContextManager, Type
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -17,7 +17,7 @@ from spiel.exceptions import NoDeckFound
 from spiel.options import Options
 
 
-def load_deck_and_options(path: Path) -> Tuple[Deck, Options]:
+def load_deck_and_options(path: Path) -> tuple[Deck, Options]:
     module_name = "__deck"
     spec = importlib.util.spec_from_file_location(module_name, path)
 
@@ -28,7 +28,10 @@ def load_deck_and_options(path: Path) -> Tuple[Deck, Options]:
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
-    spec.loader.exec_module(module)  # type: ignore
+
+    loader = spec.loader
+    assert loader is not None
+    loader.exec_module(module)
 
     try:
         deck = getattr(module, DECK)
@@ -65,10 +68,10 @@ class DeckWatcher(ContextManager["DeckWatcher"]):
 
     def __exit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
-    ) -> Optional[bool]:
+        exc_type: Type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
         self.observer.stop()
         self.observer.join()
 

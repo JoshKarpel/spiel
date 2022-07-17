@@ -11,6 +11,9 @@ include = "\\.pyi?$"
 profile = "black"
 line_length = 100
 
+[tool.pycln]
+all = true
+
 [tool.poetry]
 name = "spiel"
 version = "0.3.0"
@@ -24,7 +27,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: Unix",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Topic :: Multimedia :: Graphics :: Presentation",
     "Typing :: Typed"]
@@ -33,7 +35,7 @@ license = "MIT"
 include = ["py.typed", "demo/*"]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4"
+python = ">=3.10,<4"
 rich = ">=12"
 typer = ">=0.6"
 watchdog = ">=2"
@@ -58,12 +60,13 @@ hypothesis = ">=6"
 spiel = 'spiel.main:app'
 
 [tool.pytest.ini_options]
-addopts = ["--strict-markers", "--mypy"]
+addopts = ["--strict-markers", "--mypy", "-n", "auto"]
 testpaths = ["tests", "spiel"]
 norecursedirs = ["demo"]
 
 [tool.mypy]
 pretty = false
+show_error_codes = true
 
 files = ["spiel/*.py", "tests/*.py"]
 

@@ -12,6 +12,7 @@ repos:
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml
+      - id: check-json
       - id: debug-statements
       - id: end-of-file-fixer
       - id: forbid-new-submodules
@@ -24,13 +25,7 @@ repos:
       - id: python-no-eval
       - id: python-no-log-warn
       - id: python-use-type-annotations
-      - id: rst-backticks
-      - id: rst-directive-colons
-      - id: rst-inline-touching-normal
-  - repo: https://github.com/psf/black
-    rev: 22.6.0
-    hooks:
-      - id: black
+      - id: python-check-blanket-type-ignore
   - repo: https://github.com/hadialqattan/pycln
     rev: v2.0.1
     hooks:
@@ -40,7 +35,7 @@ repos:
     rev: 5.10.1
     hooks:
       - id: isort
-  - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.0
+  - repo: https://github.com/psf/black
+    rev: 22.6.0
     hooks:
-      - id: remove-crlf
+      - id: black

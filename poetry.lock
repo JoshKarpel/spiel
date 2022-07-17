@@ -599,10 +599,7 @@ python-versions = ">=3.5"
 attrs = ">=19.0"
 filelock = ">=3.0"
 mypy = {version = ">=0.780", markers = "python_version >= \"3.9\""}
-pytest = [
-    {version = ">=6.2", markers = "python_version >= \"3.10\""},
-    {version = ">=4.6", markers = "python_version >= \"3.6\" and python_version < \"3.10\""},
-]
+pytest = {version = ">=6.2", markers = "python_version >= \"3.10\""}
 
 [[package]]
 name = "pytest-watch"
@@ -803,8 +800,8 @@ python-versions = "*"
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.9,<4"
-content-hash = "b00f583d9eca311f0d734fccf49ef991b9c88928d824debd19688e6df4dbd995"
+python-versions = ">=3.10,<4"
+content-hash = "64290aa1725d22f6b73924b9c2cd491a09d4055042fa3f08a33bda9165df2e2c"
 
 [metadata.files]
 appnope = [

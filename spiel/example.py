@@ -3,10 +3,10 @@ from __future__ import annotations
 import shlex
 import sys
 import tempfile
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from subprocess import PIPE, STDOUT, run
-from typing import Callable, Optional, Sequence
 
 from rich.align import Align
 from rich.console import ConsoleRenderable
@@ -23,7 +23,7 @@ from .triggers import Triggers
 class CachedExample:
     trigger_number: int
     input: str
-    output: Optional[str]
+    output: str | None
 
 
 def example_panels(example: Example) -> ConsoleRenderable:
@@ -65,7 +65,7 @@ class Example(Presentable):
     name: str = "example.py"
     language: str = "python"
     _layout: ExampleLayout = example_panels
-    _cache: Optional[CachedExample] = None
+    _cache: CachedExample | None = None
 
     def layout(self, function: ExampleLayout) -> ExampleLayout:
         self._layout = function
@@ -93,7 +93,7 @@ class Example(Presentable):
         )
 
     @property
-    def output(self) -> Optional[Text]:
+    def output(self) -> Text | None:
         return (
             Text(self._cache.output)
             if (self._cache is not None and self._cache.output is not None)

@@ -1,4 +1,6 @@
-from typing import Any, Iterable, Optional
+from __future__ import annotations
+
+from collections.abc import Iterable
 
 import pytest
 
@@ -15,5 +17,5 @@ from spiel.utils import filter_join
         (".", iter(["a", None, "b"]), "a.b"),
     ],
 )
-def test_filter_join(joiner: str, items: Iterable[Optional[Any]], expected: str) -> None:
+def test_filter_join(joiner: str, items: Iterable[str | None], expected: str) -> None:
     assert filter_join(joiner, items) == expected

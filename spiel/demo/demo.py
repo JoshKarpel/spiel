@@ -123,7 +123,7 @@ def code():
 
     Here's the code for `Deck` and `Slide`!
 
-    The source code is pulled directly from the definitions via [`inspect.getsource`](https://docs.python.org/3/library/inspect.html#inspect.getsource).
+    The source code is pulled directly from the definitions via [inspect.getsource](https://docs.python.org/3/library/inspect.html#inspect.getsource).
 
     ({RICH} supports syntax highlighting, so {SPIEL} does too!)
     """

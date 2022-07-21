@@ -3,10 +3,9 @@ from __future__ import annotations
 import dis
 import inspect
 import sys
-from collections.abc import Collection
+from collections.abc import Callable, Collection, Iterator, Sequence
 from dataclasses import dataclass, field
 from textwrap import dedent
-from typing import Callable, Iterator, List, Sequence
 
 from spiel.example import Example
 from spiel.presentable import Presentable
@@ -16,7 +15,7 @@ from spiel.slide import MakeRenderable, Slide
 @dataclass
 class Deck(Collection[Presentable]):
     name: str
-    slides: List[Presentable] = field(default_factory=list)
+    slides: list[Presentable] = field(default_factory=list)
 
     def __getitem__(self, idx: int) -> Presentable:
         return self.slides[idx]
@@ -69,12 +68,8 @@ class Deck(Collection[Presentable]):
         return exampleify
 
 
-def get_function_body(function: Callable[[], None]) -> str:
+def get_function_body(function: Callable[..., object]) -> str:
     lines, line_of_def_start = inspect.getsourcelines(function)
     line_of_first_instruction = list(dis.Bytecode(function))[0].starts_line or line_of_def_start
     offset = line_of_first_instruction - line_of_def_start
     return dedent("".join(lines[offset:]))
-
-
-def count_leading_whitespace(s: str) -> int:
-    return len(s) - len(s.lstrip())

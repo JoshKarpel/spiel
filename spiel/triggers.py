@@ -1,12 +1,12 @@
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from functools import cached_property
 from time import monotonic
-from typing import Iterator, Tuple
 
 
 @dataclass(frozen=True)
 class Triggers:
-    times: Tuple[float, ...]
+    times: tuple[float, ...]
     now: float = field(default_factory=monotonic)
 
     def __len__(self) -> int:

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import Iterable, List, NamedTuple, Tuple, Union
+from typing import NamedTuple
 
 from PIL import Image as Img
 from PIL.Image import Resampling
@@ -21,11 +22,11 @@ class ImageSize(NamedTuple):
     height: int
 
 
-Pixels = Tuple[Union[Tuple[int, int, int], None], ...]
+Pixels = tuple[tuple[int, int, int] | None, ...]
 
 
 @lru_cache(maxsize=2**8)
-def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> List[Segment]:
+def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> list[Segment]:
     line = Segment.line()
 
     segments = []

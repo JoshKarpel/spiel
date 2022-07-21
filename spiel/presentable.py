@@ -1,6 +1,7 @@
 import inspect
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Mapping
+from typing import Any
 
 from rich.console import ConsoleRenderable
 
@@ -19,7 +20,7 @@ class Presentable:  # Why not an ABC? https://github.com/python/mypy/issues/5374
     ) -> Mapping[str, Any]:
         signature = inspect.signature(function)
 
-        kwargs: Dict[str, Any] = {}
+        kwargs: dict[str, Any] = {}
         if "triggers" in signature.parameters:
             kwargs["triggers"] = triggers
 

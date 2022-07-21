@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from io import StringIO
-from typing import Callable
 
 import pytest
 from rich.console import Console

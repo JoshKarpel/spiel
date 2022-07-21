@@ -5,6 +5,7 @@ import inspect
 import string
 import sys
 import termios
+from collections.abc import Callable, Iterable, Iterator, MutableMapping
 from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import dataclass
@@ -13,19 +14,7 @@ from io import UnsupportedOperation
 from itertools import product
 from pathlib import Path
 from textwrap import dedent
-from typing import (
-    Any,
-    Callable,
-    Iterable,
-    Iterator,
-    List,
-    MutableMapping,
-    NoReturn,
-    Optional,
-    TextIO,
-    Tuple,
-    Union,
-)
+from typing import Any, NoReturn, TextIO
 
 import typer
 from rich.control import Control
@@ -44,8 +33,9 @@ from spiel.state import State
 LFLAG = 3
 CC = 6
 
+
 try:
-    ORIGINAL_TCGETATTR: Optional[List[Any]] = termios.tcgetattr(sys.stdin)
+    ORIGINAL_TCGETATTR: list[Any] | None = termios.tcgetattr(sys.stdin)
 except (UnsupportedOperation, termios.error):
     ORIGINAL_TCGETATTR = None
 
@@ -103,10 +93,6 @@ class SpecialCharacters(Enum):
     CtrlSpace = "ctrl-space"
     Enter = "enter"
 
-    @classmethod
-    def from_character(cls, character: str) -> SpecialCharacters:
-        return SPECIAL_CHARACTERS[character]
-
 
 SPECIAL_CHARACTERS = {
     "\x1b[A": SpecialCharacters.Up,
@@ -132,7 +118,7 @@ SPECIAL_CHARACTERS = {
 }
 
 
-def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
+def get_character(stream: TextIO) -> str | SpecialCharacters:
     result = stream.read(1)
 
     if result == "":  # this happens when stdin gets closed; equivalent to a quit
@@ -144,37 +130,34 @@ def get_character(stream: TextIO) -> Union[str, SpecialCharacters]:
     if len(result) != 1 and result[-1] == "1":
         result += stream.read(3)
 
-    try:
-        return SpecialCharacters.from_character(result)
-    except KeyError:
-        return result
+    return SPECIAL_CHARACTERS.get(result, result)
 
 
-Character = Union[str, SpecialCharacters]
-InputHandler = Callable[[State], Optional[NoReturn]]
-InputHandlerKey = Tuple[Character, Mode]
+Character = str | SpecialCharacters
+InputHandler = Callable[[State], NoReturn | None]
+InputHandlerKey = tuple[Character, Mode]
 InputHandlerDecorator = Callable[[InputHandler], InputHandler]
 InputHandlers = MutableMapping[InputHandlerKey, InputHandler]
 
-INPUT_HANDLERS: InputHandlers = {}  # type: ignore
+INPUT_HANDLERS: InputHandlers = {}  # type: ignore[assignment]
 
 
 @dataclass(frozen=True)
 class InputHandlerHelpInfo:
     name: str
     help: str
-    characters: Tuple[Character, ...]
-    modes: List[Mode]
+    characters: tuple[Character, ...]
+    modes: list[Mode]
 
 
-INPUT_HANDLER_HELP: List[InputHandlerHelpInfo] = []
+INPUT_HANDLER_HELP: list[InputHandlerHelpInfo] = []
 
 
 def handle_input(
     state: State,
     stream: TextIO,
     handlers: InputHandlers = INPUT_HANDLERS,
-) -> Optional[NoReturn]:
+) -> NoReturn | None:
     character = get_character(stream)
 
     try:
@@ -191,9 +174,9 @@ def normalize_help(help: str) -> str:
 
 def input_handler(
     *characters: Character,
-    modes: Optional[Iterable[Mode]] = None,
+    modes: Iterable[Mode] | None = None,
     handlers: InputHandlers = INPUT_HANDLERS,
-    name: Optional[str] = None,
+    name: str | None = None,
     help: str,
 ) -> InputHandlerDecorator:
     target_modes = list(modes or list(Mode))

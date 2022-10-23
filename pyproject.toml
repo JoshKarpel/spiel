@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "spiel"
-version = "0.3.0"
+version = "0.4.0"
 description = "A framework for building and presenting richly-styled presentations in your terminal using Python."
 readme="README.md"
 homepage="https://github.com/JoshKarpel/spiel"
@@ -33,8 +33,9 @@ tomli = ">=2"
 tomli-w = ">=1"
 ipython = ">=7"
 ipykernel = ">=5"
+textual = ">=0.2"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = ">=6"
 pytest-watch = ">=4"
 pytest-cov = ">=3"
@@ -43,6 +44,7 @@ mypy = ">=0.961"
 pytest-mypy = ">=0.8"
 pytest-mock = ">=3"
 hypothesis = ">=6"
+textual = {extras = ["dev"], version = "^0.2.1"}
 
 [tool.poetry.scripts]
 spiel = 'spiel.main:app'

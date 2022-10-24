@@ -4,9 +4,12 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 from rich.console import RenderableType
-from rich.repr import Result
+from rich.panel import Panel
+from rich.style import Style
 from textual.app import App, ComposeResult
+from textual.binding import Binding
 from textual.reactive import reactive
+from textual.screen import Screen
 from textual.widget import Widget
 from textual.widgets import Footer, Header
 
@@ -40,53 +43,75 @@ class SlideWidget(Widget):
     can_focus = True
     can_focus_children = True
 
-    slide_idx = reactive(0)
-    d = reactive(False)
-
-    def __init__(
-        self,
-        deck: Deck,
-        name: str | None = None,
-        id: str | None = None,
-        classes: str | None = None,
-    ):
-        super().__init__(name=name, id=id, classes=classes)
-
-        self.deck = deck
-
     def on_mount(self) -> None:
         self.set_interval(1 / 60, self.refresh)
 
     def render(self) -> RenderableType:
-        slide = self.deck.slides[self.slide_idx]
+        slide = self.app.deck.slides[self.app.slide_idx]
         rendered_content = slide.content()
         return rendered_content
 
-    def __rich_repr__(self) -> Result:
-        yield "deck", self.deck
-        yield "slide_idx", self.slide_idx
+
+class DeckViewSlideWidget(Widget):
+    def __init__(self, slide, slide_idx, **kwargs):
+        super().__init__(**kwargs)
+        self.slide = slide
+        self.slide_idx = slide_idx
+
+    @property
+    def is_active_slide(self) -> bool:
+        return self.app.slide_idx == self.slide_idx
+
+    def render(self) -> RenderableType:
+        return Panel(
+            self.slide.content(),
+            title=self.slide.title,
+            border_style=Style(
+                color="bright_cyan" if self.is_active_slide else None,
+                dim=not self.is_active_slide,
+            ),
+        )
+
+    def on_mount(self) -> None:
+        self.set_interval(1 / 10, self.refresh)
+
+
+class DeckView(Screen):
+    #: Bindings for the help screen.
+    BINDINGS = [
+        ("escape,enter,down", "pop_screen", "Close"),
+    ]
+
+    def compose(self) -> ComposeResult:
+        for idx, slide in enumerate(self.app.deck.slides):
+            yield DeckViewSlideWidget(slide=slide, slide_idx=idx)
 
 
 class SpielApp(App):
 
     CSS_PATH = "spiel.css"
     BINDINGS = [
-        ("d", "toggle_dark", "Toggle dark mode"),
-        ("right", "next_slide", "Next Slide"),
-        ("left", "prev_slide", "Previous Slide"),
+        Binding("d", "toggle_dark", "Toggle dark mode"),
+        Binding("right", "next_slide", "Next Slide"),
+        Binding("left", "prev_slide", "Previous Slide"),
+        Binding("up", "push_screen('deck')", "Deck View"),
     ]
+    SCREENS = {"deck": DeckView()}
+
+    slide_idx = reactive(0)
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
         yield Header()
         yield Footer()
-        yield SlideWidget(deck=Deck(name="New Deck"))
+        yield SlideWidget()
 
     def on_mount(self):
         from demo.demo import deck
 
+        self.deck = deck
+
         w = self.query_one(SlideWidget)
-        w.deck = deck
         w.slide_idx = 0
 
         self.log(w)
@@ -97,14 +122,12 @@ class SpielApp(App):
         self.dark = not self.dark
 
     def action_next_slide(self) -> None:
-        w = self.query_one(SlideWidget)
-        if w.slide_idx < len(w.deck.slides) - 1:
-            w.slide_idx += 1
+        if self.slide_idx < len(self.deck.slides) - 1:
+            self.slide_idx += 1
 
     def action_prev_slide(self) -> None:
-        w = self.query_one(SlideWidget)
-        if w.slide_idx >= 0:
-            w.slide_idx -= 1
+        if self.slide_idx > 0:
+            self.slide_idx -= 1
 
 
 if __name__ == "__main__":

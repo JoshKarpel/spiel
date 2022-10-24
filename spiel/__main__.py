@@ -1,4 +1,4 @@
-from spiel.constants import PACKAGE_NAME
-from spiel.main import app
+from spiel.app import SpielApp
 
-app(prog_name=PACKAGE_NAME)
+app = SpielApp()
+app.run()

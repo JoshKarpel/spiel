@@ -1,15 +1,12 @@
 import inspect
-import os
 import shutil
 import socket
 from datetime import datetime
-from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
 
 from rich.align import Align
 from rich.box import SQUARE
-from rich.color import Color, blend_rgb
 from rich.console import Group
 from rich.layout import Layout
 from rich.markdown import Markdown
@@ -19,10 +16,10 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Deck, Image, Options, Slide, __version__, example_panels
+from spiel import __version__
+from spiel.app import Deck, Slide
 
 deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
-options = Options()
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
@@ -155,7 +152,7 @@ def code():
     return root
 
 
-@deck.slide(title="Dynamic Content")
+@deck.slide(title="Dynamic Content", dynamic=True)
 def dynamic():
     home = Path.home()
     width = shutil.get_terminal_size().columns
@@ -199,256 +196,3 @@ def dynamic():
             ),
         ),
     )
-
-
-@deck.slide(title="Triggers")
-def triggers(triggers):
-    info = Markdown(
-        dedent(
-            f"""\
-            ## Triggers
-
-            Triggers are a mechanism for making dynamic content that depends on *relative* time.
-
-            Triggers can be used to implement effects like fades, motion, and other "animations".
-
-            Each slide is triggered once when it starts being displayed.
-            You can trigger it again (as many times as you'd like) by pressing `t`.
-            You can reset the trigger state by pressing `r`.
-
-            This slide has been triggered {len(triggers)} times.
-            It was last triggered {triggers.time_since_last_trigger:.2f} seconds ago.
-            """
-        ),
-        justify="center",
-    )
-
-    bounce_period = 10
-    width = 50
-    half_width = width // 2
-
-    bounce_time = triggers.time_since_first_trigger % bounce_period
-    bounce_character = "⁍" if bounce_time < (1 / 2) * bounce_period else "⁌"
-    bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
-    before = half_width + bounce_position
-    ball = Align.center(
-        Panel(
-            Padding(
-                bounce_character,
-                pad=(0, before, 0, (half_width - bounce_position - 1)),
-            ),
-            title="Bouncing Bullet",
-            padding=0,
-        )
-    )
-
-    white = Color.parse("bright_white")
-    black = Color.parse("black")
-    red = Color.parse("bright_red")
-    green = Color.parse("bright_green")
-
-    fade_time = 3
-
-    lines = [
-        Text(
-            "Triggered!",
-            style=Style(
-                color=(
-                    Color.from_triplet(
-                        blend_rgb(
-                            black.get_truecolor(),
-                            white.get_truecolor(),
-                            cross_fade=min((triggers.now - time) / fade_time, 1),
-                        )
-                    )
-                )
-            ),
-        )
-        for time in triggers.times
-    ]
-
-    fun = Align.center(
-        Panel(
-            Text("\n", justify="center").join(lines),
-            border_style=Style(
-                color=Color.from_triplet(
-                    blend_rgb(
-                        green.get_truecolor(),
-                        red.get_truecolor(),
-                        cross_fade=min(triggers.time_since_last_trigger / fade_time, 1),
-                    )
-                ),
-            ),
-            title="Trigger Tracker",
-        )
-    )
-    return Group(info, fun, ball if len(triggers) > 2 else Text(""))
-
-
-@deck.slide(title="Views")
-def grid():
-    markup = dedent(
-        """\
-    ## Multiple Views
-
-    Try pressing `d` to go into "deck" view.
-    Press `s` to go back to "slide" view.
-
-    Press `j`, then enter a slide number (like `3`) to jump to a slide.
-    """
-    )
-    return Markdown(markup, justify="center")
-
-
-@deck.slide(title="Watch Mode")
-def watch():
-    markup = dedent(
-        f"""\
-    ## Developing a Deck
-
-    {SPIEL} can reload your deck as you edit it if you add the `--watch` option to `present`:
-
-    `$ spiel present path/to/deck.py --watch`
-
-    If you're on a system without inotify support (e.g., {WSL}), you should use the `--poll` option instead.
-    """
-    )
-    return Markdown(markup, justify="center")
-
-
-@deck.slide(title="Displaying Images")
-def image():
-    markup = dedent(
-        f"""\
-    ## Images
-
-    {SPIEL} can display images... sort of!
-
-    Spiel includes an `Image` widget that can render images by interpolating pixel values.
-
-    If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
-    If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
-    For example, for `bash`, you could add
-
-    `export COLORTERM=truecolor`
-
-    to your `.bashrc` file, then restart your shell.
-    """
-    )
-    root = Layout()
-    root.split_row(
-        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image.from_file(THIS_DIR / "tree.jpg")),
-    )
-
-    return root
-
-
-@deck.example(title="Examples")
-def examples():
-    # This is an example that shows how to use random.choice from the standard library.
-
-    # The source code is embedded directly into the demo deck file,
-    # but you could load it from another file if you wanted to.
-
-    import random
-
-    directions = ["North", "South", "East", "West"]
-
-    print("Which way should we go?")
-    print(random.choice(directions))
-
-
-@examples.layout
-def _(example, triggers):
-    root = Layout()
-
-    extra = (
-        f"""
-    ## Example Execution is Cached
-
-    Now that you've triggered the slide, {SPIEL} will execute the example once and display the output.
-    The result is cached, so the example is not executed on every frame, like code in normal slide content
-    functions is.
-
-    ## Editing Examples
-
-    Examples can be modified during the talk.
-    Press `e` to open your `$EDITOR` (`{os.getenv("EDITOR", "not set")}`) on the example code.
-    Save your changes and exit to come back to the presentation with your updated code.
-    You can then trigger the example again to run it with the new code.
-
-    ## Layout Customization
-
-    You can customize the example slide's content by providing a custom `layout` function.
-    If you don't, you'll get the default layout, which looks like just the right half of this slide.
-    """
-        if triggers.triggered
-        else ""
-    )
-
-    markup = dedent(
-        f"""\
-    ## Examples
-
-    {SPIEL} can display and execute chunks of example code.
-
-    Example slides are driven by the trigger system.
-    Press `t` to execute the example code and display the output.
-
-    {extra}
-    """
-    )
-    markdown = Markdown(markup, justify="center")
-
-    root.split_row(
-        Layout(Padding(markdown, pad=(0, 2))),
-        example_panels(example),
-    )
-
-    return root
-
-
-@deck.slide(title="Live Coding with the REPL")
-def repl():
-    markup = dedent(
-        f"""\
-        ## Live Coding: REPL
-
-        Sometimes a static example,
-        or even an example that you're editing and running multiple times,
-        just isn't interactive enough.
-
-        To provide a more interactive experience,
-        {SPIEL} lets you open a REPL on any slide by pressing `i`.
-
-        There are two REPLs available by default: the [builtin Python REPL](https://docs.python.org/3/tutorial/interpreter.html#interactive-mode) and {IPYTHON}.
-        You can change which REPL to use via `Options`, which will be discussed later.
-
-        When you exit the REPL (by pressing `ctrl-d` or running `exit()`),
-        you'll be back at the same point in your presentation.
-
-        The state of the REPL is not persistent between invocations
-        (it will be completely fresh every time you enter it).
-        """
-    )
-    return Markdown(markup, justify="center")
-
-
-@deck.slide(title="Options")
-def options_():
-    markup = dedent(
-        f"""\
-        ## Options
-
-        {SPIEL} has a variety of options that can be adjusted at runtime.
-        For example,
-        profiling information can be displayed in the footer to help you debug a slide that is rendering too slowly.
-
-        To see your current options, press `p`.
-        From that mode you can edit your options by pressing `e`.
-
-        Note that your `Options` are *not* reloaded when running with `--watch`.
-        """
-    )
-    return Markdown(markup, justify="center")

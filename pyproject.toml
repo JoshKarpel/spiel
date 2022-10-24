@@ -20,7 +20,7 @@ classifiers = [
     "Typing :: Typed"]
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
 license = "MIT"
-include = ["py.typed", "demo/*"]
+include = ["py.typed", "demo/*", "spiel.css"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4"
@@ -51,7 +51,7 @@ spiel = 'spiel.main:app'
 
 [tool.black]
 line-length = 100
-target-version = ["py39", "py310"]
+target-version = ["py39"]
 include = "\\.pyi?$"
 
 [tool.isort]

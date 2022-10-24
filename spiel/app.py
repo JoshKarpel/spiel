@@ -48,9 +48,6 @@ class Deck:
 
 
 class SlideWidget(Widget):
-    can_focus = True
-    can_focus_children = True
-
     def on_mount(self) -> None:
         self.set_interval(1 / 60, self.refresh)
 
@@ -60,7 +57,7 @@ class SlideWidget(Widget):
         return rendered_content
 
 
-class DeckViewSlideWidget(Widget):
+class MiniSlide(Widget):
     def __init__(self, slide, slide_idx, **kwargs):
         super().__init__(**kwargs)
         self.slide = slide
@@ -111,7 +108,7 @@ class DeckView(Screen):
 
     def compose(self) -> ComposeResult:
         for idx, slide in enumerate(self.app.deck.slides):
-            yield DeckViewSlideWidget(slide=slide, slide_idx=idx)
+            yield MiniSlide(slide=slide, slide_idx=idx)
 
         yield Footer()
 
@@ -124,6 +121,9 @@ class Footer(Widget):
         height: 2;
     }
     """
+
+    def on_mount(self) -> None:
+        self.set_interval(1 / 60, self.refresh)
 
     @property
     def longest_slide_number_length(self) -> int:
@@ -175,7 +175,7 @@ class SpielApp(App):
 
     CSS_PATH = "spiel.css"
     BINDINGS = [
-        Binding("d", "toggle_dark", "Toggle dark mode"),
+        Binding("ctrl+d", "toggle_dark", "Toggle dark mode"),
         Binding("right", "next_slide", "Next Slide"),
         Binding("left", "prev_slide", "Previous Slide"),
         Binding("up", "push_screen('deck')", "Deck View"),

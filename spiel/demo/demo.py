@@ -18,6 +18,7 @@ from rich.text import Text
 
 from spiel import __version__
 from spiel.app import Deck, Slide
+from spiel.image import Image
 
 deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
 
@@ -40,9 +41,9 @@ def what():
         Spiel uses {RICH} to render slide content.
         Anything you can display with Rich, you can display with Spiel (plus some other things)!
 
-        Use your right `→` and left `←` arrows keys (or `f` and `b`) to go forwards and backwards through the deck.
+        Use your right `→` and left `←` arrows keys to go forwards and backwards through the deck.
 
-        Press `ctrl-c` or `ctrl-k` to exit.
+        Press `ctrl-c` to exit.
 
         Press `h` at any time to see the help screen, which describes all of the actions you can take.
 
@@ -196,3 +197,31 @@ def dynamic():
             ),
         ),
     )
+
+
+@deck.slide(title="Displaying Images")
+def image():
+    markup = dedent(
+        f"""\
+    ## Images
+
+    {SPIEL} can display images... sort of!
+
+    Spiel includes an `Image` widget that can render images by interpolating pixel values.
+
+    If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
+    If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
+    For example, for `bash`, you could add
+
+    `export COLORTERM=truecolor`
+
+    to your `.bashrc` file, then restart your shell.
+    """
+    )
+    root = Layout()
+    root.split_row(
+        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
+        Layout(Image.from_file(THIS_DIR / "tree.jpg")),
+    )
+
+    return root

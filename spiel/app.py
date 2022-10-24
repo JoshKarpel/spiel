@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 import datetime
+import importlib.util
+import sys
+from asyncio import wait
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable
 
 from rich.console import Group, RenderableType
@@ -10,12 +15,22 @@ from rich.rule import Rule
 from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
+from textual import log
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.reactive import reactive
 from textual.screen import Screen
 from textual.widget import Widget
+from watchfiles import awatch
 
+from spiel.constants import (
+    DECK,
+    PACKAGE_NAME,
+    __python_version__,
+    __rich_version__,
+    __textual_version__,
+    __version__,
+)
 from spiel.utils import clamp, drop_nones, filter_join
 
 
@@ -24,6 +39,43 @@ class Slide:
     title: str
     content: Callable[[], RenderableType]
     dynamic: bool
+
+
+class SpielException(Exception):
+    pass
+
+
+class NoDeckFound(SpielException):
+    pass
+
+
+def load_deck(path: Path) -> Deck:
+    module_name = "__deck"
+    spec = importlib.util.spec_from_file_location(module_name, path)
+
+    if spec is None:
+        raise FileNotFoundError(
+            f"{path.resolve()} does not appear to be an importable Python module."
+        )
+
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+
+    loader = spec.loader
+    assert loader is not None
+    loader.exec_module(module)
+
+    try:
+        deck = getattr(module, DECK)
+    except AttributeError:
+        raise NoDeckFound(f"The module at {path} does not have an attribute named {DECK}.")
+
+    if not isinstance(deck, Deck):
+        raise NoDeckFound(
+            f"The module at {path} has an attribute named {DECK}, but it is a {type(deck).__name__}, not a {Deck.__name__}."
+        )
+
+    return deck
 
 
 @dataclass
@@ -81,7 +133,7 @@ class MiniSlide(Widget):
         self.set_interval(1 / 10, self.refresh)
 
 
-class SlideView(Screen):
+class SlideScreen(Screen):
     DEFAULT_CSS = """
     SlideView {
         layout: vertical;
@@ -93,7 +145,7 @@ class SlideView(Screen):
         yield Footer()
 
 
-class DeckView(Screen):
+class DeckScreen(Screen):
     DEFAULT_CSS = """
     DeckView {
         layout: grid;
@@ -110,6 +162,57 @@ class DeckView(Screen):
         for idx, slide in enumerate(self.app.deck.slides):
             yield MiniSlide(slide=slide, slide_idx=idx)
 
+        yield Footer()
+
+
+class VersionDetails(Widget):
+    DEFAULT_CSS = """
+    VersionDetails {
+        width: auto;
+        height: auto;
+    }
+    """
+
+    def render(self) -> RenderableType:
+        console = self.app.console
+
+        table = Table(
+            Column(justify="right"),
+            Column(justify="left"),
+            show_header=False,
+            box=None,
+        )
+
+        table.add_row(f"{PACKAGE_NAME.capitalize()} Version", __version__)
+        table.add_row("Rich Version", __rich_version__)
+        table.add_row("Textual Version", __textual_version__)
+        table.add_row("Python Version", __python_version__)
+
+        table.add_row(
+            "Color System",
+            Text(
+                console.color_system or "unknown",
+                style=Style(color="red" if console.color_system != "truecolor" else "green"),
+            ),
+        )
+        table.add_row(
+            "Console Dimensions",
+            Text(f"{console.width} cells wide, {console.height} cells tall"),
+            end_section=True,
+        )
+
+        return Panel(table)
+
+
+class HelpScreen(Screen):
+    DEFAULT_CSS = """
+    Screen {
+        align: center middle;
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        yield VersionDetails()
         yield Footer()
 
 
@@ -171,6 +274,14 @@ class Footer(Widget):
         return Group(Rule(style=Style(dim=True)), grid)
 
 
+async def reload(deck_path: Path, watch_path: Path, app: SpielApp) -> None:
+    log(f"Watching {watch_path} for changes to reload {deck_path} on {app}")
+    async for _ in awatch(watch_path):
+        app.deck = load_deck(deck_path)
+        app.slide_idx = clamp(app.slide_idx, 0, len(app.deck))
+        app.message = f"Reloaded deck at {datetime.datetime.now().strftime('%H:%M:%S')}"
+
+
 class SpielApp(App):
 
     CSS_PATH = "spiel.css"
@@ -179,22 +290,31 @@ class SpielApp(App):
         Binding("right", "next_slide", "Next Slide"),
         Binding("left", "prev_slide", "Previous Slide"),
         Binding("up", "push_screen('deck')", "Deck View"),
+        Binding("question_mark", "push_screen('help')", "Help"),
     ]
-    SCREENS = {"deck": DeckView()}
+    SCREENS = {"deck": DeckScreen(), "help": HelpScreen()}
 
     slide_idx = reactive(0)
     message = reactive("")
 
-    def compose(self) -> ComposeResult:
-        """Create child widgets for the app."""
-        yield Footer()
+    def __init__(self, path: Path, watch: Path, **kwargs):
+        super().__init__(**kwargs)
+
+        self.deck_path = path
+        self.watch_path = watch
 
     def on_mount(self):
-        from demo.demo import deck
+        self.deck = load_deck(self.deck_path)
 
-        self.deck = deck
+        self.reloader = asyncio.create_task(
+            reload(
+                deck_path=self.deck_path,
+                watch_path=self.watch_path,
+                app=self,
+            )
+        )
 
-        self.push_screen(SlideView())
+        self.push_screen(SlideScreen())
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
@@ -210,7 +330,8 @@ class SpielApp(App):
     def current_slide(self) -> Slide:
         return self.deck.slides[self.slide_idx]
 
+    async def action_quit(self) -> None:
+        self.reloader.cancel()
+        await wait([self.reloader], timeout=1)
 
-if __name__ == "__main__":
-    app = SpielApp()
-    app.run()
+        await super().action_quit()

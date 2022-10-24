@@ -1,4 +1,3 @@
-from spiel.app import SpielApp
+from spiel.cli import cli
 
-app = SpielApp()
-app.run()
+cli()

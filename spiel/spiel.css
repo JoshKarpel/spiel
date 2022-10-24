@@ -1,9 +1,0 @@
-Screen {
-    layout: vertical;
-}
-
-DeckView {
-    layout: grid;
-    grid-size: 4;
-    grid-rows: 25%;
-}

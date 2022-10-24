@@ -85,12 +85,26 @@ class DeckViewSlideWidget(Widget):
 
 
 class SlideView(Screen):
+    DEFAULT_CSS = """
+    SlideView {
+        layout: vertical;
+    }
+    """
+
     def compose(self) -> ComposeResult:
         yield SlideWidget()
         yield Footer()
 
 
 class DeckView(Screen):
+    DEFAULT_CSS = """
+    DeckView {
+        layout: grid;
+        grid-size: 4;
+        grid-rows: 25%;
+    }
+    """
+
     BINDINGS = [
         ("escape,enter,down", "pop_screen", "Close"),
     ]

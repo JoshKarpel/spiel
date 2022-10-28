@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import NamedTuple
+from typing import Iterable, NamedTuple
 
 from PIL import Image as Img
 from PIL.Image import Resampling

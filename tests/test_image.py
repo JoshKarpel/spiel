@@ -2,7 +2,7 @@ import pytest
 from PIL import Image as Img
 from rich.console import Console
 
-from spiel.main import DEMO_DIR
+from spiel.constants import DEMO_DIR
 from spiel.renderables.image import Image, ImageSize
 
 

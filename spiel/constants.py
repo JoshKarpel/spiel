@@ -12,4 +12,4 @@ DECK = "deck"
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 DEMO_DIR = PACKAGE_DIR / "demo"
-DEMO_SOURCE = PACKAGE_DIR / "demo" / "demo.py"
+DEMO_FILE = PACKAGE_DIR / "demo" / "demo.py"

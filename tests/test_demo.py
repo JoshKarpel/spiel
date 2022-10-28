@@ -1,20 +1,15 @@
 import pytest
 
-from spiel.main import DEMO_SOURCE
-from spiel.present import render_slide
-from spiel.state import State
+from spiel import Deck
+from spiel.app import load_deck
+from spiel.constants import DEMO_FILE
 
 
 @pytest.fixture
-def state() -> State:
-    return State.from_file(DEMO_SOURCE)
+def deck() -> Deck:
+    return load_deck(DEMO_FILE)
 
 
-def test_can_render_every_demo_slide(state: State) -> None:
-    deck = state.deck
-
+def test_can_render_every_demo_slide(deck: Deck) -> None:
     for slide in deck:
-        for _ in range(10):
-            state.console.print(render_slide(state, slide))
-            state.trigger()
-        state.reset_trigger()
+        slide.content()

@@ -11,7 +11,7 @@ from rich.text import Text
 from typer import Argument, Option, Typer
 
 from spiel.app import SpielApp
-from spiel.constants import DEMO_DIR, DEMO_SOURCE, PACKAGE_DIR, PACKAGE_NAME, __version__
+from spiel.constants import DEMO_DIR, DEMO_FILE, PACKAGE_DIR, PACKAGE_NAME, __version__
 from spiel.renderables.version import DebugTable
 
 cli = Typer(
@@ -98,7 +98,7 @@ def init(
             dedent(
                 f"""\
                 from textwrap import dedent
-                from spiel import Deck, Options
+                from spiel import Deck
 
 
                 deck = Deck(name="{name}")
@@ -145,7 +145,7 @@ def present_demo() -> None:
     """
     Present the demo deck.
     """
-    _present(deck_path=DEMO_SOURCE, watch_path=PACKAGE_DIR)
+    _present(deck_path=DEMO_FILE, watch_path=PACKAGE_DIR)
 
 
 @demo.command()
@@ -156,7 +156,7 @@ def source() -> None:
     console = Console()
 
     with console.pager(styles=True):
-        console.print(Syntax(DEMO_SOURCE.read_text(), lexer="python"))
+        console.print(Syntax(DEMO_FILE.read_text(), lexer="python"))
 
 
 @demo.command()

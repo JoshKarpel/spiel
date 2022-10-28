@@ -45,7 +45,7 @@ def what():
 
         Press `ctrl-c` to exit.
 
-        Press `h` at any time to see the help screen, which describes all of the actions you can take.
+        Press `?` at any time to see the help screen, which describes all of the actions you can take.
 
         To get a copy of the source code for this deck, use the `spiel demo copy` command.
         """

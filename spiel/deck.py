@@ -5,6 +5,8 @@ from typing import Callable
 
 from rich.console import RenderableType
 
+Content = Callable[[], RenderableType]
+
 
 @dataclass
 class Slide:
@@ -16,7 +18,7 @@ class Slide:
 @dataclass
 class Deck:
     name: str
-    slides: list[slide] = field(default_factory=list)
+    slides: list[Slide] = field(default_factory=list)
 
     def __len__(self) -> int:
         return len(self.slides)
@@ -25,8 +27,8 @@ class Deck:
         self,
         title: str = "",
         dynamic: bool = False,
-    ):
-        def slideify(content: Callable[[], RenderableType]) -> Slide:
+    ) -> Callable[[Content], Slide]:
+        def slideify(content: Content) -> Slide:
             slide = Slide(title=title, content=content, dynamic=dynamic)
             self.slides.append(slide)
             return slide

@@ -6,10 +6,12 @@ import importlib.util
 import sys
 from asyncio import wait
 from pathlib import Path
+from typing import Type
 
 from textual import log
-from textual.app import App
+from textual.app import App, CSSPathType
 from textual.binding import Binding
+from textual.driver import Driver
 from textual.reactive import reactive
 from watchfiles import awatch
 
@@ -59,7 +61,7 @@ async def reload(deck_path: Path, watch_path: Path, app: SpielApp) -> None:
         app.message = f"Reloaded deck at {datetime.datetime.now().strftime('%H:%M:%S')}"
 
 
-class SpielApp(App):
+class SpielApp(App[None]):
     CSS_PATH = "spiel.css"
     BINDINGS = [
         Binding("ctrl+d", "toggle_dark", "Toggle dark mode"),
@@ -73,13 +75,20 @@ class SpielApp(App):
     slide_idx = reactive(0)
     message = reactive("")
 
-    def __init__(self, deck_path: Path, watch_path: Path, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        deck_path: Path,
+        watch_path: Path,
+        driver_class: Type[Driver] | None = None,
+        css_path: CSSPathType = None,
+        watch_css: bool = False,
+    ):
+        super().__init__(driver_class=driver_class, css_path=css_path, watch_css=watch_css)
 
         self.deck_path = deck_path
         self.watch_path = watch_path
 
-    def on_mount(self):
+    def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)
 
         self.reloader = asyncio.create_task(

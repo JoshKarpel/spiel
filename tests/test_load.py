@@ -17,7 +17,7 @@ def test_loading_from_empty_file_fails(empty_file: Path) -> None:
 def test_loading_from_missing_file_fails(tmp_path: Path) -> None:
     missing_file = tmp_path / "no-such-path"
 
-    with pytest.raises(FileNotFoundError, match="no-such-path"):
+    with pytest.raises(NoDeckFound, match="no-such-path"):
         load_deck(missing_file)
 
 

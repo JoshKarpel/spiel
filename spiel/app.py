@@ -29,9 +29,7 @@ def load_deck(path: Path) -> Deck:
     spec = importlib.util.spec_from_file_location(module_name, path)
 
     if spec is None:
-        raise FileNotFoundError(
-            f"{path.resolve()} does not appear to be an importable Python module."
-        )
+        raise NoDeckFound(f"{path.resolve()} does not appear to be an importable Python module.")
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
@@ -77,6 +75,7 @@ class SpielApp(App[None]):
 
     def __init__(
         self,
+        deck: Deck,
         deck_path: Path,
         watch_path: Path,
         driver_class: Type[Driver] | None = None,
@@ -85,12 +84,11 @@ class SpielApp(App[None]):
     ):
         super().__init__(driver_class=driver_class, css_path=css_path, watch_css=watch_css)
 
+        self.deck = deck
         self.deck_path = deck_path
         self.watch_path = watch_path
 
     def on_mount(self) -> None:
-        self.deck = load_deck(self.deck_path)
-
         self.reloader = asyncio.create_task(
             reload(
                 deck_path=self.deck_path,

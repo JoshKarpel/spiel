@@ -77,7 +77,7 @@ def test_demo_copy_to_existing_file(runner: CliRunner, tmp_path: Path) -> None:
 
     result = runner.invoke(cli, ["demo", "copy", str(target)])
 
-    assert result.exit_code == 2
+    assert result.exit_code == 1
 
 
 def test_demo_copy_to_existing_dir(runner: CliRunner, tmp_path: Path) -> None:
@@ -86,7 +86,7 @@ def test_demo_copy_to_existing_dir(runner: CliRunner, tmp_path: Path) -> None:
 
     result = runner.invoke(cli, ["demo", "copy", str(target)])
 
-    assert result.exit_code == 2
+    assert result.exit_code == 1
 
 
 def test_demo_copy_error_during_copytree(

@@ -8,6 +8,8 @@ from asyncio import wait
 from pathlib import Path
 from typing import Type
 
+from rich.style import Style
+from rich.text import Text
 from textual import log
 from textual.app import App, CSSPathType
 from textual.binding import Binding
@@ -15,13 +17,14 @@ from textual.driver import Driver
 from textual.reactive import reactive
 from watchfiles import awatch
 
-from spiel.constants import DECK
+from spiel.constants import DECK, RELOAD_MESSAGE_TIME_FORMAT
 from spiel.deck import Deck, Slide
 from spiel.exceptions import NoDeckFound
 from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
 from spiel.utils import clamp
+from spiel.widgets.footer import Footer
 
 
 def load_deck(path: Path) -> Deck:
@@ -49,14 +52,6 @@ def load_deck(path: Path) -> Deck:
         )
 
     return deck
-
-
-async def reload(deck_path: Path, watch_path: Path, app: SpielApp) -> None:
-    log(f"Watching {watch_path} for changes to reload {deck_path} on {app}")
-    async for _ in awatch(watch_path):
-        app.deck = load_deck(deck_path)
-        app.slide_idx = clamp(app.slide_idx, 0, len(app.deck))
-        app.message = f"Reloaded deck at {datetime.datetime.now().strftime('%H:%M:%S')}"
 
 
 class SpielApp(App[None]):
@@ -89,15 +84,21 @@ class SpielApp(App[None]):
         self.watch_path = watch_path
 
     def on_mount(self) -> None:
-        self.reloader = asyncio.create_task(
-            reload(
-                deck_path=self.deck_path,
-                watch_path=self.watch_path,
-                app=self,
-            )
-        )
+        self.reloader = asyncio.create_task(self.reload())
 
         self.push_screen(SlideScreen())
+
+    async def reload(self) -> None:
+        log(f"Watching {self.watch_path} for changes")
+        async for changes in awatch(self.watch_path):
+            log(f"Reloading due to changes: {changes}")
+            self.deck = load_deck(self.deck_path)
+            self.slide_idx = clamp(self.slide_idx, 0, len(self.deck))
+            for footer in self.query(Footer):
+                footer.message = Text(
+                    f"Reloaded deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)}",
+                    style=Style(italic=True, color="cyan"),
+                )
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""

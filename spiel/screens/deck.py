@@ -22,6 +22,6 @@ class DeckScreen(Screen):
 
     def compose(self) -> ComposeResult:
         for idx, slide in enumerate(self.app.deck.slides):
-            yield MiniSlide(slide=slide, slide_idx=idx)
+            yield MiniSlide(slide_idx=idx)
 
         yield Footer()

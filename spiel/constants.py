@@ -13,3 +13,6 @@ DECK = "deck"
 PACKAGE_DIR = Path(__file__).resolve().parent
 DEMO_DIR = PACKAGE_DIR / "demo"
 DEMO_FILE = PACKAGE_DIR / "demo" / "demo.py"
+
+FOOTER_TIME_FORMAT = "%Y-%m-%d %I:%M %p"
+RELOAD_MESSAGE_TIME_FORMAT = "%I:%M:%S %p"

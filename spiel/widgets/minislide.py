@@ -7,9 +7,9 @@ from textual.widget import Widget
 
 
 class MiniSlide(Widget):
-    def __init__(self, slide, slide_idx, **kwargs):
+    def __init__(self, slide_idx: int, **kwargs):
         super().__init__(**kwargs)
-        self.slide = slide
+
         self.slide_idx = slide_idx
 
     @property
@@ -17,9 +17,11 @@ class MiniSlide(Widget):
         return self.app.slide_idx == self.slide_idx
 
     def render(self) -> RenderableType:
+        slide = self.app.deck[self.slide_idx]
+
         return Panel(
-            self.slide.content(),
-            title=f"[{self.slide_idx + 1}] {self.slide.title}",
+            renderable=slide.content(),
+            title=f"[{self.slide_idx + 1}] {slide.title}",
             border_style=Style(
                 color="bright_cyan" if self.is_active_slide else None,
                 dim=not self.is_active_slide,

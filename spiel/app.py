@@ -18,7 +18,7 @@ from textual.reactive import reactive
 from watchfiles import awatch
 
 from spiel.constants import DECK, RELOAD_MESSAGE_TIME_FORMAT
-from spiel.deck import Deck, Slide
+from spiel.deck import Deck
 from spiel.exceptions import NoDeckFound
 from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
@@ -60,17 +60,17 @@ class SpielApp(App[None]):
         Binding("ctrl+d", "toggle_dark", "Toggle dark mode"),
         Binding("right", "next_slide", "Next Slide"),
         Binding("left", "prev_slide", "Previous Slide"),
-        Binding("d", "push_screen('deck')", "Deck View"),
-        Binding("question_mark", "push_screen('help')", "Help"),
+        Binding("d", "switch_screen('deck')", "Deck View"),
+        Binding("question_mark", "switch_screen('help')", "Help"),
     ]
-    SCREENS = {"deck": DeckScreen(), "help": HelpScreen()}
+    SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 
-    slide_idx = reactive(0)
+    deck = reactive(Deck(name="New Deck"))
+    current_slide_idx = reactive(0)
     message = reactive("")
 
     def __init__(
         self,
-        deck: Deck,
         deck_path: Path,
         watch_path: Path,
         driver_class: Type[Driver] | None = None,
@@ -79,43 +79,40 @@ class SpielApp(App[None]):
     ):
         super().__init__(driver_class=driver_class, css_path=css_path, watch_css=watch_css)
 
-        self.deck = deck
         self.deck_path = deck_path
         self.watch_path = watch_path
 
     def on_mount(self) -> None:
+        self.deck = load_deck(self.deck_path)
         self.reloader = asyncio.create_task(self.reload())
 
-        self.push_screen(SlideScreen())
+        self.switch_screen("slide")
 
     async def reload(self) -> None:
         log(f"Watching {self.watch_path} for changes")
         async for changes in awatch(self.watch_path):
-            log(f"Reloading due to changes: {changes}")
+            change_msg = "\n  ".join([""] + [f"{k.raw_str()}: {v}" for k, v in changes])
+            log(f"Reloading deck from {self.deck_path} due to detected file changes:{change_msg}")
             self.deck = load_deck(self.deck_path)
-            self.slide_idx = clamp(self.slide_idx, 0, len(self.deck))
+            self.current_slide_idx = clamp(self.current_slide_idx, 0, len(self.deck))
             for footer in self.query(Footer):
                 footer.message = Text(
                     f"Reloaded deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)}",
                     style=Style(italic=True, color="cyan"),
                 )
 
-    def action_toggle_dark(self) -> None:
-        """An action to toggle dark mode."""
-        self.dark = not self.dark
-
     def action_next_slide(self) -> None:
-        self.slide_idx = clamp(self.slide_idx + 1, 0, len(self.deck) - 1)
+        self.current_slide_idx = clamp(self.current_slide_idx + 1, 0, len(self.deck) - 1)
 
     def action_prev_slide(self) -> None:
-        self.slide_idx = clamp(self.slide_idx - 1, 0, len(self.deck) - 1)
-
-    @property
-    def current_slide(self) -> Slide:
-        return self.deck.slides[self.slide_idx]
+        self.current_slide_idx = clamp(self.current_slide_idx - 1, 0, len(self.deck) - 1)
 
     async def action_quit(self) -> None:
         self.reloader.cancel()
         await wait([self.reloader], timeout=1)
 
         await super().action_quit()
+
+    def action_toggle_dark(self) -> None:
+        """An action to toggle dark mode."""
+        self.dark = not self.dark

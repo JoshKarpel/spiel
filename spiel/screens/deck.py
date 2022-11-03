@@ -4,24 +4,17 @@ from textual.app import ComposeResult
 from textual.screen import Screen
 
 from spiel.widgets.footer import Footer
-from spiel.widgets.minislide import MiniSlide
+from spiel.widgets.minislides import MiniSlides
 
 
 class DeckScreen(Screen):
     DEFAULT_CSS = """
-    Screen {
-        layout: grid;
-        grid-size: 4;
-        grid-rows: 25%;
-    }
     """
 
     BINDINGS = [
-        ("escape,enter,down", "pop_screen", "Close"),
+        ("escape,enter,down", "switch_screen('slide')", "Close"),
     ]
 
     def compose(self) -> ComposeResult:
-        for idx, slide in enumerate(self.app.deck.slides):
-            yield MiniSlide(slide_idx=idx)
-
+        yield MiniSlides()
         yield Footer()

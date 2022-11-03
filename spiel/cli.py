@@ -10,9 +10,8 @@ from rich.syntax import Syntax
 from rich.text import Text
 from typer import Argument, Option, Typer
 
-from spiel.app import SpielApp, load_deck
+from spiel.app import SpielApp
 from spiel.constants import DEMO_DIR, DEMO_FILE, PACKAGE_DIR, PACKAGE_NAME, __version__
-from spiel.exceptions import NoDeckFound
 from spiel.renderables.version import DebugTable
 
 console = Console()
@@ -56,13 +55,13 @@ def present(
 def _present(deck_path: Path, watch_path: Path) -> None:
     os.environ["TEXTUAL"] = ",".join(sorted(["debug", "devtools"]))
 
-    try:
-        deck = load_deck(deck_path)
-    except NoDeckFound as e:
-        console.print(Text(f"Failed to load deck: {e}", style=Style(color="red")))
-        raise Exit(code=1)
+    # try:
+    #     load_deck(deck_path)
+    # except NoDeckFound as e:
+    #     console.print(Text(f"Failed to load deck: {e}", style=Style(color="red")))
+    #     raise Exit(code=1)
 
-    app = SpielApp(deck=deck, deck_path=deck_path, watch_path=watch_path)
+    app = SpielApp(deck_path=deck_path, watch_path=watch_path)
     app.run()
 
 

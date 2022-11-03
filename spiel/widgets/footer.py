@@ -7,7 +7,7 @@ from rich.rule import Rule
 from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
-from textual.reactive import reactive
+from textual.reactive import reactive, watch
 from textual.widget import Widget
 
 from spiel.constants import FOOTER_TIME_FORMAT
@@ -27,6 +27,12 @@ class Footer(Widget):
 
     def on_mount(self) -> None:
         self.set_interval(1 / 60, self.update_now)
+
+        watch(self.app, "deck", self.r)
+        watch(self.app, "current_slide_idx", self.r)
+
+    def r(self, _):
+        self.refresh()
 
     def update_now(self) -> None:
         self.now = datetime.now()
@@ -54,10 +60,10 @@ class Footer(Widget):
             padding=1,
         )
         grid.add_row(
-            Text(f"{self.app.deck.name} | {self.app.current_slide.title} "),
+            Text(f"{self.app.deck.name} | {self.app.deck[self.app.current_slide_idx].title} "),
             self.message,
             Text(
-                f"{self.now.strftime(FOOTER_TIME_FORMAT)}   [{self.app.slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.app.deck)}]"
+                f"{self.now.strftime(FOOTER_TIME_FORMAT)}   [{self.app.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.app.deck)}]"
             ),
         )
         return Group(Rule(style=Style(dim=True)), grid)

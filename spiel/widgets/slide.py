@@ -12,4 +12,4 @@ class SlideWidget(SpielWidget):
         self.set_interval(1 / 60, self.refresh)
 
     def render(self) -> RenderableType:
-        return self.app.deck.slides[self.app.current_slide_idx].content()
+        return self.app.deck.slides[self.app.current_slide_idx].render()

@@ -13,7 +13,9 @@ Content = Callable[[], RenderableType]
 class Slide:
     title: str = ""
     content: Callable[[], RenderableType] = lambda: Text()
-    dynamic: bool = False
+
+    def render(self) -> RenderableType:
+        return self.content()
 
 
 @dataclass
@@ -33,10 +35,9 @@ class Deck:
     def slide(
         self,
         title: str = "",
-        dynamic: bool = False,
     ) -> Callable[[Content], Slide]:
         def slideify(content: Content) -> Slide:
-            slide = Slide(title=title, content=content, dynamic=dynamic)
+            slide = Slide(title=title, content=content)
             self.slides.append(slide)
             return slide
 

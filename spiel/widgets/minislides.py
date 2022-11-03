@@ -16,7 +16,7 @@ class MiniSlides(SpielWidget):
     def render(self) -> RenderableType:
         self.log(self.app.deck)
 
-        grid_width = max(self.app.console.size.width // 30, 1)
+        grid_width = max(self.app.console.size.width // 35, 1)
         row_of_current_slide = self.app.current_slide_idx // grid_width
         num_rows = ceil(len(self.app.deck) / grid_width)
         start_row = clamp(
@@ -48,7 +48,7 @@ class MiniSlides(SpielWidget):
                     )
                     layout.update(
                         Panel(
-                            slide.content(),
+                            slide.render(),
                             title=filter_join(" | ", [slide_idx + 1, slide.title]),
                             border_style=Style(
                                 color="bright_cyan" if is_active_slide else None,

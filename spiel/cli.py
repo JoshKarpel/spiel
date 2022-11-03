@@ -40,6 +40,8 @@ def present(
     path: Path = Argument(
         ...,
         dir_okay=False,
+        exists=True,
+        readable=True,
         help="The path to the slide deck file.",
     ),
     watch: Path = Option(

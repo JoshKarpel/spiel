@@ -7,20 +7,12 @@ from rich.console import RenderableType
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.style import Style
-from textual.reactive import watch
-from textual.widget import Widget
 
 from spiel.utils import clamp, filter_join
+from spiel.widgets.widget import SpielWidget
 
 
-class MiniSlides(Widget):
-    def on_mount(self) -> None:
-        watch(self.app, "deck", self.r)
-        watch(self.app, "current_slide_idx", self.r)
-
-    def r(self, _):
-        self.refresh()
-
+class MiniSlides(SpielWidget):
     def render(self) -> RenderableType:
         self.log(self.app.deck)
 
@@ -47,7 +39,7 @@ class MiniSlides(Widget):
         for row, layouts in zip(rows, cols):
             for layout in layouts:
                 slide_idx, slide = next(slides, (None, None))
-                if slide is None:
+                if slide_idx is None or slide is None:
                     layout.update("")
                 else:
                     is_active_slide = slide_idx == self.app.current_slide_idx

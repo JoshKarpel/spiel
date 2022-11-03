@@ -7,13 +7,13 @@ from rich.rule import Rule
 from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
-from textual.reactive import reactive, watch
-from textual.widget import Widget
+from textual.reactive import reactive
 
 from spiel.constants import FOOTER_TIME_FORMAT
+from spiel.widgets.widget import SpielWidget
 
 
-class Footer(Widget):
+class Footer(SpielWidget):
     DEFAULT_CSS = """
     Footer {
         color: $text;
@@ -22,17 +22,13 @@ class Footer(Widget):
     }
     """
 
-    now = reactive(datetime.now)
+    now: datetime = reactive(datetime.now)  # type: ignore[arg-type,assignment]
     message = reactive(Text(""))
 
     def on_mount(self) -> None:
+        super().on_mount()
+
         self.set_interval(1 / 60, self.update_now)
-
-        watch(self.app, "deck", self.r)
-        watch(self.app, "current_slide_idx", self.r)
-
-    def r(self, _):
-        self.refresh()
 
     def update_now(self) -> None:
         self.now = datetime.now()

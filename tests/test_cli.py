@@ -41,7 +41,7 @@ def test_plain_version(runner: CliRunner) -> None:
 def test_present_deck_on_missing_file(runner: CliRunner, tmp_path: Path) -> None:
     result = runner.invoke(cli, ["present", str(tmp_path / "missing.py")])
 
-    assert result.exit_code == 1
+    assert result.exit_code == 2
 
 
 @pytest.mark.parametrize("stdin", [""])

@@ -12,7 +12,7 @@ from typer import Argument, Option, Typer
 
 from spiel.app import SpielApp
 from spiel.constants import DEMO_DIR, DEMO_FILE, PACKAGE_DIR, PACKAGE_NAME, __version__
-from spiel.renderables.version import DebugTable
+from spiel.renderables.debug import DebugTable
 
 console = Console()
 

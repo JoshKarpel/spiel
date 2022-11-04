@@ -4,7 +4,7 @@ from textual.app import ComposeResult
 from textual.screen import Screen
 from textual.widgets import Static
 
-from spiel.renderables.version import DebugTable
+from spiel.renderables.debug import DebugTable
 from spiel.widgets.footer import Footer
 
 

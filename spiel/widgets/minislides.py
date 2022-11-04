@@ -8,6 +8,7 @@ from rich.layout import Layout
 from rich.panel import Panel
 from rich.style import Style
 
+from spiel.triggers import Triggers
 from spiel.utils import clamp, filter_join
 from spiel.widgets.widget import SpielWidget
 
@@ -48,7 +49,7 @@ class MiniSlides(SpielWidget):
                     )
                     layout.update(
                         Panel(
-                            slide.render(),
+                            slide.render(triggers=Triggers._new()),
                             title=filter_join(" | ", [slide_idx + 1, slide.title]),
                             border_style=Style(
                                 color="bright_cyan" if is_active_slide else None,

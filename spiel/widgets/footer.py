@@ -40,18 +40,9 @@ class Footer(SpielWidget):
 
     def render(self) -> RenderableType:
         grid = Table.grid(
-            Column(
-                style=Style(dim=True),
-                justify="left",
-            ),
-            Column(
-                style=Style(bold=True),
-                justify="center",
-            ),
-            Column(
-                style=Style(dim=True),
-                justify="right",
-            ),
+            Column(style=Style(dim=True), justify="left"),
+            Column(style=Style(bold=True), justify="center"),
+            Column(style=Style(dim=True), justify="right"),
             expand=True,
             padding=1,
         )

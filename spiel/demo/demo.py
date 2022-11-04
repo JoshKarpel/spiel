@@ -2,11 +2,13 @@ import inspect
 import shutil
 import socket
 from datetime import datetime
+from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
 
 from rich.align import Align
 from rich.box import SQUARE
+from rich.color import Color, blend_rgb
 from rich.console import Group
 from rich.layout import Layout
 from rich.markdown import Markdown
@@ -181,7 +183,7 @@ def dynamic():
         Align.center(
             Panel(
                 Text.from_markup(
-                    f"The time on this computer ([bold]{socket.gethostname()}[/bold]) is {datetime.now()}",
+                    f"The local timezone on this computer ([bold]{socket.gethostname()}[/bold]) is {datetime.now().astimezone().tzinfo}",
                     style="bright_cyan",
                     justify="center",
                 )
@@ -199,6 +201,108 @@ def dynamic():
     )
 
 
+@deck.slide(title="Triggers")
+def triggers(triggers):
+    info = Markdown(
+        dedent(
+            f"""\
+            ## Triggers
+
+            Triggers are a mechanism for making dynamic content that depends on *relative* time.
+
+            Triggers can be used to implement effects like fades, motion, and other "animations".
+
+            Each slide is triggered once when it starts being displayed.
+
+            You can trigger it again (as many times as you'd like) by pressing `t`.
+            You can reset the trigger state by pressing `r`.
+
+            This slide has been triggered {len(triggers)} times.
+
+            It was last triggered {triggers.time_since_last_trigger:.2f} seconds ago.
+            """
+        ),
+        justify="center",
+    )
+
+    bounce_period = 10
+    width = 50
+    half_width = width // 2
+
+    bounce_time = triggers.time_since_first_trigger % bounce_period
+    bounce_character = "⁍" if bounce_time < (1 / 2) * bounce_period else "⁌"
+    bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
+    before = half_width + bounce_position
+    ball = Align.center(
+        Panel(
+            Padding(
+                bounce_character,
+                pad=(0, before, 0, (half_width - bounce_position - 1)),
+            ),
+            title="Bouncing Bullet",
+            padding=0,
+        )
+    )
+
+    white = Color.parse("bright_white")
+    black = Color.parse("black")
+    red = Color.parse("bright_red")
+    green = Color.parse("bright_green")
+
+    fade_time = 3
+
+    lines = [
+        Text(
+            "Triggered!",
+            style=Style(
+                color=(
+                    Color.from_triplet(
+                        blend_rgb(
+                            black.get_truecolor(),
+                            white.get_truecolor(),
+                            cross_fade=min((triggers.now - time) / fade_time, 1),
+                        )
+                    )
+                )
+            ),
+        )
+        for time in triggers.times
+    ]
+
+    fun = Align.center(
+        Panel(
+            Text("\n", justify="center").join(lines),
+            border_style=Style(
+                color=Color.from_triplet(
+                    blend_rgb(
+                        green.get_truecolor(),
+                        red.get_truecolor(),
+                        cross_fade=min(triggers.time_since_last_trigger / fade_time, 1),
+                    )
+                ),
+            ),
+            title="Trigger Tracker",
+        )
+    )
+    return Group(info, fun, ball if len(triggers) > 2 else Text(""))
+
+
+@deck.slide(title="Views")
+def grid():
+    markup = dedent(
+        """\
+    ## Multiple Views
+
+    Try pressing `d` to go into "deck" view.
+    You can still move between slides deck view.
+
+    Press `enter` to go back to "slide" view (this view),
+    on the currently-selected slide.
+    """
+    )
+    return Markdown(markup, justify="center")
+
+
 @deck.slide(title="Displaying Images")
 def image():
     markup = dedent(
@@ -211,6 +315,7 @@ def image():
 
     If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
     If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
+
     For example, for `bash`, you could add
 
     `export COLORTERM=truecolor`

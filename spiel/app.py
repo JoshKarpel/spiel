@@ -6,6 +6,7 @@ import importlib.util
 import sys
 from asyncio import wait
 from pathlib import Path
+from time import monotonic
 from typing import Type
 
 from rich.style import Style
@@ -23,8 +24,10 @@ from spiel.exceptions import NoDeckFound
 from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
+from spiel.triggers import Triggers
 from spiel.utils import clamp
 from spiel.widgets.footer import Footer
+from spiel.widgets.slide import SlideWidget
 
 
 def load_deck(path: Path) -> Deck:
@@ -106,6 +109,14 @@ class SpielApp(App[None]):
 
     def action_prev_slide(self) -> None:
         self.current_slide_idx = clamp(self.current_slide_idx - 1, 0, len(self.deck) - 1)
+
+    def watch_current_slide_idx(self, new_current_slide_idx: int) -> None:
+        self.query_one(SlideWidget).triggers = Triggers._new()
+
+    def action_trigger(self) -> None:
+        now = monotonic()
+        slide_widget = self.query_one(SlideWidget)
+        slide_widget.triggers = Triggers(now=now, times=(*slide_widget.triggers.times, now))
 
     async def action_quit(self) -> None:
         self.reloader.cancel()

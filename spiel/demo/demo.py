@@ -366,8 +366,8 @@ def watch():
 
             The reload is triggered whenever any files under the path passed to the
             `--watch` argument of `spiel present` changes.
-            The path defaults to your current working directory
-            (right now it is `{Path.cwd()}`.
+            That path defaults to your current working directory
+            (right now it is `{Path.cwd()}`).
             """
         ),
         justify="center",
@@ -385,8 +385,8 @@ def failure():
 
         An exception was raised while rendering this slide.
 
-        When this happens, spiel will display the stack trace to help you debug the problem.
+        When this happens, Spiel will display the stack trace to help you debug the problem.
 
-        Deck reloading will still happen, so you can fix the error without stopping spiel.
+        Deck reloading will still happen, so you can fix the error without stopping Spiel.
         """
     )

@@ -16,8 +16,6 @@ from spiel.widgets.widget import SpielWidget
 
 class MiniSlides(SpielWidget):
     def render(self) -> RenderableType:
-        self.log(self.app.deck)
-
         grid_width = self.app.deck_grid_width
         row_of_current_slide = self.app.current_slide_idx // grid_width
         num_rows = ceil(len(self.app.deck) / grid_width)
@@ -27,10 +25,6 @@ class MiniSlides(SpielWidget):
             upper=max(num_rows - grid_width, 0),
         )
         start_slide_idx = grid_width * start_row
-        self.log(f"{row_of_current_slide=}")
-        self.log(f"{num_rows=}")
-        self.log(f"{start_row=}")
-        self.log(f"{start_slide_idx=}")
         slides = islice(enumerate(self.app.deck.slides), start_slide_idx, None)
 
         rows = [Layout(name=str(r)) for r in range(grid_width)]
@@ -38,7 +32,10 @@ class MiniSlides(SpielWidget):
 
         root = Layout()
         root.split_column(*rows)
+
         for row, layouts in zip(rows, cols):
+            row.split_row(*layouts)
+
             for layout in layouts:
                 slide_idx, slide = next(slides, (None, None))
                 if slide_idx is None or slide is None:
@@ -69,6 +66,5 @@ class MiniSlides(SpielWidget):
                             border_style=border_style,
                         )
                     )
-            row.split_row(*layouts)
 
         return root

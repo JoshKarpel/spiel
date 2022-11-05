@@ -60,8 +60,6 @@ class SpielApp(App[None]):
     CSS_PATH = "spiel.css"
     BINDINGS = [
         Binding("ctrl+d", "toggle_dark", "Toggle dark mode"),
-        Binding("right", "next_slide", "Next Slide"),
-        Binding("left", "prev_slide", "Previous Slide"),
         Binding("d", "switch_screen('deck')", "Deck View"),
         Binding("question_mark", "push_screen('help')", "Help"),
     ]
@@ -125,6 +123,16 @@ class SpielApp(App[None]):
     def action_prev_slide(self) -> None:
         self.current_slide_idx = clamp(self.current_slide_idx - 1, 0, len(self.deck) - 1)
 
+    def action_next_row(self) -> None:
+        self.current_slide_idx = clamp(
+            self.current_slide_idx + self.deck_grid_width, 0, len(self.deck) - 1
+        )
+
+    def action_prev_row(self) -> None:
+        self.current_slide_idx = clamp(
+            self.current_slide_idx - self.deck_grid_width, 0, len(self.deck) - 1
+        )
+
     def watch_current_slide_idx(self, new_current_slide_idx: int) -> None:
         self.query_one(SlideWidget).triggers = Triggers.new()
 
@@ -142,3 +150,7 @@ class SpielApp(App[None]):
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
         self.dark = not self.dark
+
+    @property
+    def deck_grid_width(self) -> int:
+        return max(self.console.size.width // 35, 1)

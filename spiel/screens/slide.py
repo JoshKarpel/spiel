@@ -16,6 +16,8 @@ class SlideScreen(Screen):
     """
 
     BINDINGS = [
+        Binding("right", "next_slide", "Next Slide"),
+        Binding("left", "prev_slide", "Previous Slide"),
         Binding("t", "trigger", "Trigger"),
     ]
 

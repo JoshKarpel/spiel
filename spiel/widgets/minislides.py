@@ -18,7 +18,7 @@ class MiniSlides(SpielWidget):
     def render(self) -> RenderableType:
         self.log(self.app.deck)
 
-        grid_width = max(self.app.console.size.width // 35, 1)
+        grid_width = self.app.deck_grid_width
         row_of_current_slide = self.app.current_slide_idx // grid_width
         num_rows = ceil(len(self.app.deck) / grid_width)
         start_row = clamp(

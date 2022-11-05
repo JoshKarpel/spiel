@@ -12,7 +12,7 @@ class Triggers:
     now: float
 
     @classmethod
-    def _new(self) -> Triggers:
+    def new(self) -> Triggers:
         now = monotonic()
         return Triggers(now=now, times=(now,))
 

@@ -47,7 +47,7 @@ class MiniSlides(SpielWidget):
                     is_active_slide = slide_idx == self.app.current_slide_idx
 
                     try:
-                        content = slide.render(triggers=Triggers._new())
+                        content = slide.render(triggers=Triggers.new())
                         border_style = Style(
                             color="bright_cyan" if is_active_slide else None,
                             dim=not is_active_slide,

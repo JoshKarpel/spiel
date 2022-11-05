@@ -1,15 +1,10 @@
-import pytest
-
-from spiel import Deck
-from spiel.app import load_deck
-from spiel.constants import DEMO_FILE
+from spiel import Triggers
+from spiel.demo.demo import DemoRenderFailure, deck
 
 
-@pytest.fixture
-def deck() -> Deck:
-    return load_deck(DEMO_FILE)
-
-
-def test_can_render_every_demo_slide(deck: Deck) -> None:
+def test_can_render_every_demo_slide() -> None:
     for slide in deck:
-        slide.content()
+        try:
+            slide.render(triggers=Triggers.new())
+        except DemoRenderFailure:
+            pass

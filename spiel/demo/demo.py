@@ -374,9 +374,13 @@ def watch():
     )
 
 
+class DemoRenderFailure(Exception):
+    pass
+
+
 @deck.slide(title="Render Failure")
 def failure():
-    raise Exception(
+    raise DemoRenderFailure(
         f"""Woops!
 
         An exception was raised while rendering this slide.

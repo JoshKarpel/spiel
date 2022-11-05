@@ -59,9 +59,8 @@ def load_deck(path: Path) -> Deck:
 class SpielApp(App[None]):
     CSS_PATH = "spiel.css"
     BINDINGS = [
-        Binding("ctrl+d", "toggle_dark", "Toggle dark mode"),
-        Binding("d", "switch_screen('deck')", "Deck View"),
-        Binding("question_mark", "push_screen('help')", "Help"),
+        Binding("d", "switch_screen('deck')", "Go to the Deck view."),
+        Binding("question_mark", "push_screen('help')", "Go to the Help view."),
     ]
     SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 
@@ -146,10 +145,6 @@ class SpielApp(App[None]):
         await wait([self.reloader], timeout=1)
 
         await super().action_quit()
-
-    def action_toggle_dark(self) -> None:
-        """An action to toggle dark mode."""
-        self.dark = not self.dark
 
     @property
     def deck_grid_width(self) -> int:

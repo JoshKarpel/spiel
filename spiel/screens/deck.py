@@ -13,11 +13,13 @@ class DeckScreen(Screen):
     """
 
     BINDINGS = [
-        Binding("right", "next_slide", "Next Slide"),
-        Binding("left", "prev_slide", "Previous Slide"),
-        Binding("up", "prev_row", "Previous Row"),
-        Binding("down", "next_row", "Next Row"),
-        Binding("escape,enter", "switch_screen('slide')", "Close"),
+        Binding("right", "next_slide", "Go to next slide."),
+        Binding("left", "prev_slide", "Go to previous slide."),
+        Binding("down", "next_row", "Go to next row of slides."),
+        Binding("up", "prev_row", "Go to previous row of slides."),
+        Binding(
+            "escape,enter", "switch_screen('slide')", "Go to Slide view with the selected slide."
+        ),
     ]
 
     def compose(self) -> ComposeResult:

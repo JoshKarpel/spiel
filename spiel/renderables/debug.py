@@ -15,6 +15,7 @@ class DebugTable:
             Column(justify="right"),
             Column(justify="left"),
             show_header=False,
+            title="Debug Information",
         )
 
         table.add_row(f"{PACKAGE_NAME.capitalize()} Version", __version__)

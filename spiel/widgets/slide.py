@@ -18,9 +18,6 @@ from spiel.widgets.widget import SpielWidget
 
 class SlideWidget(SpielWidget):
     DEFAULT_CSS = """
-    SlideWidget.error {
-        overflow-y: scroll;
-    }
     """
 
     triggers: Triggers = reactive(Triggers.new)  # type: ignore[assignment,arg-type]

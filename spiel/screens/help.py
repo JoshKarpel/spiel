@@ -19,6 +19,10 @@ class HelpScreen(Screen):
     }
     """
 
+    BINDINGS = [
+        ("escape,enter", "pop_screen", "Close"),
+    ]
+
     def compose(self) -> ComposeResult:
         yield Static(DebugTable(), classes="content-center")
         yield Footer()

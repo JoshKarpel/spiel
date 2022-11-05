@@ -23,7 +23,6 @@ class Footer(SpielWidget):
     """
 
     now: datetime = reactive(datetime.now)  # type: ignore[arg-type,assignment]
-    message = reactive(Text(""))
 
     def on_mount(self) -> None:
         super().on_mount()
@@ -48,7 +47,7 @@ class Footer(SpielWidget):
         )
         grid.add_row(
             Text(f"{self.app.deck.name} | {self.app.deck[self.app.current_slide_idx].title} "),
-            self.message,
+            self.app.message,
             Text(
                 f"{self.now.strftime(FOOTER_TIME_FORMAT)}   [{self.app.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.app.deck)}]"
             ),

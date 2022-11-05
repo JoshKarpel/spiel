@@ -7,6 +7,7 @@ from rich.console import RenderableType
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.style import Style
+from rich.text import Text
 
 from spiel.triggers import Triggers
 from spiel.utils import clamp, filter_join
@@ -44,17 +45,28 @@ class MiniSlides(SpielWidget):
                     layout.update("")
                 else:
                     is_active_slide = slide_idx == self.app.current_slide_idx
-                    self.log(
-                        f"{layout=} {slide_idx=} {slide=} {is_active_slide=} {self.app.current_slide_idx=}"
-                    )
+
+                    try:
+                        content = slide.render(triggers=Triggers._new())
+                        border_style = Style(
+                            color="bright_cyan" if is_active_slide else None,
+                            dim=not is_active_slide,
+                        )
+                    except Exception as e:
+                        content = Text(
+                            f"Failed to render slide {slide_idx + 1} due to:\n{e}",
+                            style=Style(color="red"),
+                        )
+                        border_style = Style(
+                            color="red1",
+                            dim=not is_active_slide,
+                        )
+
                     layout.update(
                         Panel(
-                            slide.render(triggers=Triggers._new()),
+                            content,
                             title=filter_join(" | ", [slide_idx + 1, slide.title]),
-                            border_style=Style(
-                                color="bright_cyan" if is_active_slide else None,
-                                dim=not is_active_slide,
-                            ),
+                            border_style=border_style,
                         )
                     )
             row.split_row(*layouts)

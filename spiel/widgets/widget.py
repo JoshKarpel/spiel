@@ -15,6 +15,7 @@ class SpielWidget(Widget):
     def on_mount(self) -> None:
         watch(self.app, "deck", self.r)
         watch(self.app, "current_slide_idx", self.r)
+        watch(self.app, "message", self.r)
 
     def r(self, _: object) -> None:
         self.refresh()

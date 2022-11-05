@@ -12,7 +12,7 @@ class DeckScreen(Screen):
     """
 
     BINDINGS = [
-        ("escape,enter,down", "switch_screen('slide')", "Close"),
+        ("escape,enter", "switch_screen('slide')", "Close"),
     ]
 
     def compose(self) -> ComposeResult:

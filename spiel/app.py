@@ -26,7 +26,6 @@ from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
 from spiel.triggers import Triggers
 from spiel.utils import clamp
-from spiel.widgets.footer import Footer
 from spiel.widgets.slide import SlideWidget
 
 
@@ -64,13 +63,13 @@ class SpielApp(App[None]):
         Binding("right", "next_slide", "Next Slide"),
         Binding("left", "prev_slide", "Previous Slide"),
         Binding("d", "switch_screen('deck')", "Deck View"),
-        Binding("question_mark", "switch_screen('help')", "Help"),
+        Binding("question_mark", "push_screen('help')", "Help"),
     ]
     SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 
     deck = reactive(Deck(name="New Deck"))
     current_slide_idx = reactive(0)
-    message = reactive("")
+    message = reactive(Text(""))
 
     def __init__(
         self,
@@ -96,13 +95,29 @@ class SpielApp(App[None]):
         async for changes in awatch(self.watch_path):
             change_msg = "\n  ".join([""] + [f"{k.raw_str()}: {v}" for k, v in changes])
             log(f"Reloading deck from {self.deck_path} due to detected file changes:{change_msg}")
-            self.deck = load_deck(self.deck_path)
-            self.current_slide_idx = clamp(self.current_slide_idx, 0, len(self.deck))
-            for footer in self.query(Footer):
-                footer.message = Text(
+            try:
+                self.deck = load_deck(self.deck_path)
+                self.current_slide_idx = clamp(self.current_slide_idx, 0, len(self.deck))
+                self.message = Text(
                     f"Reloaded deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)}",
-                    style=Style(italic=True, color="cyan"),
+                    style=Style(italic=True),
                 )
+            except Exception as e:
+                self.message = Text(
+                    f"Failed to reload deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)} due to: {e}",
+                    style=Style(italic=True, color="red"),
+                )
+
+            self.clear_current_message_after_delay(delay=10)
+
+    def clear_current_message_after_delay(self, delay: float) -> None:
+        msg = self.message
+
+        def clear() -> None:
+            if self.message is msg:
+                self.message = Text("")
+
+        self.set_timer(delay, clear)
 
     def action_next_slide(self) -> None:
         self.current_slide_idx = clamp(self.current_slide_idx + 1, 0, len(self.deck) - 1)

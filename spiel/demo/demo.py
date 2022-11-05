@@ -7,7 +7,7 @@ from pathlib import Path
 from textwrap import dedent
 
 from rich.align import Align
-from rich.box import SQUARE
+from rich.box import HEAVY, SQUARE
 from rich.color import Color, blend_rgb
 from rich.console import Group
 from rich.layout import Layout
@@ -119,14 +119,14 @@ def what():
 def code():
     markup = dedent(
         f"""\
-    ## Decks are made of Slides
+        ## Decks are made of Slides
 
-    Here's the code for `Deck` and `Slide`!
+        Here's the code for `Deck` and `Slide`!
 
-    The source code is pulled directly from the definitions via [inspect.getsource](https://docs.python.org/3/library/inspect.html#inspect.getsource).
+        The source code is pulled directly from the definitions via [inspect.getsource](https://docs.python.org/3/library/inspect.html#inspect.getsource).
 
-    ({RICH} supports syntax highlighting, so {SPIEL} does too!)
-    """
+        ({RICH} supports syntax highlighting, so {SPIEL} does too!)
+        """
     )
     root = Layout()
     upper = Layout(Markdown(markup, justify="center"), size=len(markup.split("\n")) + 1)
@@ -157,22 +157,32 @@ def code():
 
 @deck.slide(title="Dynamic Content")
 def dynamic():
-    home = Path.home()
     width = shutil.get_terminal_size().columns
     width_limit = 80
+
+    home = Path.home()
     home_dir_contents = list(home.iterdir())
+
     return Group(
         Align.center(
-            Text(
-                f"Slides can have dynamic content!",
-                style=Style(color="bright_magenta", bold=True, italic=True),
+            Markdown(
+                dedent(
+                    f"""\
+                    ## Slides can have dynamic content!
+
+                    Since slides are created using normal Python code,
+                    any output you can imagine producing via Python can make it into your slides.
+
+                    Here are some examples:
+                    """
+                ),
                 justify="center",
             ),
         ),
         Align.center(
             Panel(
                 Text(
-                    f"Your terminal is {width} cells wide"
+                    f"Your terminal is {width} cells wide (try resizing it or adjusting your font size!)"
                     if width > width_limit
                     else f"Your terminal is only {width} cells wide! Get a bigger monitor!",
                     style=Style(color="green1" if width > width_limit else "red"),
@@ -183,7 +193,7 @@ def dynamic():
         Align.center(
             Panel(
                 Text.from_markup(
-                    f"The local timezone on this computer ([bold]{socket.gethostname()}[/bold]) is {datetime.now().astimezone().tzinfo}",
+                    f"The local timezone on this computer ([bold]{socket.gethostname()}[/bold]) is [bold underline]{datetime.now().astimezone().tzinfo}[/bold underline]",
                     style="bright_cyan",
                     justify="center",
                 )
@@ -253,7 +263,7 @@ def triggers(triggers):
 
     lines = [
         Text(
-            "Triggered!",
+            f"Triggered at {time - triggers[0]:.3f}!",
             style=Style(
                 color=(
                     Color.from_triplet(
@@ -266,24 +276,28 @@ def triggers(triggers):
                 )
             ),
         )
-        for time in triggers.times
+        for time in triggers
     ]
 
-    fun = Align.center(
-        Panel(
-            Text("\n", justify="center").join(lines),
-            border_style=Style(
-                color=Color.from_triplet(
-                    blend_rgb(
-                        green.get_truecolor(),
-                        red.get_truecolor(),
-                        cross_fade=min(triggers.time_since_last_trigger / fade_time, 1),
-                    )
+    fun = Padding(
+        Align.center(
+            Panel(
+                Text("\n", justify="center").join(lines),
+                border_style=Style(
+                    color=Color.from_triplet(
+                        blend_rgb(
+                            green.get_truecolor(),
+                            red.get_truecolor(),
+                            cross_fade=min(triggers.time_since_last_trigger / fade_time, 1),
+                        )
+                    ),
                 ),
-            ),
-            title="Trigger Tracker",
-        )
+                title="Trigger Tracker",
+            )
+        ),
+        pad=(1, 0),
     )
+
     return Group(info, fun, ball if len(triggers) > 2 else Text(""))
 
 
@@ -291,14 +305,14 @@ def triggers(triggers):
 def grid():
     markup = dedent(
         """\
-    ## Multiple Views
+        ## Deck View
 
-    Try pressing `d` to go into "deck" view.
-    You can still move between slides deck view.
+        Try pressing `d` to go into "deck" view.
+        You can still move between slides in deck view.
 
-    Press `enter` to go back to "slide" view (this view),
-    on the currently-selected slide.
-    """
+        Press `enter` to go back to "slide" view (this view),
+        on the currently-selected slide.
+        """
     )
     return Markdown(markup, justify="center")
 
@@ -307,26 +321,68 @@ def grid():
 def image():
     markup = dedent(
         f"""\
-    ## Images
+        ## Images
 
-    {SPIEL} can display images... sort of!
+        {SPIEL} can display images... sort of!
 
-    Spiel includes an `Image` widget that can render images by interpolating pixel values.
+        Spiel includes an `Image` widget that can render images by interpolating pixel values.
 
-    If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
-    If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
+        If you see big chunks of constant color instead of smooth gradients, your terminal is probably not configured for "truecolor" mode.
+        If your terminal supports truecolor (it probably does), try setting the environment variable `COLORTERM` to `truecolor`.
 
-    For example, for `bash`, you could add
+        For example, for `bash`, you could add
 
-    `export COLORTERM=truecolor`
+        `export COLORTERM=truecolor`
 
-    to your `.bashrc` file, then restart your shell.
-    """
+        to your `.bashrc` file, then restart your shell.
+        """
     )
+
+    image_path = THIS_DIR / "tree.jpg"
     root = Layout()
     root.split_row(
-        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 2))),
-        Layout(Image.from_file(THIS_DIR / "tree.jpg")),
+        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 3))),
+        Layout(
+            Panel.fit(
+                Image.from_file(image_path),
+                subtitle=str(image_path),
+                box=HEAVY,
+                padding=0,
+            )
+        ),
     )
 
     return root
+
+
+@deck.slide(title="Watch Mode")
+def watch():
+    return Markdown(
+        dedent(
+            f"""\
+            ## Developing a Deck
+
+            {SPIEL} will reload your deck as you edit it to make development easier.
+
+            The reload is triggered whenever any files under the path passed to the
+            `--watch` argument of `spiel present` changes.
+            The path defaults to your current working directory
+            (right now it is `{Path.cwd()}`.
+            """
+        ),
+        justify="center",
+    )
+
+
+@deck.slide(title="Render Failure")
+def failure():
+    raise Exception(
+        f"""Woops!
+
+        An exception was raised while rendering this slide.
+
+        When this happens, spiel will display the stack trace to help you debug the problem.
+
+        Deck reloading will still happen, so you can fix the error without stopping spiel.
+        """
+    )

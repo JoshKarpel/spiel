@@ -17,9 +17,6 @@ from spiel.widgets.widget import SpielWidget
 
 
 class SlideWidget(SpielWidget):
-    DEFAULT_CSS = """
-    """
-
     triggers: Triggers = reactive(Triggers.new)  # type: ignore[assignment,arg-type]
 
     def on_mount(self) -> None:

@@ -9,9 +9,6 @@ from spiel.widgets.minislides import MiniSlides
 
 
 class DeckScreen(Screen):
-    DEFAULT_CSS = """
-    """
-
     BINDINGS = [
         Binding("right", "next_slide", "Go to next slide."),
         Binding("left", "prev_slide", "Go to previous slide."),

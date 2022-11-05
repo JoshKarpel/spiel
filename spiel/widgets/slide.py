@@ -5,6 +5,7 @@ from time import monotonic
 
 from rich.box import HEAVY
 from rich.console import RenderableType
+from rich.padding import Padding
 from rich.panel import Panel
 from rich.style import Style
 from rich.traceback import Traceback
@@ -30,7 +31,8 @@ class SlideWidget(SpielWidget):
     def render(self) -> RenderableType:
         try:
             self.remove_class("error")
-            return self.app.deck[self.app.current_slide_idx].render(triggers=self.triggers)
+            slide = self.app.deck[self.app.current_slide_idx]
+            return Padding(slide.render(triggers=self.triggers), pad=slide.pad)
         except Exception:
             self.add_class("error")
             et, ev, tr = sys.exc_info()

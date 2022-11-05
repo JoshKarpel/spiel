@@ -16,6 +16,7 @@ Content = Callable[[], RenderableType]
 class Slide:
     title: str = ""
     content: Callable[..., RenderableType] = lambda: Text()
+    pad: int | tuple[int, int] | tuple[int, int, int, int] = 1
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)
@@ -44,10 +45,15 @@ class Deck:
     def slide(
         self,
         title: str = "",
+        pad: int | tuple[int, int] | tuple[int, int, int, int] = 1,
     ) -> Callable[[Content], Slide]:
         def slideify(content: Content) -> Slide:
-            slide = Slide(title=title, content=content)
-            self.slides.append(slide)
+            slide = Slide(
+                title=title,
+                content=content,
+                pad=pad,
+            )
+            self.add_slides(slide)
             return slide
 
         return slideify

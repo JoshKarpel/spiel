@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import code
 import datetime
 import importlib.util
 import sys
+import time
 from asyncio import wait
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from time import monotonic
 from typing import Type
@@ -61,6 +64,7 @@ class SpielApp(App[None]):
     BINDINGS = [
         Binding("d", "switch_screen('deck')", "Go to the Deck view."),
         Binding("question_mark", "push_screen('help')", "Go to the Help view."),
+        Binding("i", "repl", "Open the REPL."),
     ]
     SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 
@@ -143,6 +147,13 @@ class SpielApp(App[None]):
     def action_reset_trigger(self) -> None:
         slide_widget = self.query_one(SlideWidget)
         slide_widget.triggers = Triggers.new()
+
+    def action_repl(self) -> None:
+        self._driver.stop_application_mode()  # TODO: only works by clearing exit event in textual driver, make a PR!
+        with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
+            code.InteractiveConsole().interact(exitmsg="")
+            time.sleep(3)
+        self._driver.start_application_mode()
 
     async def action_quit(self) -> None:
         self.reloader.cancel()

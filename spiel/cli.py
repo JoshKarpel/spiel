@@ -57,12 +57,6 @@ def present(
 def _present(deck_path: Path, watch_path: Path) -> None:
     os.environ["TEXTUAL"] = ",".join(sorted(["debug", "devtools"]))
 
-    # try:
-    #     load_deck(deck_path)
-    # except NoDeckFound as e:
-    #     console.print(Text(f"Failed to load deck: {e}", style=Style(color="red")))
-    #     raise Exit(code=1)
-
     app = SpielApp(deck_path=deck_path, watch_path=watch_path)
     app.run()
 

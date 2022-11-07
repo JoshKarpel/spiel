@@ -140,6 +140,10 @@ class SpielApp(App[None]):
         slide_widget = self.query_one(SlideWidget)
         slide_widget.triggers = Triggers(now=now, times=(*slide_widget.triggers.times, now))
 
+    def action_reset_trigger(self) -> None:
+        slide_widget = self.query_one(SlideWidget)
+        slide_widget.triggers = Triggers.new()
+
     async def action_quit(self) -> None:
         self.reloader.cancel()
         await wait([self.reloader], timeout=1)

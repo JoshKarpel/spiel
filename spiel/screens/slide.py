@@ -19,6 +19,7 @@ class SlideScreen(Screen):
         Binding("right", "next_slide", "Go to next slide."),
         Binding("left", "prev_slide", "Go to previous slide."),
         Binding("t", "trigger", "Trigger the current slide."),
+        Binding("r", "reset_trigger", "Reset trigger state."),
     ]
 
     def compose(self) -> ComposeResult:

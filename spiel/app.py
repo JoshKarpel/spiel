@@ -7,10 +7,10 @@ import importlib.util
 import sys
 from asyncio import wait
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
-from functools import cached_property
+from functools import cached_property, partial
 from pathlib import Path
 from time import monotonic
-from typing import Iterator, Type
+from typing import Callable, Iterator, Type
 
 from rich.style import Style
 from rich.text import Text
@@ -64,7 +64,7 @@ class SpielApp(App[None]):
     BINDINGS = [
         Binding("d", "switch_screen('deck')", "Go to the Deck view."),
         Binding("question_mark", "push_screen('help')", "Go to the Help view."),
-        Binding("i", "repl", "Open the REPL."),
+        Binding("i", "repl", "Switch to the REPL."),
     ]
     SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 
@@ -149,12 +149,19 @@ class SpielApp(App[None]):
         slide_widget.triggers = Triggers.new()
 
     @cached_property
-    def repl(self) -> code.InteractiveConsole:
-        return code.InteractiveConsole()
+    def repl(self) -> Callable[[], None]:
+        # Lazily enable readline support
+        import readline  # nopycln: import
+
+        self.console.clear()  # clear the console the first time we go into the repl
+
+        repl = code.InteractiveConsole()
+
+        return partial(repl.interact, banner="", exitmsg="")
 
     def action_repl(self) -> None:
         with self.suspend():
-            self.repl.interact(banner="", exitmsg="")
+            self.repl()
 
     async def action_quit(self) -> None:
         self.reloader.cancel()
@@ -164,10 +171,13 @@ class SpielApp(App[None]):
 
     @contextmanager
     def suspend(self) -> Iterator[None]:
-        self._driver.stop_application_mode()  # TODO: only works by clearing exit event in textual driver, make a PR!
-        with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
-            yield
-        self._driver.start_application_mode()
+        driver = self._driver
+
+        if driver is not None:
+            driver.stop_application_mode()  # TODO: only works by clearing exit event in textual driver, make a PR!
+            with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
+                yield
+            driver.start_application_mode()
 
     @property
     def deck_grid_width(self) -> int:

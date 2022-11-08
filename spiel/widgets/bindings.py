@@ -3,6 +3,8 @@ from __future__ import annotations
 from rich.console import RenderableType
 from rich.padding import Padding
 from rich.table import Column, Table
+from rich.text import Text
+from textual.binding import Binding
 
 from spiel.widgets.widget import SpielWidget
 
@@ -37,6 +39,9 @@ class ScreenBindingsTableWidget(SpielWidget):
     """
 
     def render(self) -> RenderableType:
+        if self.id is None:
+            return Text("")
+
         screen = self.app.get_screen(self.id)
         table = Table(
             Column("Key", justify="left"),
@@ -45,6 +50,9 @@ class ScreenBindingsTableWidget(SpielWidget):
         )
 
         for binding in screen.BINDINGS:
-            table.add_row(binding.key, binding.description)
+            if isinstance(binding, Binding):
+                table.add_row(binding.key, binding.description)
+            else:
+                self.log(f"{binding} needs to be a {Binding.__name__}")
 
         return Padding(table, pad=1)

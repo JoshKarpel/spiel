@@ -5,12 +5,12 @@ import code
 import datetime
 import importlib.util
 import sys
-import time
 from asyncio import wait
-from contextlib import redirect_stderr, redirect_stdout
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
+from functools import cached_property
 from pathlib import Path
 from time import monotonic
-from typing import Type
+from typing import Iterator, Type
 
 from rich.style import Style
 from rich.text import Text
@@ -148,18 +148,26 @@ class SpielApp(App[None]):
         slide_widget = self.query_one(SlideWidget)
         slide_widget.triggers = Triggers.new()
 
+    @cached_property
+    def repl(self) -> code.InteractiveConsole:
+        return code.InteractiveConsole()
+
     def action_repl(self) -> None:
-        self._driver.stop_application_mode()  # TODO: only works by clearing exit event in textual driver, make a PR!
-        with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
-            code.InteractiveConsole().interact(exitmsg="")
-            time.sleep(3)
-        self._driver.start_application_mode()
+        with self.suspend():
+            self.repl.interact(banner="", exitmsg="")
 
     async def action_quit(self) -> None:
         self.reloader.cancel()
         await wait([self.reloader], timeout=1)
 
         await super().action_quit()
+
+    @contextmanager
+    def suspend(self) -> Iterator[None]:
+        self._driver.stop_application_mode()  # TODO: only works by clearing exit event in textual driver, make a PR!
+        with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
+            yield
+        self._driver.start_application_mode()
 
     @property
     def deck_grid_width(self) -> int:

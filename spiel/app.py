@@ -6,12 +6,12 @@ import importlib.util
 import sys
 from asyncio import wait
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
-from functools import cached_property, partial
+from functools import cached_property
 from pathlib import Path
 from time import monotonic
 from typing import Callable, Iterator, Type
 
-import IPython
+from IPython.terminal.interactiveshell import TerminalInteractiveShell
 from rich.style import Style
 from rich.text import Text
 from textual import log
@@ -163,14 +163,18 @@ class SpielApp(App[None]):
         c = Config()
         c.InteractiveShellEmbed.colors = "Neutral"
 
-        # Needed to set in_thread=True at interactiveshell.py:609
-        # Also, does not preserve vars between sessions yet
+        repl = TerminalInteractiveShell(confirm_exit=False)
 
-        return partial(IPython.embed, config=c)
+        # Needed to set in_thread=True at interactiveshell.py:609
+
+        return repl.interact
 
     def action_repl(self) -> None:
         with self.suspend():
-            self.repl()
+            try:
+                self.repl()
+            except Exception as e:
+                self.log(f"Ignoring {e} during REPL shutdown")
 
     async def action_quit(self) -> None:
         self.reloader.cancel()

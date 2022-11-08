@@ -162,8 +162,10 @@ class SpielApp(App[None]):
 
         c = Config()
         c.InteractiveShellEmbed.colors = "Neutral"
+        c.HistoryAccessor.enabled = False
+        c.HistoryAccessor.hist_file = ":memory:"
 
-        repl = TerminalInteractiveShell(confirm_exit=False)
+        repl = TerminalInteractiveShell(config=c, confirm_exit=False)
 
         # Needed to set in_thread=True at interactiveshell.py:609
 
@@ -171,10 +173,7 @@ class SpielApp(App[None]):
 
     def action_repl(self) -> None:
         with self.suspend():
-            try:
-                self.repl()
-            except Exception as e:
-                self.log(f"Ignoring {e} during REPL shutdown")
+            self.repl()
 
     async def action_quit(self) -> None:
         self.reloader.cancel()

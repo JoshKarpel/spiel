@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import code
 import datetime
 import importlib.util
 import sys
@@ -12,6 +11,7 @@ from pathlib import Path
 from time import monotonic
 from typing import Callable, Iterator, Type
 
+import IPython
 from rich.style import Style
 from rich.text import Text
 from textual import log
@@ -155,9 +155,18 @@ class SpielApp(App[None]):
 
         self.console.clear()  # clear the console the first time we go into the repl
 
-        repl = code.InteractiveConsole()
+        # repl = code.InteractiveConsole()
+        # return partial(repl.interact, banner="", exitmsg="")
 
-        return partial(repl.interact, banner="", exitmsg="")
+        from traitlets.config import Config
+
+        c = Config()
+        c.InteractiveShellEmbed.colors = "Neutral"
+
+        # Needed to set in_thread=True at interactiveshell.py:609
+        # Also, does not preserve vars between sessions yet
+
+        return partial(IPython.embed, config=c)
 
     def action_repl(self) -> None:
         with self.suspend():

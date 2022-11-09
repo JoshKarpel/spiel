@@ -186,7 +186,7 @@ class SpielApp(App[None]):
         driver = self._driver
 
         if driver is not None:
-            driver.stop_application_mode()  # TODO: only works by clearing exit event in textual driver, make a PR!
+            driver.stop_application_mode()
             with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
                 yield
             driver.start_application_mode()

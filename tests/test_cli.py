@@ -57,7 +57,7 @@ def test_demo_display(runner: CliRunner) -> None:
     assert result.exit_code == 0
 
 
-def test_DEMO_FILE(runner: CliRunner) -> None:
+def test_demo_source(runner: CliRunner) -> None:
     result = runner.invoke(cli, ["demo", "source"])
 
     assert result.exit_code == 0

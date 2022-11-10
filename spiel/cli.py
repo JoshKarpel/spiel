@@ -161,7 +161,7 @@ def source() -> None:
     console = Console()
 
     with console.pager(styles=True):
-        console.print(Syntax(DEMO_FILE.read_text(), lexer="python"))
+        console.print(Syntax(DEMO_FILE.read_text(encoding="utf-8"), lexer="python"))
 
 
 @demo.command()

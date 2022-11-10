@@ -25,7 +25,10 @@ class AppBindingsTableWidget(SpielWidget):
         )
 
         for binding in self.app.BINDINGS:
-            table.add_row(binding.key, binding.description)
+            if isinstance(binding, Binding):
+                table.add_row(binding.key, binding.description)
+            else:
+                raise TypeError(f"{binding} on {self.app} needs to be a {Binding.__name__}")
 
         return Padding(table, pad=1)
 
@@ -53,6 +56,6 @@ class ScreenBindingsTableWidget(SpielWidget):
             if isinstance(binding, Binding):
                 table.add_row(binding.key, binding.description)
             else:
-                self.log(f"{binding} needs to be a {Binding.__name__}")
+                raise TypeError(f"{binding} on {screen} needs to be a {Binding.__name__}")
 
         return Padding(table, pad=1)

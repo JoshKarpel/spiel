@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable
 from itertools import zip_longest
 from typing import TypeVar
 
@@ -9,10 +9,6 @@ T = TypeVar("T")
 
 def filter_join(separator: str, items: Iterable[object | None]) -> str:
     return separator.join(map(str, filter(None, items)))
-
-
-def drop_nones(*items: T | None) -> Iterator[T]:
-    yield from (item for item in items if item is not None)
 
 
 def clamp(value: int, lower: int, upper: int) -> int:

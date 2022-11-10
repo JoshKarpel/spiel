@@ -11,6 +11,13 @@ class Triggers:
     times: tuple[float, ...]
     now: float
 
+    def __post_init__(self) -> None:
+        if not self.times:
+            raise ValueError("times must not be empty")
+
+        if self.now < self.times[-1]:
+            raise ValueError(f"now {self.now} must be later than the last time {self.times[-1]}")
+
     @classmethod
     def new(self) -> Triggers:
         now = monotonic()

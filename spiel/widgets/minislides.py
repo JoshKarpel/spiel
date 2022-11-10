@@ -10,7 +10,7 @@ from rich.style import Style
 from rich.text import Text
 
 from spiel.triggers import Triggers
-from spiel.utils import clamp, filter_join
+from spiel.utils import clamp
 from spiel.widgets.widget import SpielWidget
 
 
@@ -62,7 +62,7 @@ class MiniSlides(SpielWidget):
                     layout.update(
                         Panel(
                             content,
-                            title=filter_join(" | ", [slide_idx + 1, slide.title]),
+                            title=" | ".join((str(slide_idx + 1), slide.title)),
                             border_style=border_style,
                         )
                     )

@@ -1,31 +1,9 @@
 from __future__ import annotations
 
-import inspect
 from dataclasses import dataclass, field
 from typing import Callable, Iterator
 
-from rich.console import RenderableType
-from rich.text import Text
-
-from spiel.triggers import Triggers
-
-Content = Callable[[], RenderableType]
-
-
-@dataclass
-class Slide:
-    title: str = ""
-    content: Callable[..., RenderableType] = lambda: Text()
-    pad: int | tuple[int, int] | tuple[int, int, int, int] = 1
-
-    def render(self, triggers: Triggers) -> RenderableType:
-        signature = inspect.signature(self.content)
-
-        kwargs: dict[str, object] = {}
-        if "triggers" in signature.parameters:
-            kwargs["triggers"] = triggers
-
-        return self.content(**kwargs)
+from spiel.slide import Content, Slide
 
 
 @dataclass

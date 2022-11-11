@@ -18,8 +18,8 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import __version__
-from spiel.deck import Deck, Slide
+from spiel import Slide, __version__
+from spiel.deck import Deck
 from spiel.renderables.image import Image
 
 deck = Deck(name=f"Spiel Demo Deck (v{__version__})")

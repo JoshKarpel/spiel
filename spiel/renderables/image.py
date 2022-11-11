@@ -49,7 +49,9 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> list[Segment]:
 
 @lru_cache(maxsize=2**4)
 def _load_image(path: Path) -> Image:
-    return Img.open(path)
+    img = Img.open(path)
+    img.load()
+    return img
 
 
 @dataclass(frozen=True)

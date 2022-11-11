@@ -5,8 +5,13 @@ from rich.style import Style
 from rich.table import Column, Table
 from rich.text import Text
 
-from spiel import __version__
-from spiel.constants import PACKAGE_NAME, __python_version__, __rich_version__, __textual_version__
+from spiel.constants import (
+    PACKAGE_NAME,
+    __python_version__,
+    __rich_version__,
+    __textual_version__,
+    __version__,
+)
 
 
 class DebugTable:

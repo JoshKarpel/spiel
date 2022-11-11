@@ -8,9 +8,8 @@ from hypothesis import settings
 from rich.console import Console
 from typer.testing import CliRunner
 
-from spiel import Deck
+from spiel import Deck, Slide
 from spiel.constants import DECK
-from spiel.deck import Slide
 
 settings.register_profile("default", deadline=None)
 settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))

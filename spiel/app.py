@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 import asyncio
+import code
 import datetime
 import importlib.util
 import sys
 from asyncio import wait
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
-from functools import cached_property
+from functools import cached_property, partial
 from pathlib import Path
 from time import monotonic
 from typing import Callable, Iterator, Type
 
-from IPython.terminal.interactiveshell import TerminalInteractiveShell
 from rich.style import Style
 from rich.text import Text
 from textual import log
@@ -155,21 +155,8 @@ class SpielApp(App[None]):
 
         self.console.clear()  # clear the console the first time we go into the repl
 
-        # repl = code.InteractiveConsole()
-        # return partial(repl.interact, banner="", exitmsg="")
-
-        from traitlets.config import Config
-
-        c = Config()
-        c.InteractiveShellEmbed.colors = "Neutral"
-        c.HistoryAccessor.enabled = False
-        c.HistoryAccessor.hist_file = ":memory:"
-
-        repl = TerminalInteractiveShell(config=c, confirm_exit=False)
-
-        # Needed to set in_thread=True at interactiveshell.py:609
-
-        return repl.interact
+        repl = code.InteractiveConsole()
+        return partial(repl.interact, banner="", exitmsg="")
 
     def action_repl(self) -> None:
         with self.suspend():

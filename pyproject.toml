@@ -30,7 +30,6 @@ watchdog = ">=2"
 Pillow = ">=8"
 textual = ">=0.2"
 watchfiles = ">=0.18"
-ipython = "^8.6.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7"

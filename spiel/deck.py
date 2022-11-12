@@ -23,13 +23,11 @@ class Deck:
     def slide(
         self,
         title: str = "",
-        pad: int | tuple[int, int] | tuple[int, int, int, int] = 1,
     ) -> Callable[[Content], Slide]:
         def slideify(content: Content) -> Slide:
             slide = Slide(
                 title=title,
                 content=content,
-                pad=pad,
             )
             self.add_slides(slide)
             return slide

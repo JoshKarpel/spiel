@@ -18,7 +18,6 @@ Content = Callable[..., RenderableType]
 class Slide:
     title: str = ""
     content: Content = lambda: Text()
-    pad: int | tuple[int, int] | tuple[int, int, int, int] = 1
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)

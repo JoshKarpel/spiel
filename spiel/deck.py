@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable, Iterator
 
 from spiel.slide import Content, Slide
@@ -23,11 +24,13 @@ class Deck:
     def slide(
         self,
         title: str = "",
+        edit_target: Path | None = None,
     ) -> Callable[[Content], Slide]:
         def slideify(content: Content) -> Slide:
             slide = Slide(
                 title=title,
                 content=content,
+                edit_target=edit_target,
             )
             self.add_slides(slide)
             return slide

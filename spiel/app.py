@@ -12,6 +12,7 @@ from pathlib import Path
 from time import monotonic
 from typing import Callable, Iterator, Type
 
+from click import edit
 from rich.style import Style
 from rich.text import Text
 from textual import log
@@ -154,6 +155,7 @@ class SpielApp(App[None]):
         import readline  # nopycln: import
 
         self.console.clear()  # clear the console the first time we go into the repl
+        sys.stdout.flush()
 
         repl = code.InteractiveConsole()
         return partial(repl.interact, banner="", exitmsg="")
@@ -161,6 +163,14 @@ class SpielApp(App[None]):
     def action_repl(self) -> None:
         with self.suspend():
             self.repl()
+
+    def action_edit(self) -> None:
+        path = self.deck[self.current_slide_idx].edit_target
+        if path is None:
+            return
+
+        with self.suspend():
+            edit(filename=path)
 
     async def action_quit(self) -> None:
         self.reloader.cancel()
@@ -174,6 +184,7 @@ class SpielApp(App[None]):
 
         if driver is not None:
             driver.stop_application_mode()
+            driver.exit_event.clear()
             with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
                 yield
             driver.start_application_mode()

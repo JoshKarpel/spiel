@@ -37,8 +37,8 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> list[Segment]:
                 Segment(
                     text="▀",
                     style=Style.from_color(
-                        color=Color.from_rgb(*top_pixel) if top_pixel else None,
-                        bgcolor=Color.from_rgb(*bottom_pixel) if bottom_pixel else None,
+                        color=Color.from_rgb(*top_pixel[:3]) if top_pixel else None,
+                        bgcolor=Color.from_rgb(*bottom_pixel[:3]) if bottom_pixel else None,
                     ),
                 )
             )

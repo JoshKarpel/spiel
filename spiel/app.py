@@ -178,7 +178,7 @@ class SpielApp(App[None]):
             return
 
         with self.suspend():
-            edit(filename=path)
+            edit(filename=str(path))
 
     async def action_quit(self) -> None:
         self.reloader.cancel()
@@ -192,7 +192,7 @@ class SpielApp(App[None]):
 
         if driver is not None:
             driver.stop_application_mode()
-            driver.exit_event.clear()
+            driver.exit_event.clear()  # type: ignore[attr-defined]
             with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
                 yield
             driver.start_application_mode()

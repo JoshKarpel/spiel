@@ -19,6 +19,7 @@ from textual import log
 from textual.app import App, CSSPathType
 from textual.binding import Binding
 from textual.driver import Driver
+from textual.events import Resize
 from textual.reactive import reactive
 from watchfiles import awatch
 
@@ -100,23 +101,30 @@ class SpielApp(App[None]):
             try:
                 self.deck = load_deck(self.deck_path)
                 self.current_slide_idx = clamp(self.current_slide_idx, 0, len(self.deck))
-                self.message = Text(
-                    f"Reloaded deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)}",
-                    style=Style(italic=True),
+                self.set_message_temporarily(
+                    Text(
+                        f"Reloaded deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)}",
+                        style=Style(italic=True),
+                    ),
+                    delay=10,
                 )
             except Exception as e:
-                self.message = Text(
-                    f"Failed to reload deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)} due to: {e}",
-                    style=Style(italic=True, color="red"),
+                self.set_message_temporarily(
+                    Text(
+                        f"Failed to reload deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)} due to: {e}",
+                        style=Style(italic=True, color="red"),
+                    ),
+                    delay=10,
                 )
 
-            self.clear_current_message_after_delay(delay=10)
+    def on_resize(self, event: Resize) -> None:
+        self.set_message_temporarily(message=Text(f"Screen resized to {event.size}"), delay=2)
 
-    def clear_current_message_after_delay(self, delay: float) -> None:
-        msg = self.message
+    def set_message_temporarily(self, message: Text, delay: float) -> None:
+        self.message = message
 
         def clear() -> None:
-            if self.message is msg:
+            if self.message is message:
                 self.message = Text("")
 
         self.set_timer(delay, clear)

@@ -28,7 +28,7 @@ rich = ">=12"
 typer = ">=0.6"
 watchdog = ">=2"
 Pillow = ">=8"
-textual = ">=0.2"
+textual = ">=0.5"
 watchfiles = ">=0.18"
 
 [tool.poetry.group.dev.dependencies]
@@ -40,7 +40,7 @@ mypy = ">=0.982"
 pytest-mypy = ">=0.10"
 pytest-mock = ">=3"
 hypothesis = ">=6"
-textual = {extras = ["dev"], version = "^0.2.1"}
+textual = {extras = ["dev"], version = ">=0.5"}
 
 [tool.poetry.scripts]
 spiel = 'spiel.cli:cli'

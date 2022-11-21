@@ -46,7 +46,7 @@ class Footer(SpielWidget):
             padding=1,
         )
         grid.add_row(
-            Text(f"{self.app.deck.name} | {self.app.deck[self.app.current_slide_idx].title} "),
+            Text(f"{self.app.deck.name} | {self.app.deck[self.app.current_slide_idx].title}"),
             self.app.message,
             Text(
                 f"{self.now.strftime(FOOTER_TIME_FORMAT)}   [{self.app.current_slide_idx + 1:>0{self.longest_slide_number_length}d} / {len(self.app.deck)}]"

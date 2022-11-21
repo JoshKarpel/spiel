@@ -9,7 +9,7 @@ from textwrap import dedent
 from rich.align import Align
 from rich.box import HEAVY, SQUARE
 from rich.color import Color, blend_rgb
-from rich.console import Group
+from rich.console import Group, RenderableType
 from rich.layout import Layout
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -18,7 +18,7 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Slide, __version__
+from spiel import Slide, Triggers, __version__
 from spiel.deck import Deck
 from spiel.renderables.image import Image
 
@@ -33,7 +33,7 @@ THIS_DIR = Path(__file__).resolve().parent
 
 
 @deck.slide(title="What is Spiel?")
-def what():
+def what() -> RenderableType:
     upper_left_markup = dedent(
         f"""\
         ## What is Spiel?
@@ -95,7 +95,7 @@ def what():
         """
     )
 
-    def pad_markdown(markup):
+    def pad_markdown(markup: str) -> RenderableType:
         return Padding(Markdown(markup, justify="center"), pad=(0, 5))
 
     root = Layout()
@@ -116,7 +116,7 @@ def what():
 
 
 @deck.slide(title="Decks and Slides")
-def code():
+def code() -> RenderableType:
     markup = dedent(
         f"""\
         ## Decks are made of Slides
@@ -133,7 +133,7 @@ def code():
     lower = Layout()
     root.split_column(upper, lower)
 
-    def make_code_panel(obj):
+    def make_code_panel(obj: type) -> RenderableType:
         lines, line_number = inspect.getsourcelines(obj)
         return Panel(
             Syntax(
@@ -156,7 +156,7 @@ def code():
 
 
 @deck.slide(title="Dynamic Content")
-def dynamic():
+def dynamic() -> RenderableType:
     width = shutil.get_terminal_size().columns
     width_limit = 80
 
@@ -212,7 +212,7 @@ def dynamic():
 
 
 @deck.slide(title="Triggers")
-def triggers(triggers):
+def triggers(triggers: Triggers) -> RenderableType:
     info = Markdown(
         dedent(
             f"""\
@@ -302,7 +302,7 @@ def triggers(triggers):
 
 
 @deck.slide(title="Views")
-def grid():
+def grid() -> RenderableType:
     markup = dedent(
         """\
         ## Deck View
@@ -318,7 +318,7 @@ def grid():
 
 
 @deck.slide(title="Displaying Images")
-def image():
+def image() -> RenderableType:
     markup = dedent(
         f"""\
         ## Images
@@ -356,7 +356,7 @@ def image():
 
 
 @deck.slide(title="Watch Mode")
-def watch():
+def watch() -> RenderableType:
     return Markdown(
         dedent(
             f"""\
@@ -379,7 +379,7 @@ class DemoRenderFailure(Exception):
 
 
 @deck.slide(title="Render Failure")
-def failure():
+def failure() -> RenderableType:
     raise DemoRenderFailure(
         f"""Woops!
 

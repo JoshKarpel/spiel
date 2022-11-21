@@ -66,9 +66,7 @@ norecursedirs = ["demo"]
 pretty = false
 show_error_codes = true
 
-files = ["spiel/*.py", "tests/*.py"]
-
-exclude = "demo/"
+files = ["spiel/**/*.py", "tests/**/*.py"]
 
 check_untyped_defs = true
 disallow_incomplete_defs = true

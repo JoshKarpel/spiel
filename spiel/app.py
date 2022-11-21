@@ -104,7 +104,7 @@ class SpielApp(App[None]):
                 self.set_message_temporarily(
                     Text(
                         f"Reloaded deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)}",
-                        style=Style(italic=True),
+                        style=Style(dim=True),
                     ),
                     delay=10,
                 )
@@ -112,13 +112,15 @@ class SpielApp(App[None]):
                 self.set_message_temporarily(
                     Text(
                         f"Failed to reload deck at {datetime.datetime.now().strftime(RELOAD_MESSAGE_TIME_FORMAT)} due to: {e}",
-                        style=Style(italic=True, color="red"),
+                        style=Style(color="red"),
                     ),
                     delay=10,
                 )
 
     def on_resize(self, event: Resize) -> None:
-        self.set_message_temporarily(message=Text(f"Screen resized to {event.size}"), delay=2)
+        self.set_message_temporarily(
+            message=Text(f"Screen resized to {event.size}", style=Style(dim=True)), delay=2
+        )
 
     def set_message_temporarily(self, message: Text, delay: float) -> None:
         self.message = message

@@ -1,20 +1,10 @@
-import pytest
-
-from spiel.main import DEMO_SOURCE
-from spiel.present import render_slide
-from spiel.state import State
+from spiel import Triggers
+from spiel.demo.demo import DemoRenderFailure, deck
 
 
-@pytest.fixture
-def state() -> State:
-    return State.from_file(DEMO_SOURCE)
-
-
-def test_can_render_every_demo_slide(state: State) -> None:
-    deck = state.deck
-
+def test_can_render_every_demo_slide() -> None:
     for slide in deck:
-        for _ in range(10):
-            state.console.print(render_slide(state, slide))
-            state.trigger()
-        state.reset_trigger()
+        try:
+            slide.render(triggers=Triggers.new())
+        except DemoRenderFailure:
+            pass

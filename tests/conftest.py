@@ -8,10 +8,8 @@ from hypothesis import settings
 from rich.console import Console
 from typer.testing import CliRunner
 
-from spiel import Deck, Options
+from spiel import Deck, Slide
 from spiel.constants import DECK
-from spiel.slide import Slide
-from spiel.state import State
 
 settings.register_profile("default", deadline=None)
 settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
@@ -41,18 +39,6 @@ def console(output: StringIO) -> Console:
         force_terminal=True,
         width=80,
     )
-
-
-@pytest.fixture
-def three_slide_options() -> Options:
-    return Options()
-
-
-@pytest.fixture
-def three_slide_state(
-    console: Console, three_slide_deck: Deck, three_slide_options: Options
-) -> State:
-    return State(console=console, deck=three_slide_deck, options=three_slide_options)
 
 
 @pytest.fixture

@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "spiel"
-version = "0.3.0"
+version = "0.4.0"
 description = "A framework for building and presenting richly-styled presentations in your terminal using Python."
 readme="README.md"
 homepage="https://github.com/JoshKarpel/spiel"
@@ -20,36 +20,32 @@ classifiers = [
     "Typing :: Typed"]
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
 license = "MIT"
-include = ["py.typed", "demo/*"]
+include = ["py.typed", "demo/*", "spiel.css"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4"
 rich = ">=12"
 typer = ">=0.6"
-watchdog = ">=2"
-pendulum = ">=2"
 Pillow = ">=8"
-tomli = ">=2"
-tomli-w = ">=1"
-ipython = ">=7"
-ipykernel = ">=5"
+textual = ">=0.5"
+watchfiles = ">=0.18"
 
-[tool.poetry.dev-dependencies]
-pytest = ">=6"
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7"
 pytest-watch = ">=4"
 pytest-cov = ">=3"
 pytest-xdist = ">=2"
-mypy = ">=0.961"
-pytest-mypy = ">=0.8"
+mypy = ">=0.982"
+pytest-mypy = ">=0.10"
 pytest-mock = ">=3"
 hypothesis = ">=6"
+textual = {extras = ["dev"], version = ">=0.5"}
 
 [tool.poetry.scripts]
-spiel = 'spiel.main:app'
+spiel = 'spiel.cli:cli'
 
 [tool.black]
 line-length = 100
-target-version = ["py39", "py310"]
 include = "\\.pyi?$"
 
 [tool.isort]
@@ -68,9 +64,7 @@ norecursedirs = ["demo"]
 pretty = false
 show_error_codes = true
 
-files = ["spiel/*.py", "tests/*.py"]
-
-exclude = "demo/"
+files = ["spiel/**/*.py", "tests/**/*.py"]
 
 check_untyped_defs = true
 disallow_incomplete_defs = true

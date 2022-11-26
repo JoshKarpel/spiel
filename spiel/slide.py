@@ -1,24 +1,30 @@
 from __future__ import annotations
 
-from collections.abc import Callable
+import inspect
 from dataclasses import dataclass, field
+from typing import Callable, Mapping
 
-from rich.console import ConsoleRenderable
+from rich.console import RenderableType
 from rich.text import Text
 
-from spiel.presentable import Presentable
 from spiel.triggers import Triggers
 
-MakeRenderable = Callable[..., ConsoleRenderable]
-RenderableLike = MakeRenderable | ConsoleRenderable
+TRIGGERS = "triggers"
+
+Content = Callable[..., RenderableType]
 
 
 @dataclass
-class Slide(Presentable):
-    content: RenderableLike = field(default_factory=Text)
+class Slide:
+    title: str = ""
+    content: Content = lambda: Text()
+    bindings: Mapping[str, Callable[[], None]] = field(default_factory=dict)
 
-    def render(self, triggers: Triggers) -> ConsoleRenderable:
-        if callable(self.content):
-            return self.content(**self.get_render_kwargs(function=self.content, triggers=triggers))
-        else:
-            return self.content
+    def render(self, triggers: Triggers) -> RenderableType:
+        signature = inspect.signature(self.content)
+
+        kwargs: dict[str, object] = {}
+        if TRIGGERS in signature.parameters:
+            kwargs[TRIGGERS] = triggers
+
+        return self.content(**kwargs)

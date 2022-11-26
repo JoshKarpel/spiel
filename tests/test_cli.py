@@ -7,13 +7,12 @@ import pytest
 from pytest_mock import MockFixture
 from typer.testing import CliRunner
 
-from spiel.constants import PACKAGE_NAME, __version__
-from spiel.main import DEMO_SOURCE, app
-from spiel.modes import Mode
+from spiel.cli import cli
+from spiel.constants import DEMO_FILE, PACKAGE_NAME, __version__
 
 
 def test_help(runner: CliRunner) -> None:
-    result = runner.invoke(app, ["--help"])
+    result = runner.invoke(cli, ["--help"])
 
     assert result.exit_code == 0
 
@@ -26,50 +25,40 @@ def test_help_via_main() -> None:
 
 
 def test_version(runner: CliRunner) -> None:
-    result = runner.invoke(app, ["version"])
+    result = runner.invoke(cli, ["version"])
 
     assert result.exit_code == 0
     assert __version__ in result.stdout
 
 
 def test_plain_version(runner: CliRunner) -> None:
-    result = runner.invoke(app, ["version", "--plain"])
+    result = runner.invoke(cli, ["version", "--plain"])
 
     assert result.exit_code == 0
     assert __version__ in result.stdout
 
 
-def test_clean_keyboard_interrupt(runner: CliRunner, mocker: MockFixture) -> None:
-    mock = mocker.patch("spiel.main.present_deck", MagicMock(side_effect=KeyboardInterrupt()))
-
-    result = runner.invoke(app, ["present", str(DEMO_SOURCE)])
-
-    assert mock.called
-    assert result.exit_code == 0
-
-
 def test_present_deck_on_missing_file(runner: CliRunner, tmp_path: Path) -> None:
-    result = runner.invoke(app, ["present", str(tmp_path / "missing.py")])
+    result = runner.invoke(cli, ["present", str(tmp_path / "missing.py")])
 
-    assert result.exit_code == 1
+    assert result.exit_code == 2
 
 
-@pytest.mark.parametrize("mode", list(Mode))
-@pytest.mark.parametrize("stdin", ["", "s", "d", "h", "p"])
-def test_display_demo_deck(runner: CliRunner, mode: Mode, stdin: str) -> None:
-    result = runner.invoke(app, ["present", str(DEMO_SOURCE), "--mode", mode], input=stdin)
+@pytest.mark.parametrize("stdin", [""])
+def test_display_demo_deck(runner: CliRunner, stdin: str) -> None:
+    result = runner.invoke(cli, ["present", str(DEMO_FILE)], input=stdin)
 
     assert result.exit_code == 0
 
 
 def test_demo_display(runner: CliRunner) -> None:
-    result = runner.invoke(app, ["demo", "present"])
+    result = runner.invoke(cli, ["demo", "present"])
 
     assert result.exit_code == 0
 
 
 def test_demo_source(runner: CliRunner) -> None:
-    result = runner.invoke(app, ["demo", "source"])
+    result = runner.invoke(cli, ["demo", "source"])
 
     assert result.exit_code == 0
 
@@ -77,8 +66,7 @@ def test_demo_source(runner: CliRunner) -> None:
 def test_demo_copy_to_new_path(runner: CliRunner, tmp_path: Path) -> None:
     target = tmp_path / "new"
 
-    result = runner.invoke(app, ["demo", "copy", str(target)])
-    print(result.stdout)
+    result = runner.invoke(cli, ["demo", "copy", str(target)])
 
     assert result.exit_code == 0
 
@@ -87,18 +75,18 @@ def test_demo_copy_to_existing_file(runner: CliRunner, tmp_path: Path) -> None:
     target = tmp_path / "new"
     target.touch()
 
-    result = runner.invoke(app, ["demo", "copy", str(target)])
+    result = runner.invoke(cli, ["demo", "copy", str(target)])
 
-    assert result.exit_code == 2
+    assert result.exit_code == 1
 
 
 def test_demo_copy_to_existing_dir(runner: CliRunner, tmp_path: Path) -> None:
     target = tmp_path / "new"
     target.mkdir(parents=True)
 
-    result = runner.invoke(app, ["demo", "copy", str(target)])
+    result = runner.invoke(cli, ["demo", "copy", str(target)])
 
-    assert result.exit_code == 2
+    assert result.exit_code == 1
 
 
 def test_demo_copy_error_during_copytree(
@@ -110,7 +98,7 @@ def test_demo_copy_error_during_copytree(
 
     target = tmp_path / "new"
 
-    result = runner.invoke(app, ["demo", "copy", str(target)])
+    result = runner.invoke(cli, ["demo", "copy", str(target)])
 
     assert mock.called
     assert "foobar" in result.stdout

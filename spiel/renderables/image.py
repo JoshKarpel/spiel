@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import NamedTuple
+from typing import Iterable, NamedTuple
 
 from PIL import Image as Img
 from PIL.Image import Resampling
@@ -38,8 +37,8 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> list[Segment]:
                 Segment(
                     text="▀",
                     style=Style.from_color(
-                        color=Color.from_rgb(*top_pixel) if top_pixel else None,
-                        bgcolor=Color.from_rgb(*bottom_pixel) if bottom_pixel else None,
+                        color=Color.from_rgb(*top_pixel[:3]) if top_pixel else None,
+                        bgcolor=Color.from_rgb(*bottom_pixel[:3]) if bottom_pixel else None,
                     ),
                 )
             )
@@ -50,7 +49,9 @@ def _pixels_to_segments(pixels: Pixels, size: ImageSize) -> list[Segment]:
 
 @lru_cache(maxsize=2**4)
 def _load_image(path: Path) -> Image:
-    return Img.open(path)
+    img = Img.open(path)
+    img.load()
+    return img
 
 
 @dataclass(frozen=True)

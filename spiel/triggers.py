@@ -1,13 +1,27 @@
-from collections.abc import Iterator
-from dataclasses import dataclass, field
+from __future__ import annotations
+
+from dataclasses import dataclass
 from functools import cached_property
 from time import monotonic
+from typing import Iterator
 
 
 @dataclass(frozen=True)
 class Triggers:
     times: tuple[float, ...]
-    now: float = field(default_factory=monotonic)
+    now: float
+
+    def __post_init__(self) -> None:
+        if not self.times:
+            raise ValueError("times must not be empty")
+
+        if self.now < self.times[-1]:
+            raise ValueError(f"now {self.now} must be later than the last time {self.times[-1]}")
+
+    @classmethod
+    def new(self) -> Triggers:
+        now = monotonic()
+        return Triggers(now=now, times=(now,))
 
     def __len__(self) -> int:
         return len(self.times)

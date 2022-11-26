@@ -1,4 +1,3 @@
-from spiel.constants import PACKAGE_NAME
-from spiel.main import app
+from spiel.cli import cli
 
-app(prog_name=PACKAGE_NAME)
+cli()

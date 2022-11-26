@@ -1,4 +1,4 @@
-name: publish
+name: publish-package
 
 on:
   release:
@@ -21,6 +21,7 @@ jobs:
     - name: Publish to PyPI
       run: poetry publish --username __token__ --password ${{ secrets.pypi_token }}
       working-directory: ${{ github.workspace }}
+
   ghcr:
     runs-on: ubuntu-latest
     steps:

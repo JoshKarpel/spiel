@@ -8,14 +8,21 @@ version = "0.4.1"
 description = "A framework for building and presenting richly-styled presentations in your terminal using Python."
 readme="README.md"
 homepage="https://github.com/JoshKarpel/spiel"
-documentation="https://spiel.readthedocs.io/en/latest/"
+documentation="https://www.spiel.how"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
     "Operating System :: MacOS",
     "Operating System :: Unix",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Artistic Software",
     "Topic :: Multimedia :: Graphics :: Presentation",
     "Typing :: Typed"]
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
@@ -40,6 +47,9 @@ pytest-mypy = ">=0.10"
 pytest-mock = ">=3"
 hypothesis = ">=6"
 textual = {extras = ["dev"], version = "==0.4.0"}
+mkdocs = ">=1.4.2"
+mkdocs-material = ">=8.5.10"
+mkdocstrings = {extras = ["python"], version = ">=0.19.0"}
 
 [tool.poetry.scripts]
 spiel = 'spiel.cli:cli'

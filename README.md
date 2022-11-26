@@ -10,7 +10,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/JoshKarpel/spiel)](https://github.com/JoshKarpel/spiel/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/JoshKarpel/spiel)](https://github.com/JoshKarpel/spiel/pulls)
 
-Spiel is a framework for building and presenting richly-styled presentations in your terminal using Python.
+Spiel is a framework for building and presenting [richly-styled](https://github.com/Textualize/rich) presentations in your terminal using Python.
 
 To see what Spiel can do without installing it, you can view the demonstration deck in a container:
 ```bash
@@ -26,4 +26,4 @@ $ spiel demo present
 
 ## Documentation
 
-To learn more about Spiel, take a look at the [documentation](https://joshkarpel.github.io/spiel/).
+To learn more about Spiel, take a look at the [documentation](https://www.spiel.how).

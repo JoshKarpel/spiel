@@ -51,8 +51,33 @@ jobs:
       with:
         env_vars: PLATFORM,PYTHON_VERSION
         fail_ci_if_error: true
-    - name: Test docs
-      run: mkdocs build --clean --strict --verbose
+
+  test-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3.1.0
+      - name: Set up Python
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: "3.10"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.3
+        with:
+          virtualenvs-create: true
+      - name: Load cached virtual environment
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3.0.11
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+      - name: Install package
+        run: poetry install --no-interaction
+      - name: Test docs
+        run: mkdocs build --clean --strict --verbose
 
   test-docker:
     runs-on: ubuntu-latest

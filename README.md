@@ -41,8 +41,3 @@ $ docker run -it --rm --mount type=bind,source=$PWD/presentation,target=/present
 If the presentation has extra dependencies (like other Python packages),
 we recommend building a new image that inherits our image (e.g., `FROM ghcr.io/joshkarpel/spiel:vX.Y.Z`).
 Spiel's image itself inherits from the [Python base image](https://hub.docker.com/_/python).
-
-## Supported Systems
-
-Spiel currently relies on underlying terminal mechanisms that are only available on POSIX systems (e.g., Linux and MacOS).
-If you're on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/) to run Spiel.

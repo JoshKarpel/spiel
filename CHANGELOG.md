@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+### Fixed
+
+- [#157](https://github.com/JoshKarpel/spiel/pull/157) Pinned to Textual v0.4.0 to work around https://github.com/Textualize/textual/issues/1274
+
 ## 0.4.0
 
 ### Changed

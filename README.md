@@ -22,6 +22,9 @@ Alternatively, install Spiel (`pip install spiel`) and run this command to view 
 $ spiel demo present
 ```
 
+![The first slide of the demo deck](./screenshots/demo.svg)
+![The demo deck in "deck view"](./screenshots/deck.svg)
+
 ## Sandboxed Execution via Containers
 
 Spiel presentations are live Python code: they can do anything that Python can do.

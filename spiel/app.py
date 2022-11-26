@@ -65,6 +65,7 @@ class SpielApp(App[None]):
         Binding("d", "switch_screen('deck')", "Go to the Deck view."),
         Binding("question_mark", "push_screen('help')", "Go to the Help view."),
         Binding("i", "repl", "Switch to the REPL."),
+        Binding("p", "screenshot", "Take a screenshot."),
     ]
     SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 

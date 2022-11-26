@@ -1,4 +1,4 @@
-name: quality-check
+name: publish-docs
 
 on:
   push:

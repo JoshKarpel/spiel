@@ -1,7 +1,6 @@
 # Spiel
 
 [![PyPI](https://img.shields.io/pypi/v/spiel)](https://pypi.org/project/spiel/)
-[![Documentation Status](https://readthedocs.org/projects/spiel/badge/?version=latest)](https://spiel.readthedocs.io/en/latest/?badge=latest)
 [![PyPI - License](https://img.shields.io/pypi/l/spiel)](https://pypi.org/project/spiel/)
 
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/JoshKarpel/spiel/main.svg)](https://results.pre-commit.ci/latest/github/JoshKarpel/spiel/main)
@@ -25,19 +24,6 @@ $ spiel demo present
 ![The first slide of the demo deck](./assets/demo.svg)
 ![The demo deck in "deck view"](./assets/deck.svg)
 
-## Sandboxed Execution via Containers
+## Documentation
 
-Spiel presentations are live Python code: they can do anything that Python can do.
-You may want to run untrusted presentations (or even your own presentations) inside a container (but remember, even containers are not perfectly safe!).
-We produce a [container image](https://github.com/users/JoshKarpel/packages/container/package/spiel)
-that can be run by (for example) Docker.
-
-Presentations without extra Python dependencies might just need to be bind-mounted into the container.
-For example, if your demo file is at `$PWD/presentation/deck.py`, you could do
-```bash
-$ docker run -it --rm --mount type=bind,source=$PWD/presentation,target=/presentation ghcr.io/joshkarpel/spiel spiel present /presentation/deck.py
-```
-
-If the presentation has extra dependencies (like other Python packages),
-we recommend building a new image that inherits our image (e.g., `FROM ghcr.io/joshkarpel/spiel:vX.Y.Z`).
-Spiel's image itself inherits from the [Python base image](https://hub.docker.com/_/python).
+To learn more about Spiel, take a look at the [documentation](https://joshkarpel.github.io/spiel/).

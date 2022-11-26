@@ -3,13 +3,13 @@ from __future__ import annotations
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container
-from textual.screen import Screen
 
+from spiel.screens.screen import SpielScreen
 from spiel.widgets.bindings import AppBindingsTableWidget, ScreenBindingsTableWidget
 from spiel.widgets.footer import Footer
 
 
-class HelpScreen(Screen):
+class HelpScreen(SpielScreen):
     DEFAULT_CSS = """
     .h-section {
         layout: horizontal;

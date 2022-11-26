@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.screen import Screen
 
+from spiel.screens.screen import SpielScreen
 from spiel.widgets.footer import Footer
 from spiel.widgets.minislides import MiniSlides
 
 
-class DeckScreen(Screen):
+class DeckScreen(SpielScreen):
     BINDINGS = [
         Binding("right", "next_slide", "Go to next slide."),
         Binding("left", "prev_slide", "Go to previous slide."),

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import inspect
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Callable
+from dataclasses import dataclass, field
+from typing import Callable, Mapping
 
 from rich.console import RenderableType
 from rich.text import Text
@@ -19,7 +18,7 @@ Content = Callable[..., RenderableType]
 class Slide:
     title: str = ""
     content: Content = lambda: Text()
-    edit_target: Path | None = None
+    bindings: Mapping[str, Callable[[], None]] = field(default_factory=dict)
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)

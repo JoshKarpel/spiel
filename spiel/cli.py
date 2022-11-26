@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 from textwrap import dedent
 
+import typer.rich_utils as ru
 from click.exceptions import Exit
 from rich.console import Console
 from rich.style import Style
@@ -14,7 +15,10 @@ from spiel.app import SpielApp
 from spiel.constants import DEMO_DIR, DEMO_FILE, PACKAGE_DIR, PACKAGE_NAME, __version__
 from spiel.renderables.debug import DebugTable
 
+ru.STYLE_HELPTEXT = ""
+
 console = Console()
+
 
 cli = Typer(
     name=PACKAGE_NAME,

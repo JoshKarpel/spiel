@@ -5,7 +5,9 @@ from datetime import datetime
 from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
+from typing import Callable, Iterable
 
+from click import edit
 from rich.align import Align
 from rich.box import HEAVY, SQUARE
 from rich.color import Color, blend_rgb
@@ -32,9 +34,13 @@ WSL = "[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/ws
 THIS_DIR = Path(__file__).resolve().parent
 
 
+def pad_markdown(markup: str) -> RenderableType:
+    return Padding(Markdown(dedent(markup), justify="center"), pad=(0, 5))
+
+
 @deck.slide(title="What is Spiel?")
 def what() -> RenderableType:
-    upper_left_markup = dedent(
+    upper_left = pad_markdown(
         f"""\
         ## What is Spiel?
 
@@ -53,7 +59,7 @@ def what() -> RenderableType:
         """
     )
 
-    upper_right_markup = dedent(
+    upper_right = pad_markdown(
         """\
         ## Why use Spiel?
 
@@ -71,7 +77,7 @@ def what() -> RenderableType:
         """
     )
 
-    lower_left_markup = dedent(
+    lower_left = pad_markdown(
         f"""\
         ## Contributing
 
@@ -83,7 +89,7 @@ def what() -> RenderableType:
         """
     )
 
-    lower_right_markup = dedent(
+    lower_right = pad_markdown(
         f"""\
         ## Inspirations
 
@@ -95,20 +101,17 @@ def what() -> RenderableType:
         """
     )
 
-    def pad_markdown(markup: str) -> RenderableType:
-        return Padding(Markdown(markup, justify="center"), pad=(0, 5))
-
     root = Layout()
     upper = Layout()
     lower = Layout()
 
     upper.split_row(
-        Layout(pad_markdown(upper_left_markup)),
-        Layout(pad_markdown(upper_right_markup)),
+        Layout(upper_left),
+        Layout(upper_right),
     )
     lower.split_row(
-        Layout(pad_markdown(lower_left_markup)),
-        Layout(pad_markdown(lower_right_markup)),
+        Layout(lower_left),
+        Layout(lower_right),
     )
     root.split_column(upper, lower)
 
@@ -117,8 +120,7 @@ def what() -> RenderableType:
 
 @deck.slide(title="Decks and Slides")
 def code() -> RenderableType:
-    markup = dedent(
-        f"""\
+    markup = f"""\
         ## Decks are made of Slides
 
         Here's the code for `Deck` and `Slide`!
@@ -127,9 +129,8 @@ def code() -> RenderableType:
 
         ({RICH} supports syntax highlighting, so {SPIEL} does too!)
         """
-    )
     root = Layout()
-    upper = Layout(Markdown(markup, justify="center"), size=len(markup.split("\n")) + 1)
+    upper = Layout(pad_markdown(markup), size=len(markup.split("\n")) + 1)
     lower = Layout()
     root.split_column(upper, lower)
 
@@ -165,18 +166,15 @@ def dynamic() -> RenderableType:
 
     return Group(
         Align.center(
-            Markdown(
-                dedent(
-                    f"""\
-                    ## Slides can have dynamic content!
+            pad_markdown(
+                f"""\
+                ## Slides can have dynamic content!
 
-                    Since slides are created using normal Python code,
-                    any output you can imagine producing via Python can make it into your slides.
+                Since slides are created using normal Python code,
+                any output you can imagine producing via Python can make it into your slides.
 
-                    Here are some examples:
-                    """
-                ),
-                justify="center",
+                Here are some examples:
+                """
             ),
         ),
         Align.center(
@@ -213,26 +211,23 @@ def dynamic() -> RenderableType:
 
 @deck.slide(title="Triggers")
 def triggers(triggers: Triggers) -> RenderableType:
-    info = Markdown(
-        dedent(
-            f"""\
-            ## Triggers
+    info = pad_markdown(
+        f"""\
+        ## Triggers
 
-            Triggers are a mechanism for making dynamic content that depends on *relative* time.
+        Triggers are a mechanism for making dynamic content that depends on *relative* time.
 
-            Triggers can be used to implement effects like fades, motion, and other "animations".
+        Triggers can be used to implement effects like fades, motion, and other "animations".
 
-            Each slide is triggered once when it starts being displayed.
+        Each slide is triggered once when it starts being displayed.
 
-            You can trigger it again (as many times as you'd like) by pressing `t`.
-            You can reset the trigger state by pressing `r`.
+        You can trigger it again (as many times as you'd like) by pressing `t`.
+        You can reset the trigger state by pressing `r`.
 
-            This slide has been triggered {len(triggers)} times.
+        This slide has been triggered {len(triggers)} times.
 
-            It was last triggered {triggers.time_since_last_trigger:.2f} seconds ago.
-            """
-        ),
-        justify="center",
+        It was last triggered {triggers.time_since_last_trigger:.2f} seconds ago.
+        """
     )
 
     bounce_period = 10
@@ -303,7 +298,7 @@ def triggers(triggers: Triggers) -> RenderableType:
 
 @deck.slide(title="Views")
 def grid() -> RenderableType:
-    markup = dedent(
+    return pad_markdown(
         """\
         ## Deck View
 
@@ -314,13 +309,11 @@ def grid() -> RenderableType:
         on the currently-selected slide.
         """
     )
-    return Markdown(markup, justify="center")
 
 
 @deck.slide(title="Displaying Images")
 def image() -> RenderableType:
-    markup = dedent(
-        f"""\
+    markup = f"""\
         ## Images
 
         {SPIEL} can display images... sort of!
@@ -336,12 +329,11 @@ def image() -> RenderableType:
 
         to your `.bashrc` file, then restart your shell.
         """
-    )
 
     image_path = THIS_DIR / "tree.jpg"
     root = Layout()
     root.split_row(
-        Layout(Padding(Markdown(markup, justify="center"), pad=(0, 3))),
+        Layout(pad_markdown(markup)),
         Layout(
             Panel.fit(
                 Image.from_file(image_path),
@@ -357,20 +349,59 @@ def image() -> RenderableType:
 
 @deck.slide(title="Watch Mode")
 def watch() -> RenderableType:
-    return Markdown(
-        dedent(
-            f"""\
-            ## Developing a Deck
+    return pad_markdown(
+        f"""\
+        ## Developing a Deck
 
-            {SPIEL} will reload your deck as you edit it to make development easier.
+        {SPIEL} will reload your deck as you edit it to make development easier.
 
-            The reload is triggered whenever any files under the path passed to the
-            `--watch` argument of `spiel present` changes.
-            That path defaults to your current working directory
-            (right now it is `{Path.cwd()}`).
-            """
-        ),
-        justify="center",
+        The reload is triggered whenever any files under the path passed to the
+        `--watch` argument of `spiel present` changes.
+        That path defaults to your current working directory
+        (right now it is `{Path.cwd()}`).
+        """
+    )
+
+
+def edit_this_file(suspend: Callable[[], Iterable[None]]) -> None:
+    with suspend():
+        edit(filename=__file__)
+
+
+@deck.slide(
+    title="Bindings",
+    bindings={
+        "e": edit_this_file,
+    },
+)
+def bindings() -> RenderableType:
+    return pad_markdown(
+        f"""\
+        ## Custom Per-Slide Key Bindings
+
+        Custom keybindings can be added on a per-slide basis using the `bindings` argument of `@slide`,
+        which takes a mapping of key names to callables to call when that key is pressed.
+
+        ```python
+        @deck.slide(
+            title="Bindings",
+            bindings={{
+                "e": edit_this_file,
+            }},
+        )
+        ```
+
+        If the callable takes an argument named `suspend`,
+        it will be passed a function that, when used as a context manager,
+        suspends {SPIEL} while inside the `with` block.
+
+        A binding has been registered on this slide that suspends {SPIEL}
+        and opens your `$EDITOR` on this file.
+        Try pressing `e`!
+
+        Due to reloading, any changes you make will be reflected in the
+        presentation you're seeing right now.
+        """
     )
 
 

@@ -10,15 +10,13 @@ from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from functools import cached_property, partial
 from pathlib import Path
 from time import monotonic
-from typing import Callable, Iterator, Type
+from typing import Callable, Iterator
 
-from click import edit
 from rich.style import Style
 from rich.text import Text
 from textual import log
-from textual.app import App, CSSPathType
+from textual.app import App
 from textual.binding import Binding
-from textual.driver import Driver
 from textual.events import Resize
 from textual.reactive import reactive
 from watchfiles import awatch
@@ -74,24 +72,17 @@ class SpielApp(App[None]):
     current_slide_idx = reactive(0)
     message = reactive(Text(""))
 
-    def __init__(
-        self,
-        deck_path: Path,
-        watch_path: Path,
-        driver_class: Type[Driver] | None = None,
-        css_path: CSSPathType = None,
-        watch_css: bool = False,
-    ):
-        super().__init__(driver_class=driver_class, css_path=css_path, watch_css=watch_css)
+    def __init__(self, deck_path: Path, watch_path: Path):
+        super().__init__()
 
         self.deck_path = deck_path
         self.watch_path = watch_path
 
-    def on_mount(self) -> None:
+    async def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)
         self.reloader = asyncio.create_task(self.reload())
 
-        self.switch_screen("slide")
+        await self.push_screen("slide")
 
     async def reload(self) -> None:
         log(f"Watching {self.watch_path} for changes")
@@ -173,14 +164,6 @@ class SpielApp(App[None]):
     def action_repl(self) -> None:
         with self.suspend():
             self.repl()
-
-    def action_edit(self) -> None:
-        path = self.deck[self.current_slide_idx].edit_target
-        if path is None:
-            return
-
-        with self.suspend():
-            edit(filename=str(path))
 
     async def action_quit(self) -> None:
         self.reloader.cancel()

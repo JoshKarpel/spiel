@@ -31,4 +31,4 @@ jobs:
     - name: Install package
       run: poetry install --no-interaction
     - name: Build and deploy docs
-      run:  mkdocs gh-deploy --clean --strict --verbose --force
+      run:  poetry run mkdocs gh-deploy --clean --strict --verbose --force

@@ -4,6 +4,7 @@ repo_url: https://github.com/JoshKarpel/spiel
 
 theme:
   name: material
+  favicon: assets/favicon.png
   icon:
     logo: fontawesome/solid/head-side-cough
   palette:

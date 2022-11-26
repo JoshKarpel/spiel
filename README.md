@@ -22,8 +22,8 @@ Alternatively, install Spiel (`pip install spiel`) and run this command to view 
 $ spiel demo present
 ```
 
-![The first slide of the demo deck](assets/demo.svg)
-![The demo deck in "deck view"](assets/deck.svg)
+![The first slide of the demo deck](./assets/demo.svg)
+![The demo deck in "deck view"](./assets/deck.svg)
 
 ## Sandboxed Execution via Containers
 

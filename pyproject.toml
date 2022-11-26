@@ -26,7 +26,6 @@ include = ["py.typed", "demo/*", "spiel.css"]
 python = ">=3.10,<4"
 rich = ">=12"
 typer = ">=0.6"
-watchdog = ">=2"
 Pillow = ">=8"
 textual = ">=0.5"
 watchfiles = ">=0.18"
@@ -47,7 +46,6 @@ spiel = 'spiel.cli:cli'
 
 [tool.black]
 line-length = 100
-target-version = ["py39"]
 include = "\\.pyi?$"
 
 [tool.isort]

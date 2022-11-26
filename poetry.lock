@@ -526,7 +526,7 @@ python-versions = ">=3.7"
 name = "watchdog"
 version = "2.1.9"
 description = "Filesystem events monitoring"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 
@@ -571,7 +571,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<4"
-content-hash = "d7cca1927bdfc91f291a0c440ece966e8ea1f9acea137fe3e681eeb22e6232c0"
+content-hash = "1098c2e53711d1e14b975cd6c1ef815dcf73df262db73db21e4b9ffc92dff075"
 
 [metadata.files]
 aiohttp = [

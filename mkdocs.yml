@@ -2,6 +2,9 @@ site_name: Spiel
 
 repo_url: https://github.com/JoshKarpel/spiel
 
+extra_css:
+  - assets/style.css
+
 theme:
   name: material
   favicon: assets/favicon.png
@@ -29,6 +32,16 @@ theme:
 plugins:
   - tags
   - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_root_heading: true
+            heading_level: 3
+            docstring_section_style: spacy
+            merge_init_into_class: true
+            show_if_no_docstring: true
+            show_source: false
 
 markdown_extensions:
   - admonition
@@ -60,3 +73,4 @@ extra:
 nav:
   - Introduction: index.md
   - Sandboxed Execution: sandboxed-execution.md
+  - Presenting: presenting.md

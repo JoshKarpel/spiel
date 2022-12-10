@@ -9,7 +9,7 @@ theme:
   name: material
   favicon: assets/favicon.png
   icon:
-    logo: fontawesome/solid/head-side-cough
+    logo: fontawesome/solid/person-chalkboard
   palette:
     - scheme: default
       toggle:

@@ -1,10 +1,16 @@
 # Changelog
 
+## 0.4.2
+
+### Added
+
+- [#163](https://github.com/JoshKarpel/spiel/pull/163) Added a public `present` function that presents the deck at the given file.
+
 ## 0.4.1
 
 ### Fixed
 
-- [#157](https://github.com/JoshKarpel/spiel/pull/157) Pinned to Textual v0.4.0 to work around https://github.com/Textualize/textual/issues/1274
+- [#157](https://github.com/JoshKarpel/spiel/pull/157) Pinned to Textual v0.4.0 to work around [Textual#1274](https://github.com/Textualize/textual/issues/1274).
 
 ## 0.4.0
 

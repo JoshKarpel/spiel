@@ -1,4 +1,3 @@
-import os
 import shutil
 from pathlib import Path
 from textwrap import dedent
@@ -11,7 +10,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 from typer import Argument, Option, Typer
 
-from spiel.app import SpielApp
+from spiel.app import present
 from spiel.constants import DEMO_DIR, DEMO_FILE, PACKAGE_DIR, PACKAGE_NAME, __version__
 from spiel.renderables.debug import DebugTable
 
@@ -39,8 +38,8 @@ cli = Typer(
 )
 
 
-@cli.command()
-def present(
+@cli.command(name="present")
+def _present(
     path: Path = Argument(
         ...,
         dir_okay=False,
@@ -55,14 +54,7 @@ def present(
     """
     Present a deck.
     """
-    _present(deck_path=path, watch_path=watch)
-
-
-def _present(deck_path: Path, watch_path: Path) -> None:
-    os.environ["TEXTUAL"] = ",".join(sorted(["debug", "devtools"]))
-
-    app = SpielApp(deck_path=deck_path, watch_path=watch_path)
-    app.run()
+    present(deck_path=path, watch_path=watch)
 
 
 @cli.command()
@@ -154,7 +146,7 @@ def present_demo() -> None:
     """
     Present the demo deck.
     """
-    _present(deck_path=DEMO_FILE, watch_path=PACKAGE_DIR)
+    present(deck_path=DEMO_FILE, watch_path=PACKAGE_DIR)
 
 
 @demo.command()

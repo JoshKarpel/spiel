@@ -4,13 +4,14 @@ import asyncio
 import code
 import datetime
 import importlib.util
+import os
 import sys
 from asyncio import wait
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from functools import cached_property, partial
 from pathlib import Path
 from time import monotonic
-from typing import Callable, Iterator
+from typing import Callable, Iterator, Optional
 
 from rich.style import Style
 from rich.text import Text
@@ -186,3 +187,12 @@ class SpielApp(App[None]):
     @property
     def deck_grid_width(self) -> int:
         return max(self.console.size.width // 35, 1)
+
+
+def present(deck_path: Path | str, watch_path: Optional[Path | str] = None) -> None:
+    os.environ["TEXTUAL"] = ",".join(sorted(["debug", "devtools"]))
+
+    deck_path = Path(deck_path).resolve()
+    watch_path = Path(watch_path or deck_path.parent).resolve()
+
+    SpielApp(deck_path=deck_path, watch_path=watch_path).run()

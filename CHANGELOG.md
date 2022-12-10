@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2
+
+### Added
+
 ## 0.4.1
 
 ### Fixed

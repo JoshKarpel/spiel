@@ -2,9 +2,9 @@
 
 ## 0.4.2
 
-- [#163](https://github.com/JoshKarpel/spiel/pull/163) Added a public `present` function that presents the deck at the given file.
-
 ### Added
+
+- [#163](https://github.com/JoshKarpel/spiel/pull/163) Added a public `present` function that presents the deck at the given file.
 
 ## 0.4.1
 

@@ -42,7 +42,7 @@ repos:
   - repo: local
     hooks:
       - id: generate-screenshots
-        name: generate-screenshots
+        name: generate screenshots
         entry: python docs/generate_screenshots.py
         language: system
         always_run: true

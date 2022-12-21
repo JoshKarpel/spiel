@@ -42,6 +42,8 @@ jobs:
         run: poetry install --no-interaction --no-root
       - name: Install package
         run: poetry install --no-interaction
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.0
       - name: Make sure we can build the package
         run: poetry build -vvv
       - name: Run tests

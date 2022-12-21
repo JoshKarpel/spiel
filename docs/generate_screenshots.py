@@ -15,11 +15,11 @@ DECK_FILE = ROOT_DIR / "spiel" / "demo" / "demo.py"
 async def auto_pilot(pilot: Pilot) -> None:
     app = pilot.app
 
-    app.save_screenshot(filename="demo.svg", path=ASSETS_DIR)
+    app.save_screenshot(filename="demo.svg", path=str(ASSETS_DIR))
 
     await pilot.press("d", "right", "down")
 
-    app.save_screenshot(filename="deck.svg", path=ASSETS_DIR)
+    app.save_screenshot(filename="deck.svg", path=str(ASSETS_DIR))
 
     await app.action_quit()
 

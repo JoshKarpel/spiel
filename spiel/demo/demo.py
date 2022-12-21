@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import inspect
 import shutil
 import socket
@@ -19,7 +21,7 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Slide, SuspendType, Triggers, __version__
+from spiel import Slide, SuspendType, Triggers, __version__, present
 from spiel.deck import Deck
 from spiel.renderables.image import Image
 
@@ -427,3 +429,7 @@ def failure() -> RenderableType:
         Deck reloading will still happen, so you can fix the error without stopping Spiel.
         """
     )
+
+
+if __name__ == "__main__":
+    present(__file__)

@@ -67,7 +67,7 @@ all = true
 
 [tool.pytest.ini_options]
 addopts = ["--strict-markers", "--mypy", "-n", "auto"]
-testpaths = ["tests", "spiel"]
+testpaths = ["tests", "spiel", "docs"]
 
 [tool.mypy]
 pretty = false

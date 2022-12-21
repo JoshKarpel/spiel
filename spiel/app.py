@@ -77,11 +77,20 @@ class SpielApp(App[None]):
     current_slide_idx = reactive(0)
     message = reactive(Text(""))
 
-    def __init__(self, deck_path: Path, watch_path: Path):
+    def __init__(
+        self,
+        deck_path: Path,
+        watch_path: Path,
+        show_messages: bool = True,
+        fixed_time: datetime.datetime | None = None,
+    ):
         super().__init__()
 
         self.deck_path = deck_path
         self.watch_path = watch_path
+
+        self.show_messages = show_messages
+        self.fixed_time = fixed_time
 
     async def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)
@@ -119,6 +128,9 @@ class SpielApp(App[None]):
         )
 
     def set_message_temporarily(self, message: Text, delay: float) -> None:
+        if not self.show_messages:
+            return
+
         self.message = message
 
         def clear() -> None:
@@ -193,7 +205,7 @@ class SpielApp(App[None]):
 
     @property
     def deck_grid_width(self) -> int:
-        return max(self.console.size.width // 35, 1)
+        return max(self.size.width // 35, 1)
 
 
 def present(deck_path: Path | str, watch_path: Optional[Path | str] = None) -> None:

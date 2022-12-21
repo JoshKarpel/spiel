@@ -27,10 +27,11 @@ class Footer(SpielWidget):
     def on_mount(self) -> None:
         super().on_mount()
 
+        self.update_now()
         self.set_interval(1 / 60, self.update_now)
 
     def update_now(self) -> None:
-        self.now = datetime.now()
+        self.now = self.app.fixed_time or datetime.now()
 
     @property
     def longest_slide_number_length(self) -> int:

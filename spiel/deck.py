@@ -23,7 +23,7 @@ class Deck:
     def slide(
         self,
         title: str = "",
-        bindings: Mapping[str, Callable[[], None]] | None = None,
+        bindings: Mapping[str, Callable[..., None]] | None = None,
     ) -> Callable[[Content], Slide]:
         def slideify(content: Content) -> Slide:
             slide = Slide(

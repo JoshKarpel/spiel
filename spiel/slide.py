@@ -18,7 +18,7 @@ Content = Callable[..., RenderableType]
 class Slide:
     title: str = ""
     content: Content = lambda: Text()
-    bindings: Mapping[str, Callable[[], None]] = field(default_factory=dict)
+    bindings: Mapping[str, Callable[..., None]] = field(default_factory=dict)
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)

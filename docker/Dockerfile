@@ -10,12 +10,11 @@ RUN : \
 ENV COLORTERM=truecolor \
     EDITOR=/usr/bin/vim
 
-WORKDIR /app
-
-COPY . /app/spiel
-RUN : \
- && pip install --no-cache-dir /app/spiel \
+RUN --mount=target=/spiel : \
+ && pip install --no-cache-dir --disable-pip-version-check /spiel \
  && spiel version \
  && :
+
+WORKDIR /app
 
 CMD ["spiel", "demo", "present"]

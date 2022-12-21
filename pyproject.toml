@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "spiel"
-version = "0.4.2"
+version = "0.4.3"
 description = "A framework for building and presenting richly-styled presentations in your terminal using Python."
 readme="README.md"
 homepage="https://github.com/JoshKarpel/spiel"
@@ -68,7 +68,6 @@ all = true
 [tool.pytest.ini_options]
 addopts = ["--strict-markers", "--mypy", "-n", "auto"]
 testpaths = ["tests", "spiel"]
-norecursedirs = ["demo"]
 
 [tool.mypy]
 pretty = false

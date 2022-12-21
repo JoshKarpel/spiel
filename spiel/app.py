@@ -11,7 +11,7 @@ from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from functools import cached_property, partial
 from pathlib import Path
 from time import monotonic
-from typing import Callable, Iterator, Optional
+from typing import Callable, ContextManager, Iterator, Optional
 
 from rich.style import Style
 from rich.text import Text
@@ -58,6 +58,9 @@ def load_deck(path: Path) -> Deck:
         )
 
     return deck
+
+
+SuspendType = Callable[[], ContextManager[None]]
 
 
 class SpielApp(App[None]):

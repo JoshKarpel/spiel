@@ -5,7 +5,6 @@ from datetime import datetime
 from math import cos, floor, pi
 from pathlib import Path
 from textwrap import dedent
-from typing import Callable, Iterable
 
 from click import edit
 from rich.align import Align
@@ -20,7 +19,7 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Slide, Triggers, __version__
+from spiel import Slide, SuspendType, Triggers, __version__
 from spiel.deck import Deck
 from spiel.renderables.image import Image
 
@@ -191,7 +190,7 @@ def dynamic() -> RenderableType:
         Align.center(
             Panel(
                 Text.from_markup(
-                    f"The local timezone on this computer ([bold]{socket.gethostname()}[/bold]) is [bold underline]{datetime.now().astimezone().tzinfo}[/bold underline]",
+                    f"The local timezone on this computer ([bold]{socket.gethostname()}[/bold]) is [bold]{datetime.now().astimezone().tzinfo}[/bold]",
                     style="bright_cyan",
                     justify="center",
                 )
@@ -303,9 +302,9 @@ def grid() -> RenderableType:
         ## Deck View
 
         Try pressing `d` to go into "deck" view.
-        You can still move between slides in deck view.
+        You can move between slides in deck view using your arrow keys (right `→`, left `←`, up `↑`, and down `↓`).
 
-        Press `enter` to go back to "slide" view (this view),
+        Press `enter` or `escape` to go back to "slide" view (this view),
         on the currently-selected slide.
         """
     )
@@ -363,7 +362,7 @@ def watch() -> RenderableType:
     )
 
 
-def edit_this_file(suspend: Callable[[], Iterable[None]]) -> None:
+def edit_this_file(suspend: SuspendType) -> None:
     with suspend():
         edit(filename=__file__)
 
@@ -375,6 +374,7 @@ def edit_this_file(suspend: Callable[[], Iterable[None]]) -> None:
     },
 )
 def bindings() -> RenderableType:
+    edit_function_src = dedent("".join(inspect.getsourcelines(edit_this_file)[0]))
     return pad_markdown(
         f"""\
         ## Custom Per-Slide Key Bindings
@@ -383,12 +383,18 @@ def bindings() -> RenderableType:
         which takes a mapping of key names to callables to call when that key is pressed.
 
         ```python
+        def edit_this_file(suspend: SuspendType) -> None:
+            with suspend():
+                edit(filename=__file__)
+
         @deck.slide(
             title="Bindings",
             bindings={{
                 "e": edit_this_file,
             }},
         )
+        def bindings() -> RenderableType:
+            ...
         ```
 
         If the callable takes an argument named `suspend`,

@@ -72,6 +72,6 @@ extra:
 
 nav:
   - Introduction: index.md
-  - Sandboxed Execution: sandboxed-execution.md
   - Presenting: presenting.md
+  - Sandboxed Execution: sandboxed-execution.md
   - changelog.md

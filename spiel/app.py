@@ -143,8 +143,12 @@ class SpielApp(App[None]):
             self.current_slide_idx - self.deck_grid_width, 0, len(self.deck) - 1
         )
 
+    def watch_deck(self, new_deck: Deck) -> None:
+        self.title = new_deck.name
+
     def watch_current_slide_idx(self, new_current_slide_idx: int) -> None:
         self.query_one(SlideWidget).triggers = Triggers.new()
+        self.sub_title = self.deck[new_current_slide_idx].title
 
     def action_trigger(self) -> None:
         now = monotonic()

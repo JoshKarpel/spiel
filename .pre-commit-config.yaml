@@ -17,6 +17,7 @@ repos:
       - id: forbid-new-submodules
       - id: mixed-line-ending
       - id: trailing-whitespace
+        exclude_types: [svg]
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.9.0
     hooks:
@@ -29,7 +30,7 @@ repos:
     rev: v2.1.2
     hooks:
       - id: pycln
-        args: [ --config=pyproject.toml ]
+        args: [--config=pyproject.toml]
   - repo: https://github.com/PyCQA/isort
     rev: v5.11.3
     hooks:
@@ -38,3 +39,15 @@ repos:
     rev: 22.12.0
     hooks:
       - id: black
+  - repo: local
+    hooks:
+      - id: generate-screenshots
+        name: generate-screenshots
+        entry: python docs/generate_screenshots.py
+        language: system
+        always_run: true
+        pass_filenames: false
+
+ci:
+  skip:
+    - generate-screenshots

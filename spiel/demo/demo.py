@@ -21,11 +21,11 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Slide, SuspendType, Triggers, __version__, present
+from spiel import Slide, SuspendType, Triggers, present
 from spiel.deck import Deck
 from spiel.renderables.image import Image
 
-deck = Deck(name=f"Spiel Demo Deck (v{__version__})")
+deck = Deck(name=f"Spiel Demo Deck")
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"

@@ -20,6 +20,7 @@ jobs:
     env:
       PLATFORM: ${{ matrix.platform }}
       PYTHON_VERSION: ${{ matrix.python-version }}
+      PYTHONUTF8: 1  # https://peps.python.org/pep-0540/
     steps:
       - name: Check out repository
         uses: actions/checkout@v3.2.0
@@ -42,6 +43,8 @@ jobs:
         run: poetry install --no-interaction --no-root
       - name: Install package
         run: poetry install --no-interaction
+      - name: Run pre-commit checks
+        run: poetry run pre-commit run --all-files --show-diff-on-failure --color=always
       - name: Make sure we can build the package
         run: poetry build -vvv
       - name: Run tests

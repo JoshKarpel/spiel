@@ -36,8 +36,10 @@ typer = ">=0.6"
 Pillow = ">=8"
 textual = "==0.4.0"
 watchfiles = ">=0.18"
+more-itertools = ">=9"
 
 [tool.poetry.group.dev.dependencies]
+pre-commit = ">=2.20.0"
 pytest = ">=7"
 pytest-watch = ">=4"
 pytest-cov = ">=3"
@@ -67,7 +69,7 @@ all = true
 
 [tool.pytest.ini_options]
 addopts = ["--strict-markers", "--mypy", "-n", "auto"]
-testpaths = ["tests", "spiel"]
+testpaths = ["tests", "spiel", "docs"]
 
 [tool.mypy]
 pretty = false

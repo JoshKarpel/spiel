@@ -4,3 +4,4 @@ Spiel is a framework for building and presenting [richly-styled](https://github.
 
 ![The first slide of the demo deck](./assets/demo.svg)
 ![The demo deck in "deck view"](./assets/deck.svg)
+![The demo deck in "help view"](./assets/help.svg)

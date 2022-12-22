@@ -71,22 +71,33 @@ class SpielApp(App[None]):
         Binding("i", "repl", "Switch to the REPL."),
         Binding("p", "screenshot", "Take a screenshot."),
     ]
-    SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 
     deck = reactive(Deck(name="New Deck"))
     current_slide_idx = reactive(0)
     message = reactive(Text(""))
 
-    def __init__(self, deck_path: Path, watch_path: Path):
+    def __init__(
+        self,
+        deck_path: Path,
+        watch_path: Path,
+        show_messages: bool = True,
+        fixed_time: datetime.datetime | None = None,
+    ):
         super().__init__()
 
         self.deck_path = deck_path
         self.watch_path = watch_path
 
+        self.show_messages = show_messages
+        self.fixed_time = fixed_time
+
     async def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)
         self.reloader = asyncio.create_task(self.reload())
 
+        await self.install_screen(SlideScreen(), name="slide")
+        await self.install_screen(DeckScreen(), name="deck")
+        await self.install_screen(HelpScreen(), name="help")
         await self.push_screen("slide")
 
     async def reload(self) -> None:
@@ -119,6 +130,9 @@ class SpielApp(App[None]):
         )
 
     def set_message_temporarily(self, message: Text, delay: float) -> None:
+        if not self.show_messages:
+            return
+
         self.message = message
 
         def clear() -> None:
@@ -143,8 +157,12 @@ class SpielApp(App[None]):
             self.current_slide_idx - self.deck_grid_width, 0, len(self.deck) - 1
         )
 
+    def watch_deck(self, new_deck: Deck) -> None:
+        self.title = new_deck.name
+
     def watch_current_slide_idx(self, new_current_slide_idx: int) -> None:
         self.query_one(SlideWidget).triggers = Triggers.new()
+        self.sub_title = self.deck[new_current_slide_idx].title
 
     def action_trigger(self) -> None:
         now = monotonic()
@@ -189,7 +207,7 @@ class SpielApp(App[None]):
 
     @property
     def deck_grid_width(self) -> int:
-        return max(self.console.size.width // 35, 1)
+        return max(self.size.width // 35, 1)
 
 
 def present(deck_path: Path | str, watch_path: Optional[Path | str] = None) -> None:

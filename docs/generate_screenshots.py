@@ -55,5 +55,5 @@ SpielApp(
 ).run(
     headless=True,
     auto_pilot=auto_pilot,
-    size=(130, 40),
+    size=(130, 35),
 )

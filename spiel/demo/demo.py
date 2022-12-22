@@ -51,10 +51,9 @@ def what() -> RenderableType:
         Anything you can display with Rich, you can display with Spiel (plus some other things)!
 
         Use your right `→` and left `←` arrows keys to go forwards and backwards through the deck.
-
         Press `ctrl-c` to exit.
 
-        Press `?` at any time to see the help screen, which describes all of the actions you can take.
+        Press `?` at any time to see the help screen, which describes all of the built-in actions you can take.
 
         To get a copy of the source code for this deck, use the `spiel demo copy` command.
         """

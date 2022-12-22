@@ -5,6 +5,7 @@ from io import StringIO
 from pathlib import Path
 
 from rich.console import Console
+from textual.app import App
 from textual.pilot import Pilot
 
 from spiel.app import SpielApp
@@ -14,7 +15,7 @@ ASSETS_DIR = ROOT_DIR / "docs" / "assets"
 DECK_FILE = ROOT_DIR / "spiel" / "demo" / "demo.py"
 
 
-def take_reproducible_screenshot(app: SpielApp) -> str:
+def take_reproducible_screenshot(app: App[object]) -> str:
     """
     Textual's screenshot functions don't let you control the unique_id argument to console.export_svg,
     so this little shim just reproduces the internals of Textual's methods with more control.

@@ -338,7 +338,7 @@ def image() -> RenderableType:
         Layout(
             Panel.fit(
                 Image.from_file(image_path),
-                subtitle=str(image_path),
+                subtitle=image_path.name,
                 box=HEAVY,
                 padding=0,
             )

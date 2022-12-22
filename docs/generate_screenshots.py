@@ -6,6 +6,7 @@ from functools import partial
 from io import StringIO
 from pathlib import Path
 
+from more_itertools import intersperse
 from rich.console import Console
 from textual.app import App
 from textual.pilot import Pilot
@@ -38,7 +39,7 @@ def take_reproducible_screenshot(app: App[object]) -> str:
 
 
 async def auto_pilot(pilot: Pilot, name: str, keys: Iterable[str]) -> None:
-    await pilot.press(*keys)
+    await pilot.press(*intersperse("_", keys))
 
     (ASSETS_DIR / name).with_suffix(".svg").write_text(take_reproducible_screenshot(pilot.app))
 

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 from datetime import datetime
+from io import StringIO
 from pathlib import Path
 
+from rich.console import Console
 from textual.pilot import Pilot
 
 from spiel.app import SpielApp
@@ -12,14 +14,34 @@ ASSETS_DIR = ROOT_DIR / "docs" / "assets"
 DECK_FILE = ROOT_DIR / "spiel" / "demo" / "demo.py"
 
 
+def take_reproducible_screenshot(app: SpielApp) -> str:
+    """
+    Textual's screenshot functions don't let you control the unique_id argument to console.export_svg,
+    so this little shim just reproduces the internals of Textual's methods with more control.
+    """
+    width, height = app.size
+    console = Console(
+        width=width,
+        height=height,
+        file=StringIO(),
+        force_terminal=True,
+        color_system="truecolor",
+        record=True,
+        legacy_windows=False,
+    )
+    screen_render = app.screen._compositor.render(full=True)
+    console.print(screen_render)
+    return console.export_svg(title=app.title, unique_id="spieldocs")
+
+
 async def auto_pilot(pilot: Pilot) -> None:
     app = pilot.app
 
-    app.save_screenshot(filename="demo.svg", path=str(ASSETS_DIR))
+    (ASSETS_DIR / "demo.svg").write_text(take_reproducible_screenshot(app))
 
     await pilot.press("d", "right", "down")
 
-    app.save_screenshot(filename="deck.svg", path=str(ASSETS_DIR))
+    (ASSETS_DIR / "deck.svg").write_text(take_reproducible_screenshot(app))
 
     await app.action_quit()
 

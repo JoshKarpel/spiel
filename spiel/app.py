@@ -71,7 +71,6 @@ class SpielApp(App[None]):
         Binding("i", "repl", "Switch to the REPL."),
         Binding("p", "screenshot", "Take a screenshot."),
     ]
-    SCREENS = {"slide": SlideScreen(), "deck": DeckScreen(), "help": HelpScreen()}
 
     deck = reactive(Deck(name="New Deck"))
     current_slide_idx = reactive(0)
@@ -96,6 +95,9 @@ class SpielApp(App[None]):
         self.deck = load_deck(self.deck_path)
         self.reloader = asyncio.create_task(self.reload())
 
+        await self.install_screen(SlideScreen(), name="slide")
+        await self.install_screen(DeckScreen(), name="deck")
+        await self.install_screen(HelpScreen(), name="help")
         await self.push_screen("slide")
 
     async def reload(self) -> None:

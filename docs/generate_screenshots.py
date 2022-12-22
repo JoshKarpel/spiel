@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+from collections.abc import Iterable
 from datetime import datetime
+from functools import partial
 from io import StringIO
 from pathlib import Path
 
@@ -35,25 +37,27 @@ def take_reproducible_screenshot(app: App[object]) -> str:
     return console.export_svg(title=app.title, unique_id="spieldocs")
 
 
-async def auto_pilot(pilot: Pilot) -> None:
-    app = pilot.app
+async def auto_pilot(pilot: Pilot, name: str, keys: Iterable[str]) -> None:
+    await pilot.press(*keys)
 
-    (ASSETS_DIR / "demo.svg").write_text(take_reproducible_screenshot(app))
+    (ASSETS_DIR / name).with_suffix(".svg").write_text(take_reproducible_screenshot(pilot.app))
 
-    await pilot.press("d", "right", "down")
-
-    (ASSETS_DIR / "deck.svg").write_text(take_reproducible_screenshot(app))
-
-    await app.action_quit()
+    await pilot.app.action_quit()
 
 
-SpielApp(
-    deck_path=DECK_FILE,
-    watch_path=DECK_FILE.parent,
-    show_messages=False,
-    fixed_time=datetime(year=2022, month=12, day=17, hour=15, minute=31, second=42),
-).run(
-    headless=True,
-    auto_pilot=auto_pilot,
-    size=(130, 35),
-)
+def take_screenshot(name: str, size: tuple[int, int], keys: Iterable[str]) -> None:
+    SpielApp(
+        deck_path=DECK_FILE,
+        watch_path=DECK_FILE.parent,
+        show_messages=False,
+        fixed_time=datetime(year=2022, month=12, day=17, hour=15, minute=31, second=42),
+    ).run(
+        headless=True,
+        auto_pilot=partial(auto_pilot, name=name, keys=keys),
+        size=size,
+    )
+
+
+take_screenshot(name="demo", size=(130, 35), keys=())
+take_screenshot(name="deck", size=(130, 35), keys=("d", "right", "down"))
+take_screenshot(name="help", size=(110, 35), keys=("?",))

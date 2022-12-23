@@ -26,13 +26,19 @@ repos:
       - id: python-no-log-warn
       - id: python-use-type-annotations
       - id: python-check-blanket-type-ignore
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.19.2
+    hooks:
+      - id: check-github-workflows
+      - id: check-github-actions
+      - id: check-dependabot
   - repo: https://github.com/hadialqattan/pycln
     rev: v2.1.2
     hooks:
       - id: pycln
         args: [--config=pyproject.toml]
   - repo: https://github.com/PyCQA/isort
-    rev: v5.11.3
+    rev: 5.11.4
     hooks:
       - id: isort
   - repo: https://github.com/psf/black

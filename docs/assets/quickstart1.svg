@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="terminal" baseProfile="full" viewBox="0 0 808 444" width="808" version="1.1">
+    <defs>
+        <termtosvg:template_settings xmlns:termtosvg="https://github.com/nbedos/termtosvg">
+            <termtosvg:screen_geometry columns="101" rows="26"/>
+            <termtosvg:animation type="css"/>
+        </termtosvg:template_settings>
+        <style type="text/css" id="generated-style"><![CDATA[#screen {
+                font-family: 'DejaVu Sans Mono', monospace;
+                font-style: normal;
+                font-size: 14px;
+            }
+
+        text {
+            dominant-baseline: text-before-edge;
+            white-space: pre;
+        }
+    ]]></style>
+        <style type="text/css" id="user-style">
+            /* The colors defined below are the default 16 colors used for rendering text of the terminal. Adjust
+               them as needed.
+               PowerShell colors based on https://en.wikipedia.org/wiki/ANSI_escape_code#Colors */
+            .foreground {fill: #cccccc;}
+            .background {fill: #0c0c0c;}
+            .color0 {fill: #0c0c0c;}
+            .color1 {fill: #c50f1f;}
+            .color2 {fill: #13a10e;}
+            .color3 {fill: #c19c00;}
+            .color4 {fill: #0037da;}
+            .color5 {fill: #881798;}
+            .color6 {fill: #3a96dd;}
+            .color7 {fill: #cccccc;}
+            .color8 {fill: #767676;}
+            .color9 {fill: #e74856;}
+            .color10 {fill: #16c60c;}
+            .color11 {fill: #f9f1a5;}
+            .color12 {fill: #3b78ff;}
+            .color13 {fill: #b4009e;}
+            .color14 {fill: #61d6d6;}
+            .color15 {fill: #f2f2f2;}
+        </style>
+    </defs>
+    <svg id="screen" width="808" height="442" viewBox="0 0 808 442" preserveAspectRatio="xMidYMin slice">
+    <rect class="background" height="100%" width="100%" x="0" y="0"/><defs><g id="g1"><text x="0" textLength="136" fill="#e1e1e1">Your content here</text><text x="136" textLength="672" class="foreground">                                                                                    </text></g><g id="g2"><text x="0" textLength="32" fill="#e1e1e1">    </text><text x="32" textLength="776" class="foreground">                                                                                                 </text></g><g id="g3"><text x="0" textLength="808" class="foreground">                                                                                                     </text></g><g id="g4"><text x="0" textLength="808" fill="#e1e1e1">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</text></g><g id="g5"><text x="0" textLength="248" fill="#e1e1e1">Your Deck Name | Slide 1 Title </text><text x="248" textLength="328" font-weight="bold" fill="#e1e1e1">   Screen resized to Size(width=101,     </text><text x="576" textLength="232" fill="#e1e1e1">2022-12-28 12:27 PM   [1 / 1]</text></g></defs><g><rect x="0" y="0" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g1" y="0"/><rect x="0" y="17" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g2" y="17"/><rect x="0" y="34" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="34"/><rect x="0" y="51" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="51"/><rect x="0" y="68" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="68"/><rect x="0" y="85" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="85"/><rect x="0" y="102" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="102"/><rect x="0" y="119" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="119"/><rect x="0" y="136" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="136"/><rect x="0" y="153" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="153"/><rect x="0" y="170" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="170"/><rect x="0" y="187" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="187"/><rect x="0" y="204" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="204"/><rect x="0" y="221" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="221"/><rect x="0" y="238" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="238"/><rect x="0" y="255" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="255"/><rect x="0" y="272" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="272"/><rect x="0" y="289" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="289"/><rect x="0" y="306" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="306"/><rect x="0" y="323" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="323"/><rect x="0" y="340" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="340"/><rect x="0" y="357" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="357"/><rect x="0" y="374" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="374"/><rect x="0" y="391" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g3" y="391"/><rect x="0" y="408" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g4" y="408"/><rect x="0" y="425" width="808" height="17" fill="#1e1e1e"/><use xlink:href="#g5" y="425"/></g></svg>
+</svg>

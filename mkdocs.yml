@@ -72,6 +72,7 @@ extra:
 
 nav:
   - Introduction: index.md
+  - quickstart.md
   - presenting.md
   - gallery.md
   - changelog.md

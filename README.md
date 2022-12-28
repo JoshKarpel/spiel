@@ -24,6 +24,33 @@ $ spiel demo present
 ![The first slide of the demo deck](https://raw.githubusercontent.com/JoshKarpel/spiel/main/docs/assets/demo.svg)
 ![The demo deck in "deck view"](https://raw.githubusercontent.com/JoshKarpel/spiel/main/docs/assets/deck.svg)
 
+## Quick Start:
+
+The most basic Spiel presentation looks like this:
+
+```python
+from spiel import Deck, present
+
+deck = Deck(name="Your Deck Name")
+
+@deck.slide(title="Slide 1 Title")
+def slide1():
+    content = """
+    Your content here
+    """
+    return content
+
+if __name__ == "__main__":
+    present(__file__)
+```
+
+And when you run the Python file:
+![Barebones slide](./docs/assets/quickstart1.svg)
+
+To recap, you first create a Deck object that has the name of your presentation. Then you create slide functions, add content into a triple-quoted string (aka a multiline string) and return it, and add the slide to the Deck with the `@deck.slide()` decorator. Finally, you call `present()` to generate the presentation.
+
+You can make your slides a lot prettier, of course. Spiel renders its slides using Rich, so you can bring in Rich functionality to spruce up your slides.
+
 ## Documentation
 
 To learn more about Spiel, take a look at the [documentation](https://www.spiel.how).

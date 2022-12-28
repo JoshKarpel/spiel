@@ -19,6 +19,7 @@ if __name__ == "__main__":
 ```
 
 And when you run the Python file:
+
 ![Barebones slide](./assets/quickstart1.svg)
 
 To recap, you first create a Deck object that has the name of your presentation. Then you create slide functions, add content into a triple-quoted string (aka a multiline string) and return it, and add the slide to the Deck with the `@deck.slide()` decorator. Finally, you call `present()` to generate the presentation.
@@ -58,7 +59,8 @@ Hello World! # *see note below
 ```
 
 And when you run the Python file:
-![Barebones slide](./assets/quickstart2.svg)
+
+![Barebones split slide](./assets/quickstart2.svg)
 
 
 *Note: There are ways to execute code and get the output in your string, but those are beyond the scope of this guide. Check out [this Stack Overflow post](https://stackoverflow.com/questions/3906232/python-get-the-print-output-in-an-exec-statement) as a starting point if you are curious.

@@ -21,7 +21,7 @@ jobs:
         virtualenvs-create: true
     - name: Load cached virtual environment
       id: cached-poetry-dependencies
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.2
       with:
         path: .venv
         key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}

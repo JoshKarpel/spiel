@@ -217,8 +217,9 @@ def present(deck_path: Path | str, watch_path: Optional[Path | str] = None) -> N
     Args:
         deck_path: The file to look for a deck in.
         watch_path: When filesystem changes are detected below this path (recursively), reload the deck from the `deck_path`.
+            If `None` (the default), use the parent directory of the `deck_path`.
     """
-    os.environ["TEXTUAL"] = ",".join(sorted(["debug", "devtools"]))
+    os.environ["TEXTUAL"] = ",".join(sorted({"debug", "devtools"}))
 
     deck_path = Path(deck_path).resolve()
     watch_path = Path(watch_path or deck_path.parent).resolve()

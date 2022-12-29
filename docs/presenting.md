@@ -23,7 +23,9 @@ you can start a presentation in a variety of different ways.
 
 ## Using the `spiel` CLI
 
-!!! warning "Under Construction"
+Installing the Spiel package provides a CLI tool called `spiel`.
+The `spiel present` subcommand allows you to present a deck;
+run `spiel present --help` to see the arguments and available options.
 
 ## Using the `present` function
 

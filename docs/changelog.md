@@ -9,7 +9,7 @@
 ### Fixed
 
 - [#168](https://github.com/JoshKarpel/spiel/pull/168) The correct type for the `suspend` optional argument to slide-level keybinding functions is now available as `spiel.SuspendType`.
-- [#168](https://github.com/JoshKarpel/spiel/pull/168) The Spiel Docker image no longer has a leftover copy of the `spiel` package directory inside the image unde `/app`.
+- [#168](https://github.com/JoshKarpel/spiel/pull/168) The [Spiel container image](https://github.com/JoshKarpel/spiel/pkgs/container/spiel) no longer has a leftover copy of the `spiel` package directory inside the image under `/app`.
 
 ## 0.4.2
 

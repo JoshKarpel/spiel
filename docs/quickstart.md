@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
 That is the most basic Spiel presentation you can make. In the folder where you created `deck.py`, run `python deck.py`. You should see:
 
-![Barebones slide](https://raw.githubusercontent.com/JoshKarpel/spiel/main/docs/assets/quickstart_basic.svg)
+![Barebones slide](./assets/quickstart_basic.svg)
 
 To recap, you first create a `Deck` that has the name of your presentation.
 
@@ -102,7 +102,7 @@ def code() -> RenderableType:
 
 And when you run the Python file:
 
-![Demo Code Slide](https://raw.githubusercontent.com/JoshKarpel/spiel/main/docs/assets/quickstart_code.svg)
+![Demo Code Slide](./assets/quickstart_code.svg)
 
 This uses Rich's Layout and Panel classes to create the layout and sytax highlighting.
 Because Spiel runs entirely within Python, we can use the Python inspect library to dynamically reference source code and pretty print it via Rich's Syntax library.

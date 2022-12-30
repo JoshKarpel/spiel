@@ -100,17 +100,20 @@ def code() -> RenderableType:
     return root
 ```
 
+We start out by creating our text content and setting up our Layouts.
+Then, we create the `make_code_panel` function to take some lines from the `Deck` and `Slide` object and put them in a syntax-highlighted `Panel` (with some additional fancy Rich styling).
+Finally, we add the code panels to our layout side-by-side and return `root`, the top-level `Layout`, from the function.
+
 And when you run the Python file:
 
 ![Demo Code Slide](./assets/quickstart_code.svg)
 
-This uses Rich's Layout and Panel classes to create the layout and sytax highlighting.
-Because Spiel runs entirely within Python, we can use the Python inspect library to dynamically reference source code and pretty print it via Rich's Syntax library.
 
 Adding more slides is as easy as adding more functions with the `@deck.slide()` decorator.
 The order of the functions in your file is the order in which they appear in your presentation.
 
 Check out the source code of the [demo](https://github.com/JoshKarpel/spiel/blob/main/spiel/demo/demo.py) for more inspiration on ways to use Rich to make your slides beautiful! You can:
-* View the demo in your terminal by running `spiel demo present`
-* View the source in your terminal with `spiel demo source`
-* Copy it to use as a starting point with `spiel demo copy <destination>`
+
+- View the demo in your terminal by running `spiel demo present`
+- View the source in your terminal with `spiel demo source`
+- Copy it to use as a starting point with `spiel demo copy <destination>`

@@ -58,13 +58,11 @@ def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Ite
     )
 
 
-# Decks:
 demo_deck = ROOT_DIR / "spiel" / "demo" / "demo.py"
 quickstart_deck = ROOT_DIR / "docs" / "examples" / "quickstart.py"
 
-# Screenshots:
 take_screenshot(name="demo", deck_file=demo_deck, size=(130, 35), keys=())
 take_screenshot(name="deck", deck_file=demo_deck, size=(130, 35), keys=("d", "right", "down"))
 take_screenshot(name="help", deck_file=demo_deck, size=(110, 35), keys=("?",))
 take_screenshot(name="quickstart_basic", deck_file=quickstart_deck, size=(60, 20), keys=())
-take_screenshot(name="quickstart_code", deck_file=demo_deck, size=(130, 35), keys=("right",))
+take_screenshot(name="quickstart_code", deck_file=demo_deck, size=(140, 45), keys=("right",))

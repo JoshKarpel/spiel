@@ -38,7 +38,7 @@ def take_reproducible_screenshot(app: App[object]) -> str:
 
 
 async def auto_pilot(pilot: Pilot, name: str, keys: Iterable[str]) -> None:
-    await pilot.press(*intersperse("wait:100", keys), "wait:100")
+    await pilot.press(*intersperse("wait:50", keys), "wait:100")
 
     (ASSETS_DIR / name).with_suffix(".svg").write_text(take_reproducible_screenshot(pilot.app))
 

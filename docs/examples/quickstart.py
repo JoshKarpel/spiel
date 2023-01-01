@@ -1,10 +1,12 @@
+from rich.console import RenderableType
+
 from spiel import Deck, present
 
 deck = Deck(name="Your Deck Name")
 
 
 @deck.slide(title="Slide 1 Title")
-def slide1():
+def slide_1() -> RenderableType:
     return "Your content here!"
 
 

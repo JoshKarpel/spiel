@@ -6,13 +6,15 @@ After installing Spiel (`pip install spiel`),
 create a file called `deck.py` and copy this code into it:
 
 ```python
+from rich.console import RenderableType
+
 from spiel import Deck, present
 
-deck = Deck(name="Your Deck Name")  #
+deck = Deck(name="Your Deck Name")
 
 
 @deck.slide(title="Slide 1 Title")
-def slide_1():
+def slide_1() -> RenderableType:
     return "Your content here!"
 
 

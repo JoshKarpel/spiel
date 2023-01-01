@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from collections.abc import Iterable
 from datetime import datetime
 from functools import partial
@@ -15,6 +16,9 @@ from spiel.app import SpielApp
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = ROOT_DIR / "docs" / "assets"
+
+# lie to Rich to make sure the screenshots are always generated in full color
+os.environ["TERMCOLOR"] = "truecolor"
 
 
 def take_reproducible_screenshot(app: App[object]) -> str:

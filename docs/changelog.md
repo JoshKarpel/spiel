@@ -4,6 +4,10 @@
 
 ## `0.4.4` | *Unreleased*
 
+### Added
+
+- [#185](https://github.com/JoshKarpel/spiel/pull/185) The docs page now includes copy-to-clipboard buttons on all code snippets.
+
 ## `0.4.3` | 2023-01-02
 
 ### Added

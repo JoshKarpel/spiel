@@ -49,8 +49,8 @@ pytest-mypy = ">=0.10"
 pytest-mock = ">=3"
 hypothesis = ">=6"
 textual = {extras = ["dev"], version = "==0.4.0"}
-mkdocs = ">=1.4.2"
-mkdocs-material = ">=8.5.10"
+mkdocs = ">=1.4"
+mkdocs-material = ">=9"
 mkdocstrings = {extras = ["python"], version = ">=0.19.0"}
 
 [tool.poetry.scripts]

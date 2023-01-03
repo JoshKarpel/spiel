@@ -403,7 +403,7 @@ def bindings() -> RenderableType:
         suspends {SPIEL} while inside the `with` block.
 
         A binding has been registered on this slide that suspends {SPIEL}
-        and opens your `$EDITOR` on this file.
+        and opens your `$EDITOR` on the demo deck's Python file.
         Try pressing `e`!
 
         Due to reloading, any changes you make will be reflected in the

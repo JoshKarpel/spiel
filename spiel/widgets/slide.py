@@ -25,7 +25,7 @@ class SlideWidget(SpielWidget):
         self.set_interval(1 / 60, self.update_triggers)
 
     def update_triggers(self) -> None:
-        self.triggers = Triggers(now=monotonic(), times=self.triggers.times)
+        self.triggers = Triggers(now=monotonic(), _times=self.triggers._times)
 
     def render(self) -> RenderableType:
         try:

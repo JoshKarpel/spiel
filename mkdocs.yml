@@ -7,6 +7,9 @@ edit_uri: edit/main/docs/
 extra_css:
   - assets/style.css
 
+watch:
+  - spiel/
+
 theme:
   name: material
   favicon: assets/favicon.png
@@ -42,8 +45,12 @@ plugins:
             heading_level: 3
             docstring_section_style: spacy
             merge_init_into_class: true
-            show_if_no_docstring: true
+            show_if_no_docstring: false
             show_source: false
+            members_order: source
+          import:
+            - https://docs.python.org/3/objects.inv
+
 
 markdown_extensions:
   - admonition
@@ -72,6 +79,7 @@ nav:
   - Introduction: index.md
   - quickstart.md
   - presenting.md
+  - api.md
   - gallery.md
   - contributing.md
   - changelog.md

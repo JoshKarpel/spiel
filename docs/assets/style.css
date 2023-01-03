@@ -1,3 +1,43 @@
+:root {
+  --class-color: #00b8d4;
+  --class-header-color: #00b8d41a;
+  --function-color: #448aff;
+  --function-header-color: #448aff1a;
+}
+
+article > .doc {
+  border-style: solid;
+  border-width: 0.05rem;
+  border-radius: 0.2rem;
+  padding: 0.6rem 0.6rem;
+  box-shadow: var(--md-shadow-z1);
+}
+
+article > .doc + .doc {
+  margin-top: 1rem;
+}
+
+h3.doc {
+  margin: -0.6rem;
+  padding: 0.6rem;
+}
+
+article > .doc.doc-class {
+  border-color: var(--class-color);
+}
+
+.doc-class > h3.doc {
+  background-color: var(--class-header-color);
+}
+
+article > .doc.doc-function {
+  border-color: var(--function-color);
+}
+
+.doc-function > h3.doc {
+  background-color: var(--function-header-color);
+}
+
 /* Indentation. */
 div.doc-contents:not(.first) {
   padding-left: 25px;

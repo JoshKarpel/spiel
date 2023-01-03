@@ -5,6 +5,7 @@
 ### Added
 
 - [#169](https://github.com/JoshKarpel/spiel/pull/169) The Textual application title and subtitle are now set dynamically from the Spiel deck name and slide title, respectively.
+- [#178](https://github.com/JoshKarpel/spiel/pull/178) `spiel.Deck` is now a `Sequence[Slide]`, and `spiel.Triggers` is now a `Sequence[float]`.
 
 ### Fixed
 
@@ -15,7 +16,7 @@
 
 ### Added
 
-- [#163](https://github.com/JoshKarpel/spiel/pull/163) Added a public `present` function that presents the deck at the given file.
+- [#163](https://github.com/JoshKarpel/spiel/pull/163) Added a public `spiel.present()` function that presents the deck at the given file.
 
 ## 0.4.1
 

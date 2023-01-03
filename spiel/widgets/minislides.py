@@ -25,7 +25,7 @@ class MiniSlides(SpielWidget):
             upper=max(num_rows - grid_width, 0),
         )
         start_slide_idx = grid_width * start_row
-        slides = islice(enumerate(self.app.deck.slides), start_slide_idx, None)
+        slides = islice(enumerate(self.app.deck), start_slide_idx, None)
 
         rows = [Layout(name=str(r)) for r in range(grid_width)]
         cols = [[Layout(name=f"{r}-{c}") for c in range(grid_width)] for r, _ in enumerate(rows)]

@@ -167,7 +167,7 @@ class SpielApp(App[None]):
     def action_trigger(self) -> None:
         now = monotonic()
         slide_widget = self.query_one(SlideWidget)
-        slide_widget.triggers = Triggers(now=now, times=(*slide_widget.triggers.times, now))
+        slide_widget.triggers = Triggers(now=now, _times=(*slide_widget.triggers._times, now))
 
     def action_reset_trigger(self) -> None:
         slide_widget = self.query_one(SlideWidget)

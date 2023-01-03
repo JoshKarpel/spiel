@@ -1,5 +1,5 @@
 import pytest
-from hypothesis import HealthCheck, given, settings
+from hypothesis import given
 from hypothesis.strategies import slices
 
 from spiel import Triggers
@@ -29,7 +29,6 @@ def test_getitem(triggers: Triggers, idx: int, expected: int) -> None:
     assert triggers[idx] == expected
 
 
-@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(s=slices(size=3))
 def test_index_with_slice(s: slice) -> None:
     triggers = Triggers(_times=(0, 1, 2), now=2)

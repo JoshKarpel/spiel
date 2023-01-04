@@ -1,10 +1,10 @@
 # Contributing Guide
 
-Spiel is open to contributions!
+!!! info "Spiel is open to contributions!"
 
-- [Report bugs and request features](https://github.com/JoshKarpel/spiel/issues)
-- [More general discussion](https://github.com/JoshKarpel/spiel/discussions)
-- [Pull requests](https://github.com/JoshKarpel/spiel/pulls)
+    - [Report bugs and request features](https://github.com/JoshKarpel/spiel/issues)
+    - [General discussion](https://github.com/JoshKarpel/spiel/discussions)
+    - [Pull requests](https://github.com/JoshKarpel/spiel/pulls)
 
 ## Development Environment
 

@@ -66,13 +66,41 @@ demo_deck = ROOT_DIR / "spiel" / "demo" / "demo.py"
 quickstart_deck = ROOT_DIR / "docs" / "examples" / "quickstart.py"
 slide_via_decorator = ROOT_DIR / "docs" / "examples" / "slide_via_decorator.py"
 slide_loop = ROOT_DIR / "docs" / "examples" / "slide_loop.py"
+triggers_reveal = ROOT_DIR / "docs" / "examples" / "triggers_reveal.py"
+triggers_animation = ROOT_DIR / "docs" / "examples" / "triggers_animation.py"
 
 take_screenshot(name="demo", deck_file=demo_deck, size=(130, 35), keys=())
 take_screenshot(name="deck", deck_file=demo_deck, size=(130, 35), keys=("d", "right", "down"))
 take_screenshot(name="help", deck_file=demo_deck, size=(110, 35), keys=("?",))
+
 take_screenshot(name="quickstart_basic", deck_file=quickstart_deck, size=(70, 20), keys=())
 take_screenshot(name="quickstart_code", deck_file=demo_deck, size=(140, 45), keys=("right",))
+
 take_screenshot(name="slide_via_decorator", deck_file=slide_via_decorator, size=(60, 15), keys=())
+
 take_screenshot(name="slide_loop_1", deck_file=slide_loop, size=(60, 15), keys=())
 take_screenshot(name="slide_loop_2", deck_file=slide_loop, size=(60, 15), keys=("right",))
 take_screenshot(name="slide_loop_3", deck_file=slide_loop, size=(60, 15), keys=("right", "right"))
+
+take_screenshot(name="triggers_reveal_1", deck_file=triggers_reveal, size=(70, 15), keys=())
+take_screenshot(name="triggers_reveal_2", deck_file=triggers_reveal, size=(70, 15), keys=("t",))
+take_screenshot(
+    name="triggers_reveal_3",
+    deck_file=triggers_reveal,
+    size=(70, 15),
+    keys=(
+        "t",
+        "t",
+    ),
+)
+
+take_screenshot(name="triggers_animation_1", deck_file=triggers_animation, size=(70, 15), keys=())
+take_screenshot(
+    name="triggers_animation_2", deck_file=triggers_animation, size=(70, 15), keys=("wait:1400",)
+)
+take_screenshot(
+    name="triggers_animation_3", deck_file=triggers_animation, size=(70, 15), keys=("wait:2900",)
+)
+take_screenshot(
+    name="triggers_animation_4", deck_file=triggers_animation, size=(70, 15), keys=("wait:5400",)
+)

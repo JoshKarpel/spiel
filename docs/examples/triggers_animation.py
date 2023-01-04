@@ -13,7 +13,7 @@ deck = Deck(name="Trigger Examples")
 @deck.slide(title="Animating Content")
 def animate(triggers: Triggers) -> RenderableType:
     bang = "!"
-    space = "  "
+    space = " "
     bar_length = 5
 
     spaces_before_bang = min(floor(triggers.time_since_first_trigger), bar_length)

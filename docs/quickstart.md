@@ -16,13 +16,13 @@ You should see:
 ![Barebones slide](./assets/quickstart_basic.svg)
 
 In the example above, you first create a `Deck` and provide the name of your presentation.
-Then you create slides by decorating functions with `@deck.slide()`, providing the title of the slide.
+Then you create slides by decorating functions with `@deck.slide`, providing the title of the slide.
 The slide function can return anything that
 [Rich can render](https://rich.readthedocs.io/en/stable/console.html#printing);
 that return value will be displayed as the slide's content when you present it.
-The order of the `@deck.slide()`-decorated functions in your file is the order in which they will appear in your presentation.
+The order of the `@deck.slide`-decorated functions in your file is the order in which they will appear in your presentation.
 
-Running `python deck.py` started the presentation because of the call to `present()` in the
+Running `python deck.py` started the presentation because of the call to `present` in the
 [`if __name__ == "__main__"` block](https://stackoverflow.com/questions/419163/what-does-if-name-main-do).
 
 To see available keybindings for doing things like moving between slides,

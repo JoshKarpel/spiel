@@ -6,20 +6,7 @@ After installing Spiel (`pip install spiel`),
 create a file called `deck.py` and copy this code into it:
 
 ```python
-from rich.console import RenderableType
-
-from spiel import Deck, present
-
-deck = Deck(name="Your Deck Name")
-
-
-@deck.slide(title="Slide 1 Title")
-def slide_1() -> RenderableType:
-    return "Your content here!"
-
-
-if __name__ == "__main__":
-    present(__file__)
+--8<-- "examples/quickstart.py"
 ```
 
 That is the most basic Spiel presentation you can make.

@@ -64,9 +64,15 @@ def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Ite
 
 demo_deck = ROOT_DIR / "spiel" / "demo" / "demo.py"
 quickstart_deck = ROOT_DIR / "docs" / "examples" / "quickstart.py"
+slide_via_decorator = ROOT_DIR / "docs" / "examples" / "slide_via_decorator.py"
+slide_loop = ROOT_DIR / "docs" / "examples" / "slide_loop.py"
 
 take_screenshot(name="demo", deck_file=demo_deck, size=(130, 35), keys=())
 take_screenshot(name="deck", deck_file=demo_deck, size=(130, 35), keys=("d", "right", "down"))
 take_screenshot(name="help", deck_file=demo_deck, size=(110, 35), keys=("?",))
-take_screenshot(name="quickstart_basic", deck_file=quickstart_deck, size=(60, 20), keys=())
+take_screenshot(name="quickstart_basic", deck_file=quickstart_deck, size=(70, 20), keys=())
 take_screenshot(name="quickstart_code", deck_file=demo_deck, size=(140, 45), keys=("right",))
+take_screenshot(name="slide_via_decorator", deck_file=slide_via_decorator, size=(60, 15), keys=())
+take_screenshot(name="slide_loop_1", deck_file=slide_loop, size=(60, 15), keys=())
+take_screenshot(name="slide_loop_2", deck_file=slide_loop, size=(60, 15), keys=("right",))
+take_screenshot(name="slide_loop_3", deck_file=slide_loop, size=(60, 15), keys=("right", "right"))

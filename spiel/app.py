@@ -11,7 +11,7 @@ from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from functools import cached_property, partial
 from pathlib import Path
 from time import monotonic
-from typing import Callable, ContextManager, Iterator, Optional
+from typing import Callable, ContextManager, Iterator
 
 from rich.style import Style
 from rich.text import Text
@@ -210,7 +210,7 @@ class SpielApp(App[None]):
         return max(self.size.width // 35, 1)
 
 
-def present(deck_path: Path | str, watch_path: Optional[Path | str] = None) -> None:
+def present(deck_path: Path | str, watch_path: Path | str | None = None) -> None:
     """
     Present the deck defined in the given `deck_path`.
 

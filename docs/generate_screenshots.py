@@ -2,10 +2,12 @@
 
 import os
 from collections.abc import Iterable
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime
 from functools import partial
 from io import StringIO
 from pathlib import Path
+from time import monotonic
 
 from more_itertools import intersperse
 from rich.console import Console
@@ -49,7 +51,9 @@ async def auto_pilot(pilot: Pilot, name: str, keys: Iterable[str]) -> None:
     await pilot.app.action_quit()
 
 
-def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Iterable[str]) -> None:
+def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Iterable[str]) -> str:
+    print(f"Generating {name}")
+
     SpielApp(
         deck_path=deck_file,
         watch_path=deck_file.parent,
@@ -61,46 +65,138 @@ def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Ite
         size=size,
     )
 
+    return name
 
-demo_deck = ROOT_DIR / "spiel" / "demo" / "demo.py"
-quickstart_deck = ROOT_DIR / "docs" / "examples" / "quickstart.py"
-slide_via_decorator = ROOT_DIR / "docs" / "examples" / "slide_via_decorator.py"
-slide_loop = ROOT_DIR / "docs" / "examples" / "slide_loop.py"
-triggers_reveal = ROOT_DIR / "docs" / "examples" / "triggers_reveal.py"
-triggers_animation = ROOT_DIR / "docs" / "examples" / "triggers_animation.py"
 
-take_screenshot(name="demo", deck_file=demo_deck, size=(130, 35), keys=())
-take_screenshot(name="deck", deck_file=demo_deck, size=(130, 35), keys=("d", "right", "down"))
-take_screenshot(name="help", deck_file=demo_deck, size=(110, 35), keys=("?",))
+if __name__ == "__main__":
+    start_time = monotonic()
 
-take_screenshot(name="quickstart_basic", deck_file=quickstart_deck, size=(70, 20), keys=())
-take_screenshot(name="quickstart_code", deck_file=demo_deck, size=(140, 45), keys=("right",))
+    demo_deck = ROOT_DIR / "spiel" / "demo" / "demo.py"
+    quickstart_deck = ROOT_DIR / "docs" / "examples" / "quickstart.py"
+    slide_via_decorator = ROOT_DIR / "docs" / "examples" / "slide_via_decorator.py"
+    slide_loop = ROOT_DIR / "docs" / "examples" / "slide_loop.py"
+    triggers_reveal = ROOT_DIR / "docs" / "examples" / "triggers_reveal.py"
+    triggers_animation = ROOT_DIR / "docs" / "examples" / "triggers_animation.py"
 
-take_screenshot(name="slide_via_decorator", deck_file=slide_via_decorator, size=(60, 15), keys=())
+    with ProcessPoolExecutor() as pool:
+        futures = [
+            pool.submit(
+                take_screenshot,
+                name="triggers_animation_1",
+                deck_file=triggers_animation,
+                size=(70, 15),
+                keys=(),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="triggers_animation_2",
+                deck_file=triggers_animation,
+                size=(70, 15),
+                keys=("wait:1400",),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="triggers_animation_3",
+                deck_file=triggers_animation,
+                size=(70, 15),
+                keys=("wait:2900",),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="triggers_animation_4",
+                deck_file=triggers_animation,
+                size=(70, 15),
+                keys=("wait:5400",),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="demo",
+                deck_file=demo_deck,
+                size=(130, 35),
+                keys=(),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="deck",
+                deck_file=demo_deck,
+                size=(130, 35),
+                keys=("d", "right", "down"),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="help",
+                deck_file=demo_deck,
+                size=(110, 35),
+                keys=("?",),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="quickstart_basic",
+                deck_file=quickstart_deck,
+                size=(70, 20),
+                keys=(),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="quickstart_code",
+                deck_file=demo_deck,
+                size=(140, 45),
+                keys=("right",),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="slide_via_decorator",
+                deck_file=slide_via_decorator,
+                size=(60, 15),
+                keys=(),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="slide_loop_1",
+                deck_file=slide_loop,
+                size=(60, 15),
+                keys=(),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="slide_loop_2",
+                deck_file=slide_loop,
+                size=(60, 15),
+                keys=("right",),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="slide_loop_3",
+                deck_file=slide_loop,
+                size=(60, 15),
+                keys=("right", "right"),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="triggers_reveal_1",
+                deck_file=triggers_reveal,
+                size=(70, 15),
+                keys=(),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="triggers_reveal_2",
+                deck_file=triggers_reveal,
+                size=(70, 15),
+                keys=("t",),
+            ),
+            pool.submit(
+                take_screenshot,
+                name="triggers_reveal_3",
+                deck_file=triggers_reveal,
+                size=(70, 15),
+                keys=("t", "t"),
+            ),
+        ]
 
-take_screenshot(name="slide_loop_1", deck_file=slide_loop, size=(60, 15), keys=())
-take_screenshot(name="slide_loop_2", deck_file=slide_loop, size=(60, 15), keys=("right",))
-take_screenshot(name="slide_loop_3", deck_file=slide_loop, size=(60, 15), keys=("right", "right"))
+        for future in as_completed(futures, timeout=60):
+            print(f"Generated {future.result()}")
 
-take_screenshot(name="triggers_reveal_1", deck_file=triggers_reveal, size=(70, 15), keys=())
-take_screenshot(name="triggers_reveal_2", deck_file=triggers_reveal, size=(70, 15), keys=("t",))
-take_screenshot(
-    name="triggers_reveal_3",
-    deck_file=triggers_reveal,
-    size=(70, 15),
-    keys=(
-        "t",
-        "t",
-    ),
-)
+    end_time = monotonic()
 
-take_screenshot(name="triggers_animation_1", deck_file=triggers_animation, size=(70, 15), keys=())
-take_screenshot(
-    name="triggers_animation_2", deck_file=triggers_animation, size=(70, 15), keys=("wait:1400",)
-)
-take_screenshot(
-    name="triggers_animation_3", deck_file=triggers_animation, size=(70, 15), keys=("wait:2900",)
-)
-take_screenshot(
-    name="triggers_animation_4", deck_file=triggers_animation, size=(70, 15), keys=("wait:5400",)
-)
+    print(f"Generated {len(futures)} screenshots in {end_time - start_time:0.2f} seconds")

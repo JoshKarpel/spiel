@@ -6,20 +6,7 @@ After installing Spiel (`pip install spiel`),
 create a file called `deck.py` and copy this code into it:
 
 ```python
-from rich.console import RenderableType
-
-from spiel import Deck, present
-
-deck = Deck(name="Your Deck Name")
-
-
-@deck.slide(title="Slide 1 Title")
-def slide_1() -> RenderableType:
-    return "Your content here!"
-
-
-if __name__ == "__main__":
-    present(__file__)
+--8<-- "examples/quickstart.py"
 ```
 
 That is the most basic Spiel presentation you can make.
@@ -29,13 +16,13 @@ You should see:
 ![Barebones slide](./assets/quickstart_basic.svg)
 
 In the example above, you first create a `Deck` and provide the name of your presentation.
-Then you create slides by decorating functions with `@deck.slide()`, providing the title of the slide.
+Then you create slides by decorating functions with `@deck.slide`, providing the title of the slide.
 The slide function can return anything that
 [Rich can render](https://rich.readthedocs.io/en/stable/console.html#printing);
 that return value will be displayed as the slide's content when you present it.
-The order of the `@deck.slide()`-decorated functions in your file is the order in which they will appear in your presentation.
+The order of the `@deck.slide`-decorated functions in your file is the order in which they will appear in your presentation.
 
-Running `python deck.py` started the presentation because of the call to `present()` in the
+Running `python deck.py` started the presentation because of the call to `present` in the
 [`if __name__ == "__main__"` block](https://stackoverflow.com/questions/419163/what-does-if-name-main-do).
 
 To see available keybindings for doing things like moving between slides,

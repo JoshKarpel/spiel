@@ -29,9 +29,7 @@ run `spiel present --help` to see the arguments and available options.
 
 ## Using the `present` function
 
-The `present` function lets you start a presentation programmatically (i.e., from a Python script).
-
-::: spiel.present
+The [`present`][spiel.present] function lets you start a presentation programmatically (i.e., from a Python script).
 
 If your deck is defined in `talk/slides.py` like so:
 

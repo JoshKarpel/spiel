@@ -23,7 +23,6 @@ def animate(triggers: Triggers) -> RenderableType:
 
     return Align(
         Group(
-            Align.center(Text(f"{triggers.time_since_first_trigger=:.1f}")),
             Align.center(Text(f"{spaces_before_bang=} | {spaces_after_bang=}")),
             Align.center(Panel(Text(bar), expand=False, height=3)),
         ),

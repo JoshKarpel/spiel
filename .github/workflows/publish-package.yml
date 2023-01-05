@@ -28,8 +28,8 @@ jobs:
     - name: Set meta info
       id: set-meta
       run: |
-        echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-        echo ::set-output name=repo::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+        echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+        echo "repo=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2.2.1
       with:

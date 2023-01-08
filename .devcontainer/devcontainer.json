@@ -1,0 +1,10 @@
+{
+	"name": "Spiel Dev Container",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": "..",
+		"args": {
+			"PYTHON_VERSION": "3.10"
+		}
+	}
+}

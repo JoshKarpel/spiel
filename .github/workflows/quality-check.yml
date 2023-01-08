@@ -22,16 +22,16 @@ jobs:
       PYTHON_VERSION: ${{ matrix.python-version }}
       PYTHONUTF8: 1  # https://peps.python.org/pep-0540/
       COLORTERM: truecolor
+      PIP_DISABLE_PIP_VERSION_CHECK: 1
     steps:
       - name: Check out repository
         uses: actions/checkout@v3.2.0
-      - name: Install Poetry
-        run: pipx install poetry
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.4.0
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'poetry'
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.3.3
       - name: Install Package
         run: poetry install
       - name: Run pre-commit checks

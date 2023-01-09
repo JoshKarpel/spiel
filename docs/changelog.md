@@ -7,6 +7,7 @@
 ### Added
 
 - [#185](https://github.com/JoshKarpel/spiel/pull/185) The docs page now includes copy-to-clipboard buttons on all code snippets.
+- [#194](https://github.com/JoshKarpel/spiel/pull/194) The demo slides now render their own source code directly to demo bindings functionality.
 
 ## `0.4.3` | 2023-01-02
 

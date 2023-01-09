@@ -6,7 +6,7 @@ import socket
 from datetime import datetime
 from math import cos, floor, pi
 from pathlib import Path
-from textwrap import dedent
+from textwrap import dedent, indent
 
 from click import edit
 from rich.align import Align
@@ -363,6 +363,7 @@ def watch() -> RenderableType:
     )
 
 
+# Code snippet: start
 def edit_this_file(suspend: SuspendType) -> None:
     with suspend():
         edit(filename=__file__)
@@ -375,7 +376,17 @@ def edit_this_file(suspend: SuspendType) -> None:
     },
 )
 def bindings() -> RenderableType:
-    edit_function_src = dedent("".join(inspect.getsourcelines(edit_this_file)[0]))
+    # Code snippet: end
+
+    # Pull source code from this file for display in markdown code snippet
+    full_source_lines = Path(__file__).read_text().splitlines()
+    stripped_lines = [dedent(line.strip()) for line in full_source_lines]
+    snippet_start_idx = stripped_lines.index("# Code snippet: start")
+    snippet_end_idx = stripped_lines.index("# Code snippet: end")
+    source_code_to_display = "\n".join(full_source_lines[snippet_start_idx + 1 : snippet_end_idx])
+    source_code_to_display += "\n    ...\n"
+    source_code_to_display = indent(source_code_to_display, " " * 8).lstrip()
+
     return pad_markdown(
         f"""\
         ## Custom Per-Slide Key Bindings
@@ -384,18 +395,7 @@ def bindings() -> RenderableType:
         which takes a mapping of key names to callables to call when that key is pressed.
 
         ```python
-        def edit_this_file(suspend: SuspendType) -> None:
-            with suspend():
-                edit(filename=__file__)
-
-        @deck.slide(
-            title="Bindings",
-            bindings={{
-                "e": edit_this_file,
-            }},
-        )
-        def bindings() -> RenderableType:
-            ...
+        {source_code_to_display}
         ```
 
         If the callable takes an argument named `suspend`,

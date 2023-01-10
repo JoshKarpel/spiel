@@ -22,7 +22,7 @@ class Deck(Sequence[Slide]):
         self,
         title: str = "",
         bindings: Mapping[str, Callable[..., None]] | None = None,
-    ) -> Callable[[Content], Slide]:
+    ) -> Callable[[Content], Content]:
         """
         A decorator that creates a new slide in the deck,
         with the decorated function as the `Slide`'s `content`.
@@ -35,14 +35,14 @@ class Deck(Sequence[Slide]):
                 when on this slide.
         """
 
-        def slideify(content: Content) -> Slide:
+        def slideify(content: Content) -> Content:
             slide = Slide(
                 title=title,
                 content=content,
                 bindings=bindings or {},
             )
             self.add_slides(slide)
-            return slide
+            return content
 
         return slideify
 

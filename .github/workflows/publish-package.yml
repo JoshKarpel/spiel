@@ -8,14 +8,14 @@ jobs:
   pypi:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3.2.0
+    - name: Check out repository
+      uses: actions/checkout@v3.2.0
     - name: Set up Python 3.x
       uses: actions/setup-python@v4.4.0
       with:
         python-version: "3.x"
-    - uses: snok/install-poetry@v1.3
-      with:
-        virtualenvs-create: true
+    - name: Install Poetry
+      uses: snok/install-poetry@v1.3.3
     - name: Build the package
       run: poetry build -vvv
     - name: Publish to PyPI

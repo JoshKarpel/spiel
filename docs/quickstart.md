@@ -5,7 +5,7 @@
 After installing Spiel (`pip install spiel`),
 create a file called `deck.py` and copy this code into it:
 
-```python
+```python title="deck.py"
 --8<-- "examples/quickstart.py"
 ```
 
@@ -37,7 +37,7 @@ As mentioned above, Spiel renders its slides using Rich, so you can bring in Ric
 Let's explore some advanced features by recreating one of the slides from the demo deck.
 Update your `deck.py` file with these imports and utility definitions:
 
-``` python
+``` python title="deck.py"
 import inspect
 from textwrap import dedent
 
@@ -61,9 +61,9 @@ def pad_markdown(markup: str) -> RenderableType:
     return Padding(Markdown(dedent(markup), justify="center"), pad=(0, 5))
 ```
 
-And then paste this code in to your `deck.py` file below your first slide:
+And then paste this code into your `deck.py` file below your first slide:
 
-```python
+```python title="deck.py"
 @deck.slide(title="Decks and Slides")
 def code() -> RenderableType:
     markup = f"""\
@@ -102,19 +102,21 @@ def code() -> RenderableType:
     return root
 ```
 
-We start out by creating our text content and setting up some `Layout`s, which will let us divide the slide space into chunks.
-Then, we create the `make_code_panel` function to take some lines of code from the `Deck` and `Slide` classes
-and put them in a syntax-highlighted `Panel` (with some additional fancy Rich styling).
-Finally, we add the code panels to our layout side-by-side and return `root`, the top-level `Layout`, from the function.
+We start out by creating our text content and setting up some [`Layout`][rich.layout.Layout]s, which will let us divide the slide space into chunks.
+Then, we create the `make_code_panel` function to take some lines of code from the [`Deck`][spiel.Deck] and [`Slide`][spiel.Slide] classes
+and put them in a syntax-highlighted [`Panel`][rich.panel.Panel] (with some additional fancy Rich styling).
+Finally, we add the code panels to our layout side-by-side and return `root`, the top-level [`Layout`][rich.layout.Layout].
 
 Run `python deck.py` again and go to the second slide (press `?` if you're not sure how to navigate!):
 
 ![Demo Code Slide](./assets/quickstart_code.svg)
 
 Check out the source code of the [demo deck](https://github.com/JoshKarpel/spiel/blob/main/spiel/demo/demo.py)
-for more inspiration on ways to use Rich to make your slides beautiful!
+for more inspiration on ways to use [Rich](https://rich.readthedocs.io/) to make your slides beautiful!
 Spiel provides a `spiel` CLI tool to make this easy:
 
 - Present the demo deck in your terminal by running `spiel demo present`.
 - View the source in your terminal with `spiel demo source`.
 - Copy it to use as a starting point with `spiel demo copy <destination>`.
+
+You can also check out the [gallery](./gallery.md) to see talks that other users have made.

@@ -1,6 +1,7 @@
 import shutil
 from pathlib import Path
 from textwrap import dedent
+from typing import Optional
 
 import typer.rich_utils as ru
 from click.exceptions import Exit
@@ -47,8 +48,7 @@ def _present(
         readable=True,
         help="The path to the slide deck file.",
     ),
-    watch: Path
-    | None = Option(
+    watch: Optional[Path] = Option(
         default=None,
         help="When filesystem changes are detected below this path (recursively), reload the deck from the deck path. Defaults to the parent directory of the deck path.",
     ),

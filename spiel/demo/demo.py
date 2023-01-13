@@ -394,9 +394,6 @@ def bindings() -> RenderableType:
         Custom keybindings can be added on a per-slide basis using the `bindings` argument of `@slide`,
         which takes a mapping of key names to callables to call when that key is pressed.
 
-        ```python
-        {source_code}
-        ```
 
         If the callable takes an argument named `suspend`,
         it will be passed a function that, when used as a context manager,
@@ -405,6 +402,10 @@ def bindings() -> RenderableType:
         A binding has been registered on this slide that suspends {SPIEL}
         and opens your `$EDITOR` on the demo deck's Python file.
         Try pressing `e`!
+
+        ```python
+        {source_code}
+        ```
 
         Due to reloading, any changes you make will be reflected in the
         presentation you're seeing right now.

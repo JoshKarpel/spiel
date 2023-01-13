@@ -6,7 +6,7 @@ import socket
 from datetime import datetime
 from math import cos, floor, pi
 from pathlib import Path
-from textwrap import dedent
+from textwrap import dedent, indent
 
 from click import edit
 from rich.align import Align
@@ -375,7 +375,18 @@ def edit_this_file(suspend: SuspendType) -> None:
     },
 )
 def bindings() -> RenderableType:
-    edit_function_src = dedent("".join(inspect.getsourcelines(edit_this_file)[0]))
+    edit_this_file_source_lines, _ = inspect.getsourcelines(edit_this_file)
+    this_slide_source_lines, _ = inspect.getsourcelines(bindings)
+    source_lines = [
+        *edit_this_file_source_lines,
+        "\n",  # blank line between the two functions
+        *this_slide_source_lines[:7],  # up through the slide's def
+        "    ...",  # replace the slide body with a "..."
+    ]
+
+    # get the indentation right for the triple-quoted string below
+    source_code = indent("".join(source_lines), " " * 8).lstrip()
+
     return pad_markdown(
         f"""\
         ## Custom Per-Slide Key Bindings
@@ -383,20 +394,6 @@ def bindings() -> RenderableType:
         Custom keybindings can be added on a per-slide basis using the `bindings` argument of `@slide`,
         which takes a mapping of key names to callables to call when that key is pressed.
 
-        ```python
-        def edit_this_file(suspend: SuspendType) -> None:
-            with suspend():
-                edit(filename=__file__)
-
-        @deck.slide(
-            title="Bindings",
-            bindings={{
-                "e": edit_this_file,
-            }},
-        )
-        def bindings() -> RenderableType:
-            ...
-        ```
 
         If the callable takes an argument named `suspend`,
         it will be passed a function that, when used as a context manager,
@@ -405,6 +402,10 @@ def bindings() -> RenderableType:
         A binding has been registered on this slide that suspends {SPIEL}
         and opens your `$EDITOR` on the demo deck's Python file.
         Try pressing `e`!
+
+        ```python
+        {source_code}
+        ```
 
         Due to reloading, any changes you make will be reflected in the
         presentation you're seeing right now.

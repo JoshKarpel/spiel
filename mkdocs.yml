@@ -54,7 +54,6 @@ plugins:
             - https://rich.readthedocs.io/en/stable/objects.inv
             - https://textual.textualize.io/objects.inv
 
-
 markdown_extensions:
   - admonition
   - pymdownx.details

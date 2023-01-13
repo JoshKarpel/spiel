@@ -47,8 +47,10 @@ def _present(
         readable=True,
         help="The path to the slide deck file.",
     ),
-    watch: Path = Option(
-        default=Path.cwd(),
+    watch: Path
+    | None = Option(
+        default=None,
+        help="When filesystem changes are detected below this path (recursively), reload the deck from the deck path. Defaults to the parent directory of the deck path.",
     ),
 ) -> None:
     """

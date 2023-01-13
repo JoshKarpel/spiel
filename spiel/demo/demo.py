@@ -357,8 +357,7 @@ def watch() -> RenderableType:
 
         The reload is triggered whenever any files under the path passed to the
         `--watch` argument of `spiel present` changes.
-        That path defaults to your current working directory
-        (right now it is `{Path.cwd()}`).
+        That path defaults to the parent directory of the deck file.
         """
     )
 

@@ -36,12 +36,13 @@ class Deck(Sequence[Slide]):
         """
 
         def slideify(content: Content) -> Content:
-            slide = Slide(
-                title=title,
-                content=content,
-                bindings=bindings or {},
+            self.add_slides(
+                Slide(
+                    title=title,
+                    content=content,
+                    bindings=bindings or {},
+                )
             )
-            self.add_slides(slide)
             return content
 
         return slideify

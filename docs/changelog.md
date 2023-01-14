@@ -12,6 +12,7 @@
 ### Changed
 
 - [#194](https://github.com/JoshKarpel/spiel/pull/194) The `Deck.slide` decorator now returns the decorated function, not the `Slide` it was attached to.
+- [#199](https://github.com/JoshKarpel/spiel/pull/199) The CLI command `spiel present`'s `--watch` option now defaults to the parent directory of the deck file instead of the current working directory.
 
 ## `0.4.3` | 2023-01-02
 

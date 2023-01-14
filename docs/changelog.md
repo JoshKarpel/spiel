@@ -2,7 +2,9 @@
 
 ## `0.5.0` | *Unreleased*
 
-## `0.4.4` | *Unreleased*
+## `0.4.5` | *Unreleased*
+
+## `0.4.4` | 2023-01-13
 
 ### Added
 

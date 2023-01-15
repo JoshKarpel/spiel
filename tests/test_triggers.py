@@ -29,6 +29,18 @@ def test_getitem(triggers: Triggers, idx: int, expected: int) -> None:
     assert triggers[idx] == expected
 
 
+@pytest.mark.parametrize(
+    "triggers",
+    [
+        Triggers(_times=(0, 1), now=1),
+        Triggers(_times=(0, 1), now=1),
+        Triggers(_times=(0, 1, 2), now=2),
+    ],
+)
+def test_contains(triggers: Triggers) -> None:
+    assert all(t in triggers for t in triggers)
+
+
 @given(s=slices(size=3))
 def test_index_with_slice(s: slice) -> None:
     triggers = Triggers(_times=(0, 1, 2), now=2)

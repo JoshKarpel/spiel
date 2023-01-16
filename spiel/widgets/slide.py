@@ -32,8 +32,7 @@ class SlideWidget(SpielWidget):
     def render(self) -> RenderableType:
         try:
             self.remove_class("error")
-            slide = self.app.deck[self.app.current_slide_idx]
-            r = slide.render(triggers=self.triggers)
+            r = self.current_slide.render(triggers=self.triggers)
             if is_renderable(r):
                 return r
             else:
@@ -50,7 +49,7 @@ class SlideWidget(SpielWidget):
                     traceback=tr,
                     suppress=(spiel,),
                 ),
-                title="Slide failed to render",
+                title="Slide content failed to render",
                 border_style=Style(bold=True, color="red1"),
                 box=HEAVY,
             )

@@ -82,7 +82,7 @@ testpaths = ["tests", "spiel", "docs"]
 pretty = false
 show_error_codes = true
 
-files = ["spiel/**/*.py", "tests/**/*.py"]
+files = ["."]
 
 check_untyped_defs = true
 disallow_incomplete_defs = true

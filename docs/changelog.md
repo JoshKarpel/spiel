@@ -4,6 +4,10 @@
 
 ## `0.4.5` | *Unreleased*
 
+### Fixed
+
+- [#202](https://github.com/JoshKarpel/spiel/pull/202) Returning un-renderable content from a slide content function now displays an error instead of crashing Spiel.
+
 ## `0.4.4` | 2023-01-13
 
 ### Added

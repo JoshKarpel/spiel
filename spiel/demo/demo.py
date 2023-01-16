@@ -335,11 +335,13 @@ def image() -> RenderableType:
     root.split_row(
         Layout(pad_markdown(markup)),
         Layout(
-            Panel.fit(
-                Image.from_file(image_path),
-                subtitle=image_path.name,
-                box=HEAVY,
-                padding=0,
+            Align.center(
+                Panel.fit(
+                    Image.from_file(image_path),
+                    subtitle=image_path.name,
+                    box=HEAVY,
+                    padding=0,
+                )
             )
         ),
     )

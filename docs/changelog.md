@@ -4,6 +4,10 @@
 
 ## `0.4.5` | *Unreleased*
 
+### Changed
+
+- [#203](https://github.com/JoshKarpel/spiel/pull/203) The `Image` example in the demo deck is now centered inside its `Panel`.
+
 ## `0.4.4` | 2023-01-13
 
 ### Added

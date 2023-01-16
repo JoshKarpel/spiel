@@ -336,7 +336,7 @@ def image() -> RenderableType:
         Layout(pad_markdown(markup)),
         Layout(
             Panel.fit(
-                Image.from_file(image_path),
+                Align.center(Image.from_file(image_path), vertical="middle"),
                 subtitle=image_path.name,
                 box=HEAVY,
                 padding=0,

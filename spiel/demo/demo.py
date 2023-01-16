@@ -426,6 +426,8 @@ def failure() -> RenderableType:
         When this happens, Spiel will display the stack trace to help you debug the problem.
 
         Deck reloading will still happen, so you can fix the error without stopping Spiel.
+
+        This error display will also be shown if you return slide content that can't be rendered by Rich.
         """
     )
 

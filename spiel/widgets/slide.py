@@ -5,7 +5,9 @@ from time import monotonic
 
 from rich.box import HEAVY
 from rich.console import RenderableType
+from rich.errors import NotRenderableError
 from rich.panel import Panel
+from rich.protocol import is_renderable
 from rich.style import Style
 from rich.traceback import Traceback
 from textual.reactive import reactive
@@ -30,8 +32,11 @@ class SlideWidget(SpielWidget):
     def render(self) -> RenderableType:
         try:
             self.remove_class("error")
-            slide = self.app.deck[self.app.current_slide_idx]
-            return slide.render(triggers=self.triggers)
+            r = self.current_slide.render(triggers=self.triggers)
+            if is_renderable(r):
+                return r
+            else:
+                raise NotRenderableError(f"object {r!r} is not renderable")
         except Exception:
             self.add_class("error")
             et, ev, tr = sys.exc_info()
@@ -44,7 +49,7 @@ class SlideWidget(SpielWidget):
                     traceback=tr,
                     suppress=(spiel,),
                 ),
-                title="Slide failed to render",
+                title="Slide content failed to render",
                 border_style=Style(bold=True, color="red1"),
                 box=HEAVY,
             )

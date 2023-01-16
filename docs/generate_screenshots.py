@@ -14,6 +14,7 @@ from rich.console import Console
 from textual.app import App
 from textual.pilot import Pilot
 
+import spiel.constants
 from spiel.app import SpielApp
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -71,7 +72,7 @@ def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Ite
 if __name__ == "__main__":
     start_time = monotonic()
 
-    demo_deck = ROOT_DIR / "spiel" / "demo" / "demo.py"
+    demo_deck = spiel.constants.DEMO_FILE
     quickstart_deck = ROOT_DIR / "docs" / "examples" / "quickstart.py"
     slide_via_decorator = ROOT_DIR / "docs" / "examples" / "slide_via_decorator.py"
     slide_loop = ROOT_DIR / "docs" / "examples" / "slide_loop.py"

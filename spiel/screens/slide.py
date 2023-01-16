@@ -14,12 +14,6 @@ SUSPEND = "suspend"
 
 
 class SlideScreen(SpielScreen):
-    DEFAULT_CSS = """
-    Screen {
-        layout: vertical;
-    }
-    """
-
     BINDINGS = [
         Binding("right", "next_slide", "Go to next slide."),
         Binding("left", "prev_slide", "Go to previous slide."),

@@ -119,7 +119,7 @@ if __name__ == "__main__":
                 take_screenshot,
                 name="deck",
                 deck_file=demo_deck,
-                size=(130, 35),
+                size=(135, 40),
                 keys=("d", "right", "down"),
             ),
             pool.submit(

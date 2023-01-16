@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from functools import cached_property
+from itertools import islice
 from time import monotonic
-from typing import Iterator, overload
+from typing import Iterator, TypeVar, overload
+
+T = TypeVar("T")
 
 
 @dataclass(frozen=True)
@@ -79,3 +82,6 @@ class Triggers(Sequence[float]):
         (i.e., this ignores the initial trigger from when the slide starts being displayed).
         """
         return len(self) > 1
+
+    def slice(self, seq: Iterable[T], offset: int = 1) -> Iterator[T]:
+        return islice(seq, len(self) - offset)

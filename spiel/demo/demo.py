@@ -230,25 +230,6 @@ def triggers(triggers: Triggers) -> RenderableType:
         """
     )
 
-    bounce_period = 10
-    width = 50
-    half_width = width // 2
-
-    bounce_time = triggers.time_since_first_trigger % bounce_period
-    bounce_character = "⁍" if bounce_time < (1 / 2) * bounce_period else "⁌"
-    bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
-    before = half_width + bounce_position
-    ball = Align.center(
-        Panel(
-            Padding(
-                bounce_character,
-                pad=(0, before, 0, (half_width - bounce_position - 1)),
-            ),
-            title="Bouncing Bullet",
-            padding=0,
-        )
-    )
-
     white = Color.parse("bright_white")
     black = Color.parse("black")
     red = Color.parse("bright_red")
@@ -293,7 +274,37 @@ def triggers(triggers: Triggers) -> RenderableType:
         pad=(1, 0),
     )
 
-    return Group(info, fun, ball if len(triggers) > 2 else Text(""))
+    return Group(info, fun)
+
+
+@deck.slide(title="Triggers: Animations")
+def bouncing_bullet(triggers: Triggers) -> RenderableType:
+    bounce_period = 10
+    width = 50
+    half_width = width // 2
+
+    bounce_time = triggers.time_since_first_trigger % bounce_period
+    bounce_character = "⁍" if bounce_time < (1 / 2) * bounce_period else "⁌"
+    bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
+    before = half_width + bounce_position
+
+    ball = Align.center(
+        Panel(
+            Padding(
+                bounce_character,
+                pad=(0, before, 0, (half_width - bounce_position - 1)),
+            ),
+            title="Bouncing Bullet",
+            padding=0,
+        )
+    )
+
+    return ball
+
+
+@deck.slide(title="Triggers: Bullet Points")
+def bullets() -> RenderableType:
+    return ""
 
 
 @deck.slide(title="Views")

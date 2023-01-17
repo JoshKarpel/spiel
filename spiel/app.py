@@ -79,7 +79,7 @@ class SpielApp(App[None]):
     def __init__(
         self,
         deck_path: Path,
-        watch_path: Path,
+        watch_path: Path | None = None,
         show_messages: bool = True,
         fixed_time: datetime.datetime | None = None,
     ):
@@ -101,6 +101,9 @@ class SpielApp(App[None]):
         await self.push_screen("slide")
 
     async def reload(self) -> None:
+        if self.watch_path is None:
+            return
+
         log(f"Watching {self.watch_path} for changes")
         async for changes in awatch(self.watch_path):
             change_msg = "\n  ".join([""] + [f"{k.raw_str()}: {v}" for k, v in changes])

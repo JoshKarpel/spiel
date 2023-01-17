@@ -347,7 +347,7 @@ def image() -> RenderableType:
         Layout(pad_markdown(markup)),
         Layout(
             Panel.fit(
-                Image.from_file(image_path),
+                Align.center(Image.from_file(image_path), vertical="middle"),
                 subtitle=image_path.name,
                 box=HEAVY,
                 padding=0,
@@ -437,6 +437,8 @@ def failure() -> RenderableType:
         When this happens, Spiel will display the stack trace to help you debug the problem.
 
         Deck reloading will still happen, so you can fix the error without stopping Spiel.
+
+        This error display will also be shown if you return slide content that can't be rendered by Rich.
         """
     )
 

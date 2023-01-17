@@ -38,7 +38,7 @@ THIS_DIR = THIS_FILE.parent
 
 
 def pad_markdown(markup: str) -> RenderableType:
-    return Padding(Markdown(dedent(markup), justify="center"), pad=(0, 5, 1, 5))
+    return Padding(Markdown(dedent(markup), justify="center"), pad=(0, 5))
 
 
 @deck.slide(title="What is Spiel?")
@@ -372,11 +372,7 @@ def bouncing_bullet(triggers: Triggers) -> RenderableType:
         """
     )
 
-    return Group(
-        info,
-        make_bullet(triggers),
-        make_code_panel_from_object(make_bullet),
-    )
+    return Group(info, make_bullet(triggers), make_code_panel_from_object(make_bullet))
 
 
 @deck.slide(title="Views")
@@ -493,11 +489,7 @@ def bindings() -> RenderableType:
         """
     )
 
-    return Group(
-        info_upper,
-        code,
-        info_lower,
-    )
+    return Group(info_upper, code, info_lower)
 
 
 class DemoRenderFailure(Exception):

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from functools import cached_property
+from itertools import islice
 from time import monotonic
-from typing import Iterator, overload
+from typing import Iterator, TypeVar, overload
+
+T = TypeVar("T")
 
 
 @dataclass(frozen=True)
@@ -79,3 +82,20 @@ class Triggers(Sequence[float]):
         (i.e., this ignores the initial trigger from when the slide starts being displayed).
         """
         return len(self) > 1
+
+    def take(self, iter: Iterable[T], offset: int = 1) -> Iterator[T]:
+        """
+        Takes elements from the iterable `iter`
+        equal to the number of times in the `Triggers` minus the offset.
+
+        Args:
+            iter: The iterable to take elements from.
+            offset: This `offset` will be subtracted from the number of triggers,
+                reducing the number of elements that will be returned.
+                It defaults to `1` to ignore the automatic trigger from when the
+                slide starts being shown.
+
+        Returns:
+            An iterator over the first `len(self) - offset` elements of `iter`.
+        """
+        return islice(iter, len(self) - offset)

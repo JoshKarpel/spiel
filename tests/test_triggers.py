@@ -1,3 +1,5 @@
+from itertools import count
+
 import pytest
 from hypothesis import given
 from hypothesis.strategies import slices
@@ -106,3 +108,17 @@ def test_triggered(triggers: Triggers, expected: bool) -> None:
 def test_invalid_triggers(times: tuple[float], now: float) -> None:
     with pytest.raises(ValueError):
         Triggers(_times=times, now=now)
+
+
+@pytest.mark.parametrize(
+    "triggers, offset, expected",
+    [
+        (Triggers(_times=(0,), now=1000), 1, []),
+        (Triggers(_times=(0,), now=1000), 0, [0]),
+        (Triggers(_times=(0, 0, 0), now=1000), 1, [0, 1]),
+        (Triggers(_times=(0, 0, 0), now=1000), 0, [0, 1, 2]),
+        (Triggers(_times=(0, 0, 0), now=1000), 2, [0]),
+    ],
+)
+def test_slice(triggers: Triggers, offset: int, expected: float) -> None:
+    assert list(triggers.take(count(0), offset=offset)) == expected

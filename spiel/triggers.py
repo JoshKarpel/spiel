@@ -96,6 +96,6 @@ class Triggers(Sequence[float]):
                 slide starts being shown.
 
         Returns:
-            An iterator over the sliced-out elements of `iter`.
+            An iterator over the first `len(self) - offset` elements of `iter`.
         """
         return islice(iter, len(self) - offset)

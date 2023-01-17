@@ -120,7 +120,7 @@ def what() -> RenderableType:
     return root
 
 
-def make_code_panel_from_object(obj: type | Callable[[...], object]) -> RenderableType:
+def make_code_panel_from_object(obj: type | Callable[..., object]) -> RenderableType:
     lines, line_number = inspect.getsourcelines(obj)
     return make_code_panel(line_number, lines)
 

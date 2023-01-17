@@ -50,10 +50,10 @@ class Triggers(Sequence[float]):
         return self._times[item]
 
     @overload
-    def __getitem__(self, item: take) -> Sequence[float]:
+    def __getitem__(self, item: slice) -> Sequence[float]:
         return self._times[item]
 
-    def __getitem__(self, item: int | take) -> float | Sequence[float]:
+    def __getitem__(self, item: int | slice) -> float | Sequence[float]:
         return self._times[item]
 
     def __iter__(self) -> Iterator[float]:

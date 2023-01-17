@@ -50,10 +50,10 @@ class Triggers(Sequence[float]):
         return self._times[item]
 
     @overload
-    def __getitem__(self, item: slice) -> Sequence[float]:
+    def __getitem__(self, item: take) -> Sequence[float]:
         return self._times[item]
 
-    def __getitem__(self, item: int | slice) -> float | Sequence[float]:
+    def __getitem__(self, item: int | take) -> float | Sequence[float]:
         return self._times[item]
 
     def __iter__(self) -> Iterator[float]:
@@ -83,5 +83,19 @@ class Triggers(Sequence[float]):
         """
         return len(self) > 1
 
-    def slice(self, seq: Iterable[T], offset: int = 1) -> Iterator[T]:
-        return islice(seq, len(self) - offset)
+    def take(self, iter: Iterable[T], offset: int = 1) -> Iterator[T]:
+        """
+        Takes elements from the iterable `iter`
+        equal to the number of times in the `Triggers` minus the offset.
+
+        Args:
+            iter: The iterable to take elements from.
+            offset: This `offset` will be subtracted from the number of triggers,
+                reducing the number of elements that will be returned.
+                It defaults to `1` to ignore the automatic trigger from when the
+                slide starts being shown.
+
+        Returns:
+            An iterator over the sliced-out elements of `iter`.
+        """
+        return islice(iter, len(self) - offset)

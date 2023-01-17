@@ -3,10 +3,11 @@
 import inspect
 import shutil
 import socket
+from collections.abc import Callable, Iterator
 from datetime import datetime
 from math import cos, floor, pi
 from pathlib import Path
-from textwrap import dedent, indent
+from textwrap import dedent
 
 from click import edit
 from rich.align import Align
@@ -32,11 +33,12 @@ RICH = "[Rich](https://rich.readthedocs.io/)"
 IPYTHON = "[IPython](https://ipython.readthedocs.io)"
 WSL = "[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/)"
 
-THIS_DIR = Path(__file__).resolve().parent
+THIS_FILE = Path(__file__).resolve()
+THIS_DIR = THIS_FILE.parent
 
 
 def pad_markdown(markup: str) -> RenderableType:
-    return Padding(Markdown(dedent(markup), justify="center"), pad=(0, 5))
+    return Padding(Markdown(dedent(markup), justify="center"), pad=(0, 5, 1, 5))
 
 
 @deck.slide(title="What is Spiel?")
@@ -118,6 +120,29 @@ def what() -> RenderableType:
     return root
 
 
+def make_code_panel_from_object(obj: type | Callable[[...], object]) -> RenderableType:
+    lines, line_number = inspect.getsourcelines(obj)
+    return make_code_panel(line_number, lines)
+
+
+def make_code_panel(line_number: int, lines: list[str], title: str | None = None) -> RenderableType:
+    return Align.center(
+        Panel(
+            Syntax(
+                "".join(lines),
+                lexer="python",
+                line_numbers=True,
+                start_line=line_number,
+            ),
+            title=title,
+            box=SQUARE,
+            border_style=Style(dim=True),
+            height=len(lines) + 2,
+            expand=False,
+        )
+    )
+
+
 @deck.slide(title="Decks and Slides")
 def code() -> RenderableType:
     markup = f"""\
@@ -134,23 +159,9 @@ def code() -> RenderableType:
     lower = Layout()
     root.split_column(upper, lower)
 
-    def make_code_panel(obj: type) -> RenderableType:
-        lines, line_number = inspect.getsourcelines(obj)
-        return Panel(
-            Syntax(
-                "".join(lines),
-                lexer="python",
-                line_numbers=True,
-                start_line=line_number,
-            ),
-            box=SQUARE,
-            border_style=Style(dim=True),
-            height=len(lines) + 2,
-        )
-
     lower.split_row(
-        Layout(make_code_panel(Deck)),
-        Layout(make_code_panel(Slide)),
+        Layout(make_code_panel_from_object(Deck)),
+        Layout(make_code_panel_from_object(Slide)),
     )
 
     return root
@@ -277,8 +288,51 @@ def triggers(triggers: Triggers) -> RenderableType:
     return Group(info, fun)
 
 
-@deck.slide(title="Triggers: Animations")
-def bouncing_bullet(triggers: Triggers) -> RenderableType:
+def make_reveals(triggers: Triggers) -> Iterator[RenderableType]:
+    return triggers.take(
+        Align.center(r)
+        for r in [
+            Text("Reveal 1", style=Style(color="black", bgcolor="#E40303")),
+            Text("Reveal 2", style=Style(color="black", bgcolor="#FF8C00")),
+            Text("Reveal 3", style=Style(color="black", bgcolor="#FFED00")),
+            Text("Reveal 4", style=Style(color="black", bgcolor="#008026")),
+            Text("Reveal 5", style=Style(color="black", bgcolor="#24408E")),
+            Text("Reveal 6", style=Style(color="black", bgcolor="#732982")),
+        ]
+    )
+
+
+@deck.slide(title="Triggers: Reveals")
+def bullets(triggers: Triggers) -> RenderableType:
+    info_upper = pad_markdown(
+        f"""\
+        ## Triggers: Reveals
+
+        Triggers can be useful even without considering their tracking of relative time.
+
+        We can track the number of times the slide has been triggered to gradually
+        reveal content.
+
+        `{Triggers.take.__qualname__}` makes this straightforward:
+        """
+    )
+
+    info_lower = pad_markdown(
+        f"""\
+        Trigger this slide (press `t`) a few times to reveal some content.
+        Press `r` to hide the content again (by resetting the trigger state).
+        """
+    )
+
+    return Group(
+        info_upper,
+        Padding(make_code_panel_from_object(make_reveals), pad=(0, 0, 1, 0)),
+        info_lower,
+        *make_reveals(triggers),
+    )
+
+
+def make_bullet(triggers: Triggers) -> RenderableType:
     bounce_period = 10
     width = 50
     half_width = width // 2
@@ -288,23 +342,41 @@ def bouncing_bullet(triggers: Triggers) -> RenderableType:
     bounce_position = floor(half_width * cos(2 * pi * bounce_time / bounce_period))
     before = half_width + bounce_position
 
-    ball = Align.center(
-        Panel(
-            Padding(
-                bounce_character,
-                pad=(0, before, 0, (half_width - bounce_position - 1)),
-            ),
-            title="Bouncing Bullet",
-            padding=0,
-        )
+    bullet = Padding(
+        bounce_character,
+        pad=(0, before, 0, (half_width - bounce_position - 1)),
     )
 
-    return ball
+    return Align.center(
+        Panel(bullet, title="Bouncing Bullet", padding=0),
+        vertical="middle",
+    )
 
 
-@deck.slide(title="Triggers: Bullet Points")
-def bullets() -> RenderableType:
-    return ""
+@deck.slide(title="Triggers: Animations")
+def bouncing_bullet(triggers: Triggers) -> RenderableType:
+    info = pad_markdown(
+        f"""\
+        ## Triggers: Animations
+
+        Here's an example of how triggers can be used to build
+        more complex animations.
+
+        The position and facing direction of the bullet are calculated deterministically
+        based on the time since the first trigger time (the automatic one
+        from when the slide starts being presented).
+
+        There is no state stored in the slide function itself.
+        The apparent motion is based on {SPIEL} evaluating the
+        slide content function with different `Trigger` values.
+        """
+    )
+
+    return Group(
+        info,
+        make_bullet(triggers),
+        make_code_panel_from_object(make_bullet),
+    )
 
 
 @deck.slide(title="Views")
@@ -385,7 +457,7 @@ def edit_this_file(suspend: SuspendType) -> None:
     },
 )
 def bindings() -> RenderableType:
-    edit_this_file_source_lines, _ = inspect.getsourcelines(edit_this_file)
+    edit_this_file_source_lines, line_number = inspect.getsourcelines(edit_this_file)
     this_slide_source_lines, _ = inspect.getsourcelines(bindings)
     source_lines = [
         *edit_this_file_source_lines,
@@ -393,11 +465,9 @@ def bindings() -> RenderableType:
         *this_slide_source_lines[:7],  # up through the slide's def
         "    ...",  # replace the slide body with a "..."
     ]
+    code = make_code_panel(line_number, source_lines, title=THIS_FILE.name)
 
-    # get the indentation right for the triple-quoted string below
-    source_code = indent("".join(source_lines), " " * 8).lstrip()
-
-    return pad_markdown(
+    info_upper = pad_markdown(
         f"""\
         ## Custom Per-Slide Key Bindings
 
@@ -410,16 +480,23 @@ def bindings() -> RenderableType:
         suspends {SPIEL} while inside the `with` block.
 
         A binding has been registered on this slide that suspends {SPIEL}
-        and opens your `$EDITOR` on the demo deck's Python file.
-        Try pressing `e`!
+        and opens your `$EDITOR` on the demo deck's Python file:
+        """
+    )
 
-        ```python
-        {source_code}
-        ```
+    info_lower = pad_markdown(
+        f"""\
+        Try pressing `e`!
 
         Due to reloading, any changes you make will be reflected in the
         presentation you're seeing right now.
         """
+    )
+
+    return Group(
+        info_upper,
+        code,
+        info_lower,
     )
 
 

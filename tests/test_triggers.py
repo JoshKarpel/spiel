@@ -121,4 +121,4 @@ def test_invalid_triggers(times: tuple[float], now: float) -> None:
     ],
 )
 def test_slice(triggers: Triggers, offset: int, expected: float) -> None:
-    assert list(triggers.slice(count(0), offset=offset)) == expected
+    assert list(triggers.take(count(0), offset=offset)) == expected

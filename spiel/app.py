@@ -28,6 +28,7 @@ from spiel.exceptions import NoDeckFound
 from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
+from spiel.screens.transition import SlideTransitionScreen
 from spiel.triggers import Triggers
 from spiel.utils import clamp
 from spiel.widgets.slide import SlideWidget
@@ -82,6 +83,7 @@ class SpielApp(App[None]):
         watch_path: Path | None = None,
         show_messages: bool = True,
         fixed_time: datetime.datetime | None = None,
+        enable_transitions: bool = True,
     ):
         super().__init__()
 
@@ -90,6 +92,7 @@ class SpielApp(App[None]):
 
         self.show_messages = show_messages
         self.fixed_time = fixed_time
+        self.enable_transitions = enable_transitions
 
     async def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)
@@ -145,7 +148,35 @@ class SpielApp(App[None]):
         self.set_timer(delay, clear)
 
     def action_next_slide(self) -> None:
-        self.current_slide_idx = clamp(self.current_slide_idx + 1, 0, len(self.deck) - 1)
+        new_slide_idx = clamp(self.current_slide_idx + 1, 0, len(self.deck) - 1)
+
+        if new_slide_idx == self.current_slide_idx:
+            return
+
+        if not isinstance(self.screen, SlideScreen):
+            self.current_slide_idx = new_slide_idx
+            return
+
+        if not self.enable_transitions:
+            return
+
+        current_slide = self.deck[self.current_slide_idx]
+        new_slide = self.deck[new_slide_idx]
+
+        transition = SlideTransitionScreen(from_slide=current_slide, to_slide=new_slide)
+        self.switch_screen(transition)
+        transition.animate(
+            "progress",
+            value=100,
+            delay=0,
+            duration=1.5,
+            on_complete=lambda: self.finalize_transition(new_slide_idx),
+        )
+
+    def finalize_transition(self, new_slide_idx: int) -> None:
+        self.switch_screen("slide")
+
+        self.current_slide_idx = new_slide_idx
 
     def action_prev_slide(self) -> None:
         self.current_slide_idx = clamp(self.current_slide_idx - 1, 0, len(self.deck) - 1)

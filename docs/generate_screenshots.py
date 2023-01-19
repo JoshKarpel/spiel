@@ -60,6 +60,7 @@ def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Ite
         watch_path=deck_file.parent,
         show_messages=False,
         fixed_time=datetime(year=2022, month=12, day=17, hour=15, minute=31, second=42),
+        enable_transitions=False,
     ).run(
         headless=True,
         auto_pilot=partial(auto_pilot, name=name, keys=keys),

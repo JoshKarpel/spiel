@@ -28,7 +28,7 @@ from spiel.exceptions import NoDeckFound
 from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
-from spiel.screens.transition import SlideTransitionScreen
+from spiel.screens.transition import Direction, SlideTransitionScreen
 from spiel.triggers import Triggers
 from spiel.utils import clamp
 from spiel.widgets.slide import SlideWidget
@@ -148,7 +148,13 @@ class SpielApp(App[None]):
         self.set_timer(delay, clear)
 
     def action_next_slide(self) -> None:
-        new_slide_idx = clamp(self.current_slide_idx + 1, 0, len(self.deck) - 1)
+        self.handle_new_slide(self.current_slide_idx + 1, Direction.Right)
+
+    def action_prev_slide(self) -> None:
+        self.handle_new_slide(self.current_slide_idx - 1, Direction.Left)
+
+    def handle_new_slide(self, new_slide_idx: int, direction: Direction) -> None:
+        new_slide_idx = clamp(new_slide_idx, 0, len(self.deck) - 1)
 
         if new_slide_idx == self.current_slide_idx:
             return
@@ -163,13 +169,18 @@ class SpielApp(App[None]):
         current_slide = self.deck[self.current_slide_idx]
         new_slide = self.deck[new_slide_idx]
 
-        transition = SlideTransitionScreen(from_slide=current_slide, to_slide=new_slide)
+        transition = SlideTransitionScreen(
+            from_slide=current_slide,
+            from_triggers=self.query_one(SlideWidget).triggers,
+            to_slide=new_slide,
+            direction=direction,
+        )
         self.switch_screen(transition)
         transition.animate(
             "progress",
             value=100,
             delay=0,
-            duration=1.5,
+            duration=1,
             on_complete=lambda: self.finalize_transition(new_slide_idx),
         )
 
@@ -177,9 +188,6 @@ class SpielApp(App[None]):
         self.switch_screen("slide")
 
         self.current_slide_idx = new_slide_idx
-
-    def action_prev_slide(self) -> None:
-        self.current_slide_idx = clamp(self.current_slide_idx - 1, 0, len(self.deck) - 1)
 
     def action_next_row(self) -> None:
         self.current_slide_idx = clamp(

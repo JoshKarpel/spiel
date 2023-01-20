@@ -249,7 +249,6 @@ class SpielApp(App[None]):
 
         if driver is not None:
             driver.stop_application_mode()
-            driver.exit_event.clear()  # type: ignore[attr-defined]
             with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
                 yield
             driver.start_application_mode()

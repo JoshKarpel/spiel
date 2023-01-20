@@ -27,5 +27,5 @@ class Direction(Enum):
 
 
 class TransitionEffect(Enum):
+    Instant = "instant"
     Swipe = "swipe"
-    Fade = "fade"

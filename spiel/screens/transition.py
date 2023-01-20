@@ -59,8 +59,6 @@ class SlideTransitionScreen(SpielScreen):
                 to_widget.styles.offset = ("100%", 0)
             case TransitionEffect.Swipe, Direction.Left:
                 to_widget.styles.offset = ("-100%", 0)
-            case TransitionEffect.Fade, _:
-                to_widget.styles.opacity = "0%"
         yield to_widget
 
         yield Footer()
@@ -76,6 +74,3 @@ class SlideTransitionScreen(SpielScreen):
             case TransitionEffect.Swipe, Direction.Left:
                 from_widget.styles.offset = (f"{new_progress:.1f}%", 0)
                 to_widget.styles.offset = (f"-{100 - new_progress:.1f}%", 0)
-            case TransitionEffect.Fade, _:
-                from_widget.styles.opacity = f"{100 - new_progress:.1f}%"
-                to_widget.styles.opacity = f"{new_progress:.1f}%"

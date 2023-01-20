@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "spiel"
-version = "0.4.5"
+version = "0.4.6"
 description = "A framework for building and presenting richly-styled presentations in your terminal using Python."
 readme="README.md"
 homepage="https://github.com/JoshKarpel/spiel"

@@ -4,6 +4,14 @@
 
 *Unreleased*
 
+## `0.4.6`
+
+Released `2023-01-19`
+
+### Changed
+
+- [#208](https://github.com/JoshKarpel/spiel/pull/208) Unpinned `textual==0.4.0` and allowed `textual>=0.10.0`, which includes [textual#1558](https://github.com/Textualize/textual/pull/1558).
+
 ## `0.4.5`
 
 Released `2023-01-16`

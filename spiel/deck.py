@@ -4,6 +4,7 @@ from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import overload
 
+from spiel.constants import TransitionEffect
 from spiel.slide import Content, Slide
 
 
@@ -16,12 +17,15 @@ class Deck(Sequence[Slide]):
     name: str
     """The name of the `Deck`/presentation, which will be displayed in the footer."""
 
+    default_transition_effect: TransitionEffect = TransitionEffect.Swipe
+
     _slides: list[Slide] = field(default_factory=list)
 
     def slide(
         self,
         title: str = "",
         bindings: Mapping[str, Callable[..., None]] | None = None,
+        transition_effect: TransitionEffect | None = None,
     ) -> Callable[[Content], Content]:
         """
         A decorator that creates a new slide in the deck,
@@ -41,6 +45,7 @@ class Deck(Sequence[Slide]):
                     title=title,
                     content=content,
                     bindings=bindings or {},
+                    transition_effect=transition_effect,
                 )
             )
             return content

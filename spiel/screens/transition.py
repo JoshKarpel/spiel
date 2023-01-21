@@ -3,7 +3,7 @@ from __future__ import annotations
 from textual.app import ComposeResult
 from textual.reactive import reactive
 
-from spiel.constants import Direction, TransitionEffect
+from spiel.constants import Direction, Transition
 from spiel.screens.screen import SpielScreen
 from spiel.slide import Slide
 from spiel.triggers import Triggers
@@ -38,7 +38,7 @@ class SlideTransitionScreen(SpielScreen):
         from_slide: Slide,
         from_triggers: Triggers,
         to_slide: Slide,
-        effect: TransitionEffect,
+        effect: Transition,
         direction: Direction,
     ):
         super().__init__()
@@ -55,9 +55,9 @@ class SlideTransitionScreen(SpielScreen):
 
         to_widget = FixedSlideWidget(self.to_slide, id="to")
         match self.effect, self.direction:
-            case TransitionEffect.Swipe, Direction.Right:
+            case Transition.Swipe, Direction.Right:
                 to_widget.styles.offset = ("100%", 0)
-            case TransitionEffect.Swipe, Direction.Left:
+            case Transition.Swipe, Direction.Left:
                 to_widget.styles.offset = ("-100%", 0)
         yield to_widget
 
@@ -68,9 +68,9 @@ class SlideTransitionScreen(SpielScreen):
         to_widget = self.query_one("#to")
 
         match self.effect, self.direction:
-            case TransitionEffect.Swipe, Direction.Right:
+            case Transition.Swipe, Direction.Right:
                 from_widget.styles.offset = (f"-{new_progress:.1f}%", 0)
                 to_widget.styles.offset = (f"{100 - new_progress:.1f}%", 0)
-            case TransitionEffect.Swipe, Direction.Left:
+            case Transition.Swipe, Direction.Left:
                 from_widget.styles.offset = (f"{new_progress:.1f}%", 0)
                 to_widget.styles.offset = (f"-{100 - new_progress:.1f}%", 0)

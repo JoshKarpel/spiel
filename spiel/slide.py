@@ -7,7 +7,7 @@ from typing import Callable, Mapping
 from rich.console import RenderableType
 from rich.text import Text
 
-from spiel.constants import TransitionEffect
+from spiel.constants import Transition
 from spiel.triggers import Triggers
 
 TRIGGERS = "triggers"
@@ -35,7 +35,7 @@ class Slide:
 
     bindings: Mapping[str, Callable[..., None]] = field(default_factory=dict)
 
-    transition_effect: TransitionEffect | None = None
+    transition_effect: Transition | None = None
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)

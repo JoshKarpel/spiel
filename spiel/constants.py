@@ -26,6 +26,6 @@ class Direction(Enum):
     Left = "left"
 
 
-class TransitionEffect(Enum):
+class Transition(Enum):
     Instant = "instant"
     Swipe = "swipe"

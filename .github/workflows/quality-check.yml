@@ -17,6 +17,7 @@ jobs:
       run:
         shell: bash
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 15
     env:
       PLATFORM: ${{ matrix.platform }}
       PYTHON_VERSION: ${{ matrix.python-version }}

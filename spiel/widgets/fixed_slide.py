@@ -18,8 +18,8 @@ from spiel.widgets.widget import SpielWidget
 
 
 class FixedSlideWidget(SpielWidget):
-    def __init__(self, slide: Slide, triggers: Triggers | None = None, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, slide: Slide, triggers: Triggers | None = None, id: str | None = None):
+        super().__init__(id=id)
 
         self.slide = slide
         self.triggers = triggers or Triggers.new()

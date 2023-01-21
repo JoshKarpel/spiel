@@ -9,7 +9,7 @@ from rich.console import Console
 from typer.testing import CliRunner
 
 from spiel import Deck, Slide
-from spiel.constants import DECK
+from spiel.constants import DECK, Transition
 
 settings.register_profile("default", deadline=None)
 settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
@@ -22,7 +22,7 @@ def runner() -> CliRunner:
 
 @pytest.fixture
 def three_slide_deck() -> Deck:
-    deck = Deck(name="three-slides")
+    deck = Deck(name="three-slides", default_transition_effect=Transition.Instant)
     deck.add_slides(Slide(), Slide(), Slide())
     return deck
 

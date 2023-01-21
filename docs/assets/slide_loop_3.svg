@@ -34,7 +34,7 @@
 
     .spieldocs-r1 { fill: #e1e1e1 }
 .spieldocs-r2 { fill: #c5c8c6 }
-.spieldocs-r3 { fill: #608ab1 }
+.spieldocs-r3 { fill: #98a84b }
 .spieldocs-r4 { fill: #939393 }
 .spieldocs-r5 { fill: #e1e1e1;font-weight: bold }
     </style>
@@ -103,7 +103,7 @@
 </text><text class="spieldocs-r2" x="732" y="93.2" textLength="12.2" clip-path="url(#spieldocs-line-3)">
 </text><text class="spieldocs-r2" x="732" y="117.6" textLength="12.2" clip-path="url(#spieldocs-line-4)">
 </text><text class="spieldocs-r2" x="732" y="142" textLength="12.2" clip-path="url(#spieldocs-line-5)">
-</text><text class="spieldocs-r3" x="341.6" y="166.4" textLength="36.6" clip-path="url(#spieldocs-line-6)">Foo</text><text class="spieldocs-r2" x="732" y="166.4" textLength="12.2" clip-path="url(#spieldocs-line-6)">
+</text><text class="spieldocs-r3" x="341.6" y="166.4" textLength="36.6" clip-path="url(#spieldocs-line-6)">Baz</text><text class="spieldocs-r2" x="732" y="166.4" textLength="12.2" clip-path="url(#spieldocs-line-6)">
 </text><text class="spieldocs-r2" x="732" y="190.8" textLength="12.2" clip-path="url(#spieldocs-line-7)">
 </text><text class="spieldocs-r2" x="732" y="215.2" textLength="12.2" clip-path="url(#spieldocs-line-8)">
 </text><text class="spieldocs-r2" x="732" y="239.6" textLength="12.2" clip-path="url(#spieldocs-line-9)">
@@ -111,7 +111,7 @@
 </text><text class="spieldocs-r2" x="732" y="288.4" textLength="12.2" clip-path="url(#spieldocs-line-11)">
 </text><text class="spieldocs-r2" x="732" y="312.8" textLength="12.2" clip-path="url(#spieldocs-line-12)">
 </text><text class="spieldocs-r4" x="0" y="337.2" textLength="732" clip-path="url(#spieldocs-line-13)">────────────────────────────────────────────────────────────</text><text class="spieldocs-r2" x="732" y="337.2" textLength="12.2" clip-path="url(#spieldocs-line-13)">
-</text><text class="spieldocs-r4" x="0" y="361.6" textLength="317.2" clip-path="url(#spieldocs-line-14)">Deck&#160;Name&#160;|&#160;First&#160;Slide&#160;&#160;&#160;</text><text class="spieldocs-r4" x="353.8" y="361.6" textLength="378.2" clip-path="url(#spieldocs-line-14)">&#160;&#160;2022-12-17&#160;03:31&#160;PM&#160;&#160;&#160;[1&#160;/&#160;3]</text>
+</text><text class="spieldocs-r4" x="0" y="361.6" textLength="317.2" clip-path="url(#spieldocs-line-14)">Deck&#160;Name&#160;|&#160;Third&#160;Slide&#160;&#160;&#160;</text><text class="spieldocs-r4" x="353.8" y="361.6" textLength="378.2" clip-path="url(#spieldocs-line-14)">&#160;&#160;2022-12-17&#160;03:31&#160;PM&#160;&#160;&#160;[3&#160;/&#160;3]</text>
     </g>
     </g>
 </svg>

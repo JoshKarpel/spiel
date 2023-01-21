@@ -11,7 +11,7 @@ from spiel.app import SpielApp
 
 @pytest.fixture
 def app() -> SpielApp:
-    return SpielApp(deck_path=spiel.constants.DEMO_FILE)
+    return SpielApp(deck_path=spiel.constants.DEMO_FILE, enable_transitions=False)
 
 
 KEYS = [
@@ -30,7 +30,7 @@ KEYS = [
 @pytest.mark.slow
 @given(keys=lists(elements=sampled_from(KEYS), max_size=100))
 async def test_hammer_on_the_keyboard_long_random(keys: Iterable[str]) -> None:
-    app = SpielApp(deck_path=spiel.constants.DEMO_FILE)
+    app = SpielApp(deck_path=spiel.constants.DEMO_FILE, enable_transitions=False)
     async with app.run_test() as pilot:
         await pilot.press(*keys)
 

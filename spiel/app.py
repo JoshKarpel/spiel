@@ -156,14 +156,12 @@ class SpielApp(App[None]):
     def handle_new_slide(self, new_slide_idx: int, direction: Direction) -> None:
         new_slide_idx = clamp(new_slide_idx, 0, len(self.deck) - 1)
 
-        if new_slide_idx == self.current_slide_idx:
-            return
-
-        if not isinstance(self.screen, SlideScreen):
+        if (
+            self.current_slide_idx == new_slide_idx
+            or not isinstance(self.screen, SlideScreen)
+            or not self.enable_transitions
+        ):
             self.current_slide_idx = new_slide_idx
-            return
-
-        if not self.enable_transitions:
             return
 
         current_slide = self.deck[self.current_slide_idx]

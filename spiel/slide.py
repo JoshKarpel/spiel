@@ -35,7 +35,7 @@ class Slide:
 
     bindings: Mapping[str, Callable[..., None]] = field(default_factory=dict)
 
-    transition_effect: Transition | None = None
+    transition: Transition | None = None
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)

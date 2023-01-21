@@ -17,7 +17,7 @@ class Deck(Sequence[Slide]):
     name: str
     """The name of the `Deck`/presentation, which will be displayed in the footer."""
 
-    default_transition_effect: Transition = Transition.Swipe
+    default_transition: Transition = Transition.Swipe
 
     _slides: list[Slide] = field(default_factory=list)
 
@@ -45,7 +45,7 @@ class Deck(Sequence[Slide]):
                     title=title,
                     content=content,
                     bindings=bindings or {},
-                    transition_effect=transition_effect,
+                    transition=transition_effect,
                 )
             )
             return content

@@ -147,41 +147,38 @@ class SpielApp(App[None]):
 
         self.set_timer(delay, clear)
 
-    def action_next_slide(self) -> None:
-        self.handle_new_slide(self.current_slide_idx + 1, Direction.Right)
+    async def action_next_slide(self) -> None:
+        await self.handle_new_slide(self.current_slide_idx + 1, Direction.Right)
 
-    def action_prev_slide(self) -> None:
-        self.handle_new_slide(self.current_slide_idx - 1, Direction.Left)
+    async def action_prev_slide(self) -> None:
+        await self.handle_new_slide(self.current_slide_idx - 1, Direction.Left)
 
-    def handle_new_slide(self, new_slide_idx: int, direction: Direction) -> None:
+    async def handle_new_slide(self, new_slide_idx: int, direction: Direction) -> None:
         new_slide_idx = clamp(new_slide_idx, 0, len(self.deck) - 1)
+
+        current_slide = self.deck[self.current_slide_idx]
+        new_slide = self.deck[new_slide_idx]
+
+        transition = new_slide.transition or self.deck.default_transition
 
         if (
             self.current_slide_idx == new_slide_idx
             or not isinstance(self.screen, SlideScreen)
+            or transition is Transition.Instant
             or not self.enable_transitions
         ):
             self.current_slide_idx = new_slide_idx
             return
 
-        current_slide = self.deck[self.current_slide_idx]
-        new_slide = self.deck[new_slide_idx]
-
-        effect = new_slide.transition_effect or self.deck.default_transition_effect
-
-        if effect is Transition.Instant:
-            self.current_slide_idx = new_slide_idx
-            return
-
-        transition = SlideTransitionScreen(
+        transition_screen = SlideTransitionScreen(
             from_slide=current_slide,
             from_triggers=self.query_one(SlideWidget).triggers,
             to_slide=new_slide,
             direction=direction,
-            effect=effect,
+            effect=transition,
         )
-        self.switch_screen(transition)
-        transition.animate(
+        await self.switch_screen(transition_screen)
+        transition_screen.animate(
             "progress",
             value=100,
             delay=0,
@@ -189,8 +186,8 @@ class SpielApp(App[None]):
             on_complete=lambda: self.finalize_transition(new_slide_idx),
         )
 
-    def finalize_transition(self, new_slide_idx: int) -> None:
-        self.switch_screen("slide")
+    async def finalize_transition(self, new_slide_idx: int) -> None:
+        await self.switch_screen("slide")
 
         self.current_slide_idx = new_slide_idx
 

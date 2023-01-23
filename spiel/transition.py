@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 from textual.widget import Widget
 
@@ -11,6 +11,7 @@ class Direction(Enum):
     Left = "left"
 
 
+@runtime_checkable
 class Transition(Protocol):
     def initialize(
         self,

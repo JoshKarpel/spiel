@@ -53,10 +53,15 @@ class SlideTransitionScreen(SpielScreen):
 
     def compose(self) -> ComposeResult:
         from_widget = FixedSlideWidget(self.from_slide, triggers=self.from_triggers, id="from")
-        yield from_widget
-
         to_widget = FixedSlideWidget(self.to_slide, id="to")
-        self.transition.initialize(to_widget, self.direction)
+
+        self.transition.initialize(
+            from_widget=from_widget,
+            to_widget=to_widget,
+            direction=self.direction,
+        )
+
+        yield from_widget
         yield to_widget
 
         yield Footer()

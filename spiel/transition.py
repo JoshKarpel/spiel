@@ -12,7 +12,12 @@ class Direction(Enum):
 
 
 class Transition(Protocol):
-    def initialize(self, to_widget: Widget, direction: Direction) -> None:
+    def initialize(
+        self,
+        from_widget: Widget,
+        to_widget: Widget,
+        direction: Direction,
+    ) -> None:
         ...
 
     def progress(
@@ -26,7 +31,12 @@ class Transition(Protocol):
 
 
 class Swipe(Transition):
-    def initialize(self, to_widget: Widget, direction: Direction) -> None:
+    def initialize(
+        self,
+        from_widget: Widget,
+        to_widget: Widget,
+        direction: Direction,
+    ) -> None:
         to_widget.styles.offset = ("100%" if direction is Direction.Right else "-100%", 0)
 
     def progress(

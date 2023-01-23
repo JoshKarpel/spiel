@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import sys
-from enum import Enum
 from importlib import metadata
 from pathlib import Path
 
@@ -19,13 +18,3 @@ DEMO_FILE = PACKAGE_DIR / "demo" / "demo.py"
 
 FOOTER_TIME_FORMAT = "%Y-%m-%d %I:%M %p"
 RELOAD_MESSAGE_TIME_FORMAT = "%I:%M:%S %p"
-
-
-class Direction(Enum):
-    Right = "right"
-    Left = "left"
-
-
-class Transition(Enum):
-    Instant = "instant"
-    Swipe = "swipe"

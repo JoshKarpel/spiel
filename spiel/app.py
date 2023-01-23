@@ -22,13 +22,14 @@ from textual.events import Resize
 from textual.reactive import reactive
 from watchfiles import awatch
 
-from spiel.constants import DECK, RELOAD_MESSAGE_TIME_FORMAT, Direction, Transition
+from spiel.constants import DECK, RELOAD_MESSAGE_TIME_FORMAT
 from spiel.deck import Deck
 from spiel.exceptions import NoDeckFound
 from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
 from spiel.screens.transition import SlideTransitionScreen
+from spiel.transition import Direction
 from spiel.triggers import Triggers
 from spiel.utils import clamp
 from spiel.widgets.slide import SlideWidget
@@ -164,7 +165,7 @@ class SpielApp(App[None]):
         if (
             self.current_slide_idx == new_slide_idx
             or not isinstance(self.screen, SlideScreen)
-            or transition is Transition.Instant
+            or transition is None
             or not self.enable_transitions
         ):
             self.current_slide_idx = new_slide_idx
@@ -175,7 +176,7 @@ class SpielApp(App[None]):
             from_triggers=self.query_one(SlideWidget).triggers,
             to_slide=new_slide,
             direction=direction,
-            effect=transition,
+            transition=transition,
         )
         await self.switch_screen(transition_screen)
         transition_screen.animate(

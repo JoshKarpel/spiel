@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import inspect
 from dataclasses import dataclass, field
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Type
 
 from rich.console import RenderableType
 from rich.text import Text
 
-from spiel.constants import Transition
+from spiel.transition import Swipe, Transition
 from spiel.triggers import Triggers
 
 TRIGGERS = "triggers"
@@ -35,7 +35,7 @@ class Slide:
 
     bindings: Mapping[str, Callable[..., None]] = field(default_factory=dict)
 
-    transition: Transition | None = None
+    transition: Type[Transition] | None = Swipe
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)

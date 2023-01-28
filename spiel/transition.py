@@ -49,8 +49,8 @@ class Swipe(Transition):
     ) -> None:
         match direction:
             case Direction.Right:
-                from_widget.styles.offset = (f"-{progress:.1f}%", 0)
-                to_widget.styles.offset = (f"{100 - progress:.1f}%", 0)
+                from_widget.styles.offset = (f"-{progress:.2f}%", 0)
+                to_widget.styles.offset = (f"{100 - progress:.2f}%", 0)
             case Direction.Left:
-                from_widget.styles.offset = (f"{progress:.1f}%", 0)
-                to_widget.styles.offset = (f"-{100 - progress:.1f}%", 0)
+                from_widget.styles.offset = (f"{progress:.2f}%", 0)
+                to_widget.styles.offset = (f"-{100 - progress:.2f}%", 0)

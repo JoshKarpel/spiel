@@ -22,15 +22,19 @@ class SlideTransitionScreen(SpielScreen):
     }
 
     FixedSlideWidget#from {
-        layer: above
+        layer: above;
     }
 
     FixedSlideWidget#to {
-        layer: below
+        layer: below;
     }
 
     Footer {
-        layer: above
+        layer: above;
+    }
+
+    Footer#dummy {
+        layer: below;
     }
     """
     progress = reactive(0, init=False, layout=True)
@@ -65,6 +69,9 @@ class SlideTransitionScreen(SpielScreen):
         yield to_widget
 
         yield Footer()
+        yield Footer(
+            id="dummy"
+        )  # a dummy footer to hold space on the "below" layer, won't be displayed
 
     def watch_progress(self, new_progress: float) -> None:
         from_widget = self.query_one("#from")

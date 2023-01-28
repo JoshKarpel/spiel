@@ -183,7 +183,7 @@ class SpielApp(App[None]):
             "progress",
             value=100,
             delay=0,
-            duration=1,
+            duration=0.75,
             on_complete=lambda: self.finalize_transition(new_slide_idx),
         )
 

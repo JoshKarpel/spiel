@@ -40,7 +40,7 @@ class SlideWidget(SpielWidget):
         except Exception:
             self.add_class("error")
             et, ev, tr = sys.exc_info()
-            if et is None or ev is None or tr is None:
+            if et is None or ev is None or tr is None:  # pragma: unreachable
                 raise SpielException("Expected to be handling an exception, but wasn't.")
             return Panel(
                 Traceback.from_exception(

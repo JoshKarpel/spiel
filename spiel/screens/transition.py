@@ -7,7 +7,7 @@ from textual.reactive import reactive
 
 from spiel.screens.screen import SpielScreen
 from spiel.slide import Slide
-from spiel.transition import Direction, Transition
+from spiel.transitions.protocol import Direction, Transition
 from spiel.triggers import Triggers
 from spiel.widgets.fixed_slide import FixedSlideWidget
 from spiel.widgets.footer import Footer

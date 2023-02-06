@@ -5,7 +5,8 @@ from dataclasses import dataclass, field
 from typing import Type, overload
 
 from spiel.slide import Content, Slide
-from spiel.transition import Swipe, Transition
+from spiel.transitions.protocol import Transition
+from spiel.transitions.swipe import Swipe
 
 
 @dataclass

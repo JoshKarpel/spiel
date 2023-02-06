@@ -29,7 +29,7 @@ from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
 from spiel.screens.transition import SlideTransitionScreen
-from spiel.transition import Direction
+from spiel.transitions.protocol import Direction
 from spiel.triggers import Triggers
 from spiel.utils import clamp
 from spiel.widgets.slide import SlideWidget
@@ -221,7 +221,6 @@ class SpielApp(App[None]):
     @cached_property
     def repl(self) -> Callable[[], None]:
         # Lazily enable readline support
-        import readline  # nopycln: import
 
         self.console.clear()  # clear the console the first time we go into the repl
         sys.stdout.flush()

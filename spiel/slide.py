@@ -7,7 +7,8 @@ from typing import Callable, Mapping, Type
 from rich.console import RenderableType
 from rich.text import Text
 
-from spiel.transition import Swipe, Transition
+from spiel.transitions.protocol import Transition
+from spiel.transitions.swipe import Swipe
 from spiel.triggers import Triggers
 
 TRIGGERS = "triggers"

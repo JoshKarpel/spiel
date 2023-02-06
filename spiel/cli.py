@@ -135,6 +135,6 @@ def version(
     """
 
     if plain:
-        console.print(__version__, style=Style())
+        console.print(Text(__version__))
     else:
         console.print(DebugTable())

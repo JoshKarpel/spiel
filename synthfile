@@ -1,10 +1,10 @@
 tests:
-    @watch synth/ tests/
+    @watch spiel/ tests/
 
     pytest
 
 types:
-    @watch synth/ tests/
+    @watch spiel/ tests/
 
     mypy
 

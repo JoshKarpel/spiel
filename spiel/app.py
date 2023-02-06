@@ -149,10 +149,10 @@ class SpielApp(App[None]):
         self.set_timer(delay, clear)
 
     async def action_next_slide(self) -> None:
-        await self.handle_new_slide(self.current_slide_idx + 1, Direction.Right)
+        await self.handle_new_slide(self.current_slide_idx + 1, Direction.Next)
 
     async def action_prev_slide(self) -> None:
-        await self.handle_new_slide(self.current_slide_idx - 1, Direction.Left)
+        await self.handle_new_slide(self.current_slide_idx - 1, Direction.Previous)
 
     async def handle_new_slide(self, new_slide_idx: int, direction: Direction) -> None:
         new_slide_idx = clamp(new_slide_idx, 0, len(self.deck) - 1)

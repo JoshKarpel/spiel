@@ -18,7 +18,7 @@ Y = Scalar.parse("0", percent_unit=Unit.HEIGHT)
 @pytest.mark.parametrize(
     "direction, to_offset",
     [
-        (Direction.Right, ScalarOffset(Scalar.parse("100%"), Y)),
+        (Direction.Next, ScalarOffset(Scalar.parse("100%"), Y)),
     ],
 )
 def test_swipe_initialize(
@@ -37,43 +37,43 @@ def test_swipe_initialize(
     [
         (
             0,
-            Direction.Right,
+            Direction.Next,
             ScalarOffset(Scalar.parse("-0%"), Y),
             ScalarOffset(Scalar.parse("100%"), Y),
         ),
         (
             25,
-            Direction.Right,
+            Direction.Next,
             ScalarOffset(Scalar.parse("-25%"), Y),
             ScalarOffset(Scalar.parse("75%"), Y),
         ),
         (
             50,
-            Direction.Right,
+            Direction.Next,
             ScalarOffset(Scalar.parse("-50%"), Y),
             ScalarOffset(Scalar.parse("50%"), Y),
         ),
         (
             75,
-            Direction.Right,
+            Direction.Next,
             ScalarOffset(Scalar.parse("-75%"), Y),
             ScalarOffset(Scalar.parse("25%"), Y),
         ),
         (
             75.123,
-            Direction.Right,
+            Direction.Next,
             ScalarOffset(Scalar.parse("-75.12%"), Y),
             ScalarOffset(Scalar.parse("24.88%"), Y),
         ),
         (
             75.126,
-            Direction.Right,
+            Direction.Next,
             ScalarOffset(Scalar.parse("-75.13%"), Y),
             ScalarOffset(Scalar.parse("24.87%"), Y),
         ),
         (
             100,
-            Direction.Right,
+            Direction.Next,
             ScalarOffset(Scalar.parse("-100%"), Y),
             ScalarOffset(Scalar.parse("0%"), Y),
         ),
@@ -109,12 +109,12 @@ def test_swipe_progress_always_balances_for_right(
     to_widget: Widget,
     progress: float,
 ) -> None:
-    transition.initialize(from_widget=from_widget, to_widget=to_widget, direction=Direction.Right)
+    transition.initialize(from_widget=from_widget, to_widget=to_widget, direction=Direction.Next)
 
     transition.progress(
         from_widget=from_widget,
         to_widget=to_widget,
-        direction=Direction.Right,
+        direction=Direction.Next,
         progress=progress,
     )
 

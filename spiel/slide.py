@@ -25,7 +25,7 @@ class Slide:
     """The title of the `Slide`, which will be displayed in the footer."""
 
     content: Content = lambda: Text()
-    """
+    """\
     A callable that is invoked by Spiel to display the slide's content.
 
     The function may optionally take arguments with these names:
@@ -34,8 +34,20 @@ class Slide:
     """
 
     bindings: Mapping[str, Callable[..., None]] = field(default_factory=dict)
+    """\
+    A mapping of
+    [keys](https://textual.textualize.io/guide/input/#key)
+    to callables to be executed when those keys are pressed,
+    when on this slide.
+    """
 
     transition: Type[Transition] | None = Swipe
+    """\
+    The transition animation to use when moving to this slide.
+    Set to `None` to use the
+    [`Deck.default_transition`][spiel.Deck.default_transition]
+    of the deck this slide is in.
+    """
 
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)

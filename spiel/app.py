@@ -99,9 +99,9 @@ class SpielApp(App[None]):
         self.deck = load_deck(self.deck_path)
         self.reloader = asyncio.create_task(self.reload())
 
-        await self.install_screen(SlideScreen(), name="slide")
-        await self.install_screen(DeckScreen(), name="deck")
-        await self.install_screen(HelpScreen(), name="help")
+        self.install_screen(SlideScreen(), name="slide")
+        self.install_screen(DeckScreen(), name="deck")
+        self.install_screen(HelpScreen(), name="help")
         await self.push_screen("slide")
 
     async def reload(self) -> None:

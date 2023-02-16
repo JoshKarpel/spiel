@@ -42,7 +42,7 @@ python = ">=3.10,<4"
 rich = ">=13.2"
 typer = ">=0.6"
 pillow = ">=8"
-textual = "==0.9.1"
+textual = ">=0.11.0"
 watchfiles = ">=0.18"
 more-itertools = ">=9"
 
@@ -58,7 +58,7 @@ mypy = ">=1"
 mkdocs = ">=1.4"
 mkdocs-material = ">=9"
 mkdocstrings = {extras = ["python"], version = ">=0.19.0"}
-textual = {extras = ["dev"], version = "==0.9.1"}
+textual = {extras = ["dev"], version = ">=0.11.0"}
 
 [tool.poetry.scripts]
 spiel = 'spiel.cli:cli'

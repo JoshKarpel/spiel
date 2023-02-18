@@ -1,10 +1,10 @@
 tests:
-    @watch spiel/ tests/
+    @watch spiel/ tests/ docs/
 
     pytest
 
 types:
-    @watch spiel/ tests/
+    @watch spiel/ tests/ docs/
 
     mypy
 

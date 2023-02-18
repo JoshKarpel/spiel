@@ -24,7 +24,7 @@ class SlideWidget(SpielWidget):
     def on_mount(self) -> None:
         super().on_mount()
 
-        self.set_interval(1 / 60, self.update_triggers)
+        self.set_interval(self.app.slide_refresh_rate, self.update_triggers)
 
     def update_triggers(self) -> None:
         self.triggers = Triggers(now=monotonic(), _times=self.triggers._times)

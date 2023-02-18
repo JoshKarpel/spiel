@@ -5,13 +5,13 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import lists, sampled_from
 
-import spiel.constants
 from spiel.app import SpielApp
+from spiel.constants import DEMO_FILE
 
 
 @pytest.fixture
 def app() -> SpielApp:
-    return SpielApp(deck_path=spiel.constants.DEMO_FILE, enable_transitions=False)
+    return SpielApp(deck_path=DEMO_FILE, enable_transitions=False, slide_refresh_rate=1 / 10)
 
 
 KEYS = [
@@ -30,7 +30,7 @@ KEYS = [
 @pytest.mark.slow
 @given(keys=lists(elements=sampled_from(KEYS), max_size=100))
 async def test_hammer_on_the_keyboard_long_random(keys: Iterable[str]) -> None:
-    app = SpielApp(deck_path=spiel.constants.DEMO_FILE, enable_transitions=False)
+    app = SpielApp(deck_path=DEMO_FILE, enable_transitions=False)
     async with app.run_test() as pilot:
         await pilot.press(*keys)
 

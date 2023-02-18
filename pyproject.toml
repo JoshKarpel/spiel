@@ -75,7 +75,7 @@ line_length = 100
 all = true
 
 [tool.pytest.ini_options]
-addopts = ["--strict-markers", "-n", "auto"]
+addopts = ["--strict-markers", "-n", "4"]
 testpaths = ["tests", "spiel", "docs"]
 
 markers = ["slow"]

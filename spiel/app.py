@@ -85,6 +85,7 @@ class SpielApp(App[None]):
         show_messages: bool = True,
         fixed_time: datetime.datetime | None = None,
         enable_transitions: bool = True,
+        slide_refresh_rate: float = 1 / 60,
     ):
         super().__init__()
 
@@ -94,6 +95,7 @@ class SpielApp(App[None]):
         self.show_messages = show_messages
         self.fixed_time = fixed_time
         self.enable_transitions = enable_transitions
+        self.slide_refresh_rate = slide_refresh_rate
 
     async def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)

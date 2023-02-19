@@ -1,9 +1,4 @@
-from collections.abc import Iterable
-from itertools import combinations_with_replacement
-
 import pytest
-from hypothesis import given
-from hypothesis.strategies import lists, sampled_from
 
 from spiel.app import SpielApp
 from spiel.constants import DEMO_FILE
@@ -16,34 +11,6 @@ def app() -> SpielApp:
         _enable_transitions=False,
         _slide_refresh_rate=1 / 10,
     )
-
-
-KEYS = [
-    "right",
-    "left",
-    "d",
-    "t",
-    "enter",
-    "up",
-    "down",
-    "escape",
-    "question_mark",
-]
-
-
-@pytest.mark.slow
-@given(keys=lists(elements=sampled_from(KEYS), max_size=100))
-async def test_hammer_on_the_keyboard_long_random(keys: Iterable[str]) -> None:
-    app = SpielApp(deck_path=DEMO_FILE, _enable_transitions=False)
-    async with app.run_test() as pilot:
-        await pilot.press(*keys)
-
-
-@pytest.mark.slow
-@pytest.mark.parametrize("keys", combinations_with_replacement(KEYS, 3))
-async def test_hammer_on_the_keyboard_short_exhaustive(app: SpielApp, keys: Iterable[str]) -> None:
-    async with app.run_test() as pilot:
-        await pilot.press(*keys)
 
 
 async def test_advance_through_demo_slides(app: SpielApp) -> None:

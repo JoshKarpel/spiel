@@ -225,6 +225,10 @@ class SpielApp(App[None]):
     @cached_property
     def repl(self) -> Callable[[], None]:
         # Lazily enable readline support
+        try:
+            import readline  # nopycln: import
+        except ImportError:
+            pass
 
         self.console.clear()  # clear the console the first time we go into the repl
         sys.stdout.flush()

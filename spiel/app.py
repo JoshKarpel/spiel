@@ -28,6 +28,8 @@ from spiel.exceptions import NoDeckFound
 from spiel.screens.deck import DeckScreen
 from spiel.screens.help import HelpScreen
 from spiel.screens.slide import SlideScreen
+from spiel.screens.transition import SlideTransitionScreen
+from spiel.transitions.protocol import Direction
 from spiel.triggers import Triggers
 from spiel.utils import clamp
 from spiel.widgets.slide import SlideWidget
@@ -80,24 +82,30 @@ class SpielApp(App[None]):
         self,
         deck_path: Path,
         watch_path: Path | None = None,
-        show_messages: bool = True,
-        fixed_time: datetime.datetime | None = None,
+        _show_messages: bool = True,
+        _fixed_time: datetime.datetime | None = None,
+        _fixed_triggers: Triggers | None = None,
+        _enable_transitions: bool = True,
+        _slide_refresh_rate: float = 1 / 60,
     ):
         super().__init__()
 
         self.deck_path = deck_path
         self.watch_path = watch_path
 
-        self.show_messages = show_messages
-        self.fixed_time = fixed_time
+        self.show_messages = _show_messages
+        self.fixed_time = _fixed_time
+        self.fixed_triggers = _fixed_triggers
+        self.enable_transitions = _enable_transitions
+        self.slide_refresh_rate = _slide_refresh_rate
 
     async def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)
         self.reloader = asyncio.create_task(self.reload())
 
-        await self.install_screen(SlideScreen(), name="slide")
-        await self.install_screen(DeckScreen(), name="deck")
-        await self.install_screen(HelpScreen(), name="help")
+        self.install_screen(SlideScreen(), name="slide")
+        self.install_screen(DeckScreen(), name="deck")
+        self.install_screen(HelpScreen(), name="help")
         await self.push_screen("slide")
 
     async def reload(self) -> None:
@@ -144,11 +152,49 @@ class SpielApp(App[None]):
 
         self.set_timer(delay, clear)
 
-    def action_next_slide(self) -> None:
-        self.current_slide_idx = clamp(self.current_slide_idx + 1, 0, len(self.deck) - 1)
+    async def action_next_slide(self) -> None:
+        await self.handle_new_slide(self.current_slide_idx + 1, Direction.Next)
 
-    def action_prev_slide(self) -> None:
-        self.current_slide_idx = clamp(self.current_slide_idx - 1, 0, len(self.deck) - 1)
+    async def action_prev_slide(self) -> None:
+        await self.handle_new_slide(self.current_slide_idx - 1, Direction.Previous)
+
+    async def handle_new_slide(self, new_slide_idx: int, direction: Direction) -> None:
+        new_slide_idx = clamp(new_slide_idx, 0, len(self.deck) - 1)
+
+        current_slide = self.deck[self.current_slide_idx]
+        new_slide = self.deck[new_slide_idx]
+
+        transition = new_slide.transition or self.deck.default_transition
+
+        if (
+            self.current_slide_idx == new_slide_idx
+            or not isinstance(self.screen, SlideScreen)
+            or transition is None
+            or not self.enable_transitions
+        ):
+            self.current_slide_idx = new_slide_idx
+            return
+
+        transition_screen = SlideTransitionScreen(
+            from_slide=current_slide,
+            from_triggers=self.query_one(SlideWidget).triggers,
+            to_slide=new_slide,
+            direction=direction,
+            transition=transition,
+        )
+        await self.switch_screen(transition_screen)
+        transition_screen.animate(
+            "progress",
+            value=100,
+            delay=0,
+            duration=0.75,
+            on_complete=lambda: self.finalize_transition(new_slide_idx),
+        )
+
+    async def finalize_transition(self, new_slide_idx: int) -> None:
+        await self.switch_screen("slide")
+
+        self.current_slide_idx = new_slide_idx
 
     def action_next_row(self) -> None:
         self.current_slide_idx = clamp(
@@ -164,7 +210,7 @@ class SpielApp(App[None]):
         self.title = new_deck.name
 
     def watch_current_slide_idx(self, new_current_slide_idx: int) -> None:
-        self.query_one(SlideWidget).triggers = Triggers.new()
+        self.query_one(SlideWidget).triggers = self.fixed_triggers or Triggers.new()
         self.sub_title = self.deck[new_current_slide_idx].title
 
     def action_trigger(self) -> None:
@@ -179,7 +225,10 @@ class SpielApp(App[None]):
     @cached_property
     def repl(self) -> Callable[[], None]:
         # Lazily enable readline support
-        import readline  # nopycln: import
+        try:
+            import readline  # nopycln: import
+        except ImportError:
+            pass
 
         self.console.clear()  # clear the console the first time we go into the repl
         sys.stdout.flush()
@@ -203,7 +252,6 @@ class SpielApp(App[None]):
 
         if driver is not None:
             driver.stop_application_mode()
-            driver.exit_event.clear()  # type: ignore[attr-defined]
             with redirect_stdout(sys.__stdout__), redirect_stderr(sys.__stderr__):
                 yield
             driver.start_application_mode()

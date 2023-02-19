@@ -59,77 +59,6 @@ def _present(
     present(deck_path=path, watch_path=watch)
 
 
-@cli.command()
-def init(
-    path: Path = Argument(
-        ...,
-        writable=True,
-        resolve_path=True,
-        help="The path to create a new deck script at.",
-    )
-) -> None:
-    """
-    Create a new deck script at the given path from a basic template.
-
-    This is a good starting point if you already know what you want to do.
-    If you're not so sure, consider taking a look at the demo deck to see what's possible:
-        $ spiel demo --help
-    """
-    console = Console()
-
-    if path.exists():
-        console.print(
-            Text(f"Error: {path} already exists, refusing to overwrite.", style=Style(color="red"))
-        )
-        raise Exit(code=1)
-
-    name = path.stem.replace("_", " ").title()
-
-    try:
-        path.parent.mkdir(parents=True, exist_ok=True)
-    except Exception as e:
-        console.print(
-            Text(
-                f"Error: was not able to ensure that the parent directory {path.parent} exists due to: {e}.",
-                style=Style(color="red"),
-            )
-        )
-        raise Exit(code=1)
-
-    try:
-        path.write_text(
-            dedent(
-                f"""\
-                from textwrap import dedent
-                from spiel import Deck
-
-
-                deck = Deck(name="{name}")
-
-                @deck.slide(title="Title")
-                def title():
-                    markup = dedent(
-                        \"""\\
-                        # {name}
-                        This is your title slide!
-                        \"""
-                    )
-                    return Markdown(markup, justify="center")
-                """
-            )
-        )
-    except Exception as e:
-        console.print(
-            Text(
-                f"Error: was not able to write template to {path} due to: {e}",
-                style=Style(color="red"),
-            )
-        )
-        raise Exit(code=1)
-
-    console.print(Text(f"Wrote deck template to {path}", style=Style(color="green")))
-
-
 demo = Typer(
     name="demo",
     no_args_is_help=True,
@@ -206,6 +135,6 @@ def version(
     """
 
     if plain:
-        console.print(__version__, style=Style())
+        console.print(Text(__version__))
     else:
         console.print(DebugTable())

@@ -28,10 +28,9 @@ To set up a local development environment after cloning the repository:
 
 ### Running Tests and Type-Checking
 
-Use `pytest` to run tests.
+Run `pytest` to run tests.
 
-Types will automatically be checked as part of the test suite run;
-`mypy` can also be run standalone.
+Run `mypy` to check types.
 
 ### Building the Docs Locally
 

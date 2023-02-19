@@ -17,6 +17,7 @@ jobs:
       run:
         shell: bash
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 15
     env:
       PLATFORM: ${{ matrix.platform }}
       PYTHON_VERSION: ${{ matrix.python-version }}
@@ -38,6 +39,8 @@ jobs:
         run: poetry run pre-commit run --all-files --show-diff-on-failure --color=always
       - name: Make sure we can build the package
         run: poetry build -vvv
+      - name: Test types
+        run: poetry run mypy
       - name: Test code
         run: poetry run pytest -v --cov --cov-report=xml --durations=20
       - name: Test docs

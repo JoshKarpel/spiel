@@ -22,7 +22,7 @@ def runner() -> CliRunner:
 
 @pytest.fixture
 def three_slide_deck() -> Deck:
-    deck = Deck(name="three-slides")
+    deck = Deck(name="three-slides", default_transition=None)
     deck.add_slides(Slide(), Slide(), Slide())
     return deck
 

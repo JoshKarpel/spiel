@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import overload
+from typing import Type, overload
 
 from spiel.slide import Content, Slide
+from spiel.transitions.protocol import Transition
+from spiel.transitions.swipe import Swipe
 
 
 @dataclass
@@ -14,7 +16,15 @@ class Deck(Sequence[Slide]):
     """
 
     name: str
-    """The name of the `Deck`/presentation, which will be displayed in the footer."""
+    """The name of the [`Deck`][spiel.Deck], which will be displayed in the footer."""
+
+    default_transition: Type[Transition] | None = Swipe
+    """\
+    The default slide transition animation;
+    used if the slide being moved to does not specify its own transition.
+    Defaults to the [`Swipe`][spiel.Swipe] transition.
+    Set to `None` for no transition animation.
+    """
 
     _slides: list[Slide] = field(default_factory=list)
 
@@ -22,10 +32,11 @@ class Deck(Sequence[Slide]):
         self,
         title: str = "",
         bindings: Mapping[str, Callable[..., None]] | None = None,
+        transition: Type[Transition] | None = None,
     ) -> Callable[[Content], Content]:
         """
         A decorator that creates a new slide in the deck,
-        with the decorated function as the `Slide`'s `content`.
+        with the decorated function as the [`Slide.content`][spiel.Slide.content].
 
         Args:
             title: The title to display for the slide.
@@ -33,6 +44,10 @@ class Deck(Sequence[Slide]):
                 [keys](https://textual.textualize.io/guide/input/#key)
                 to callables to be executed when those keys are pressed,
                 when on this slide.
+            transition: The transition animation to use when moving to this slide.
+                Set to `None` to use the
+                [`Deck.default_transition`][spiel.Deck.default_transition]
+                of the deck this slide is in.
         """
 
         def slideify(content: Content) -> Content:
@@ -41,6 +56,7 @@ class Deck(Sequence[Slide]):
                     title=title,
                     content=content,
                     bindings=bindings or {},
+                    transition=transition,
                 )
             )
             return content

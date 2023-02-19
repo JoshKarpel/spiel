@@ -4,6 +4,10 @@
 
 *Unreleased*
 
+### Added
+
+- [#207](https://github.com/JoshKarpel/spiel/pull/207) Add a default "swipe" transition between slides and support for user-defined transitions.
+
 ## `0.4.6`
 
 Released `2023-01-19`

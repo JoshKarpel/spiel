@@ -1,0 +1,14 @@
+tests:
+    @watch spiel/ tests/ docs/
+
+    pytest
+
+types:
+    @watch spiel/ tests/ docs/
+
+    mypy
+
+docs:
+    @restart
+
+    mkdocs serve --strict

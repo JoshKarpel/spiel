@@ -14,8 +14,9 @@ from rich.console import Console
 from textual.app import App
 from textual.pilot import Pilot
 
-import spiel.constants
 from spiel.app import SpielApp
+from spiel.constants import DEMO_FILE
+from spiel.triggers import Triggers
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = ROOT_DIR / "docs" / "assets"
@@ -52,15 +53,22 @@ async def auto_pilot(pilot: Pilot[object], name: str, keys: Iterable[str]) -> No
     await pilot.app.action_quit()
 
 
-def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Iterable[str]) -> str:
+def take_screenshot(
+    name: str,
+    deck_file: Path,
+    size: tuple[int, int],
+    keys: Iterable[str],
+    triggers: Triggers,
+) -> str:
     print(f"Generating {name}")
 
     SpielApp(
         deck_path=deck_file,
         watch_path=deck_file.parent,
-        show_messages=False,
-        fixed_time=datetime(year=2022, month=12, day=17, hour=15, minute=31, second=42),
-        enable_transitions=False,
+        _show_messages=False,
+        _fixed_time=datetime(year=2022, month=12, day=17, hour=15, minute=31, second=42),
+        _fixed_triggers=triggers,
+        _enable_transitions=False,
     ).run(
         headless=True,
         auto_pilot=partial(auto_pilot, name=name, keys=keys),
@@ -73,12 +81,14 @@ def take_screenshot(name: str, deck_file: Path, size: tuple[int, int], keys: Ite
 if __name__ == "__main__":
     start_time = monotonic()
 
-    demo_deck = spiel.constants.DEMO_FILE
+    demo_deck = DEMO_FILE
     quickstart_deck = ROOT_DIR / "docs" / "examples" / "quickstart.py"
     slide_via_decorator = ROOT_DIR / "docs" / "examples" / "slide_via_decorator.py"
     slide_loop = ROOT_DIR / "docs" / "examples" / "slide_loop.py"
     triggers_reveal = ROOT_DIR / "docs" / "examples" / "triggers_reveal.py"
     triggers_animation = ROOT_DIR / "docs" / "examples" / "triggers_animation.py"
+
+    triggers = Triggers(now=0, _times=(0,))
 
     with ProcessPoolExecutor() as pool:
         futures = [
@@ -88,27 +98,31 @@ if __name__ == "__main__":
                 deck_file=triggers_animation,
                 size=(70, 15),
                 keys=(),
+                triggers=Triggers(now=0, _times=(0,)),
             ),
             pool.submit(
                 take_screenshot,
                 name="triggers_animation_2",
                 deck_file=triggers_animation,
                 size=(70, 15),
-                keys=("wait:1450",),
+                keys=(),
+                triggers=Triggers(now=1.5, _times=(0,)),
             ),
             pool.submit(
                 take_screenshot,
                 name="triggers_animation_3",
                 deck_file=triggers_animation,
                 size=(70, 15),
-                keys=("wait:2950",),
+                keys=(),
+                triggers=Triggers(now=2.5, _times=(0,)),
             ),
             pool.submit(
                 take_screenshot,
                 name="triggers_animation_4",
                 deck_file=triggers_animation,
                 size=(70, 15),
-                keys=("wait:5450",),
+                keys=(),
+                triggers=Triggers(now=5.5, _times=(0,)),
             ),
             pool.submit(
                 take_screenshot,
@@ -116,6 +130,7 @@ if __name__ == "__main__":
                 deck_file=demo_deck,
                 size=(130, 35),
                 keys=(),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -123,6 +138,7 @@ if __name__ == "__main__":
                 deck_file=demo_deck,
                 size=(135, 40),
                 keys=("d", "right", "down"),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -130,6 +146,7 @@ if __name__ == "__main__":
                 deck_file=demo_deck,
                 size=(110, 35),
                 keys=("?",),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -137,6 +154,7 @@ if __name__ == "__main__":
                 deck_file=quickstart_deck,
                 size=(70, 20),
                 keys=(),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -144,6 +162,7 @@ if __name__ == "__main__":
                 deck_file=demo_deck,
                 size=(140, 45),
                 keys=("right",),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -151,6 +170,7 @@ if __name__ == "__main__":
                 deck_file=slide_via_decorator,
                 size=(60, 15),
                 keys=(),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -158,6 +178,7 @@ if __name__ == "__main__":
                 deck_file=slide_loop,
                 size=(60, 15),
                 keys=(),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -165,6 +186,7 @@ if __name__ == "__main__":
                 deck_file=slide_loop,
                 size=(60, 15),
                 keys=("right",),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -172,6 +194,7 @@ if __name__ == "__main__":
                 deck_file=slide_loop,
                 size=(60, 15),
                 keys=("right", "right"),
+                triggers=triggers,
             ),
             pool.submit(
                 take_screenshot,
@@ -179,20 +202,23 @@ if __name__ == "__main__":
                 deck_file=triggers_reveal,
                 size=(70, 15),
                 keys=(),
+                triggers=Triggers(now=0, _times=(0,)),
             ),
             pool.submit(
                 take_screenshot,
                 name="triggers_reveal_2",
                 deck_file=triggers_reveal,
                 size=(70, 15),
-                keys=("t",),
+                keys=(),
+                triggers=Triggers(now=1, _times=(0, 1)),
             ),
             pool.submit(
                 take_screenshot,
                 name="triggers_reveal_3",
                 deck_file=triggers_reveal,
                 size=(70, 15),
-                keys=("t", "t"),
+                keys=(),
+                triggers=Triggers(now=2, _times=(0, 1, 2)),
             ),
         ]
 

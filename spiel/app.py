@@ -82,20 +82,22 @@ class SpielApp(App[None]):
         self,
         deck_path: Path,
         watch_path: Path | None = None,
-        show_messages: bool = True,
-        fixed_time: datetime.datetime | None = None,
-        enable_transitions: bool = True,
-        slide_refresh_rate: float = 1 / 60,
+        _show_messages: bool = True,
+        _fixed_time: datetime.datetime | None = None,
+        _fixed_triggers: Triggers | None = None,
+        _enable_transitions: bool = True,
+        _slide_refresh_rate: float = 1 / 60,
     ):
         super().__init__()
 
         self.deck_path = deck_path
         self.watch_path = watch_path
 
-        self.show_messages = show_messages
-        self.fixed_time = fixed_time
-        self.enable_transitions = enable_transitions
-        self.slide_refresh_rate = slide_refresh_rate
+        self.show_messages = _show_messages
+        self.fixed_time = _fixed_time
+        self.fixed_triggers = _fixed_triggers
+        self.enable_transitions = _enable_transitions
+        self.slide_refresh_rate = _slide_refresh_rate
 
     async def on_mount(self) -> None:
         self.deck = load_deck(self.deck_path)
@@ -208,7 +210,7 @@ class SpielApp(App[None]):
         self.title = new_deck.name
 
     def watch_current_slide_idx(self, new_current_slide_idx: int) -> None:
-        self.query_one(SlideWidget).triggers = Triggers.new()
+        self.query_one(SlideWidget).triggers = self.fixed_triggers or Triggers.new()
         self.sub_title = self.deck[new_current_slide_idx].title
 
     def action_trigger(self) -> None:

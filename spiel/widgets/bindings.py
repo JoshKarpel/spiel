@@ -21,7 +21,7 @@ class AppBindingsTableWidget(SpielWidget):
         table = Table(
             Column("Key", justify="left"),
             Column("Description", justify="left"),
-            title=f"All Views",
+            title="All Views",
         )
 
         for binding in self.app.BINDINGS:

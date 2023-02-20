@@ -101,3 +101,8 @@ warn_unreachable = true
 warn_redundant_casts = true
 
 ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+
+ignore = ["E501", "E731"]

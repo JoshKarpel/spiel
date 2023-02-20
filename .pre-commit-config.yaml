@@ -32,15 +32,10 @@ repos:
       - id: check-github-workflows
       - id: check-github-actions
       - id: check-dependabot
-  - repo: https://github.com/hadialqattan/pycln
-    rev: v2.1.3
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.248'
     hooks:
-      - id: pycln
-        args: [--config=pyproject.toml]
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
+      - id: ruff
   - repo: https://github.com/psf/black
     rev: 23.1.0
     hooks:

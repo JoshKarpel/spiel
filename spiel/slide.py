@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import inspect
 from dataclasses import dataclass, field
-from typing import Callable, Mapping, Type
+from typing import Callable, Mapping, MutableMapping, Type
 
 from rich.console import RenderableType
 from rich.text import Text
@@ -12,6 +12,7 @@ from spiel.transitions.swipe import Swipe
 from spiel.triggers import Triggers
 
 TRIGGERS = "triggers"
+EXAMPLES = "examples"
 
 Content = Callable[..., RenderableType]
 
@@ -50,11 +51,16 @@ class Slide:
     of the deck this slide is in.
     """
 
+    examples: MutableMapping[str, Callable[[], None]] = field(default_factory=dict)
+
     def render(self, triggers: Triggers) -> RenderableType:
         signature = inspect.signature(self.content)
 
         kwargs: dict[str, object] = {}
         if TRIGGERS in signature.parameters:
             kwargs[TRIGGERS] = triggers
+
+        if EXAMPLES in signature.parameters:
+            kwargs[EXAMPLES] = self.examples
 
         return self.content(**kwargs)

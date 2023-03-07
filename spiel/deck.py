@@ -4,6 +4,7 @@ from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Type, overload
 
+from spiel.example import Example
 from spiel.slide import Content, Slide
 from spiel.transitions.protocol import Transition
 from spiel.transitions.swipe import Swipe
@@ -32,6 +33,7 @@ class Deck(Sequence[Slide]):
         self,
         title: str = "",
         bindings: Mapping[str, Callable[..., None]] | None = None,
+        examples: Mapping[str, Example] | None = None,
         transition: Type[Transition] | None = None,
     ) -> Callable[[Content], Content]:
         """
@@ -56,6 +58,7 @@ class Deck(Sequence[Slide]):
                     title=title,
                     content=content,
                     bindings=bindings or {},
+                    examples=examples or {},
                     transition=transition,
                 )
             )

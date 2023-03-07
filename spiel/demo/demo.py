@@ -3,7 +3,7 @@
 import inspect
 import shutil
 import socket
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Iterator, Mapping
 from datetime import datetime
 from math import cos, floor, pi
 from pathlib import Path
@@ -22,7 +22,7 @@ from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
 
-from spiel import Slide, SuspendType, Triggers, present
+from spiel import Example, Slide, SuspendType, Triggers, example, present
 from spiel.deck import Deck
 from spiel.renderables.image import Image
 
@@ -39,6 +39,24 @@ THIS_DIR = THIS_FILE.parent
 
 def pad_markdown(markup: str) -> RenderableType:
     return Padding(Markdown(dedent(markup), justify="center"), pad=(0, 5))
+
+
+@example(name="foo")
+def foo():
+    print("foo")
+
+
+@deck.slide(title="Executable Examples", examples={"foo": foo})
+def examples(triggers: Triggers, examples: Mapping[str, Example]) -> RenderableType:
+    e = examples["foo"]
+
+    if triggers.triggered:
+        e.run()
+
+    return Group(
+        Align.center(e.source_panel()),
+        Align.center(e.results_panel()),
+    )
 
 
 @deck.slide(title="What is Spiel?")

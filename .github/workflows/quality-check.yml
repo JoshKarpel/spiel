@@ -46,7 +46,7 @@ jobs:
       - name: Test docs
         run: poetry run mkdocs build --clean --strict --verbose
       - name: Upload coverage
-        uses: codecov/codecov-action@v3.1.1
+        uses: codecov/codecov-action@v3.1.3
         with:
           env_vars: PLATFORM,PYTHON_VERSION
           fail_ci_if_error: false

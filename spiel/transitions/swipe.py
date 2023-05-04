@@ -18,7 +18,11 @@ class Swipe(Transition):
         to_widget: Widget,
         direction: Direction,
     ) -> None:
-        to_widget.styles.offset = ("100%" if direction is Direction.Next else "-100%", 0)
+        match direction:
+            case Direction.Next:
+                to_widget.styles.offset = ("100%", 0)
+            case Direction.Previous:
+                to_widget.styles.offset = ("-100%", 0)
 
     def progress(
         self,

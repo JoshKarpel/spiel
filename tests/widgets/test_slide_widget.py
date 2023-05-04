@@ -17,7 +17,7 @@ def slide(request: FixtureRequest) -> Slide:
     return Slide(content=content)
 
 
-@pytest.fixture
+@pytest.fixture()
 def error_slide() -> Slide:
     def content() -> RenderableType:
         raise Exception()
@@ -25,7 +25,7 @@ def error_slide() -> Slide:
     return Slide(content=content)
 
 
-@pytest.fixture
+@pytest.fixture()
 def unrenderable_slide() -> Slide:
     def content() -> None:
         return None

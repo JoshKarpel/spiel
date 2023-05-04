@@ -8,7 +8,7 @@ from spiel.utils import filter_join
 
 
 @pytest.mark.parametrize(
-    "joiner, items, expected",
+    ("joiner", "items", "expected"),
     [
         (".", ["a", "b"], "a.b"),
         (".", ("a", "b"), "a.b"),

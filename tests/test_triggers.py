@@ -8,7 +8,7 @@ from spiel import Triggers
 
 
 @pytest.mark.parametrize(
-    "triggers, expected",
+    ("triggers", "expected"),
     [
         (Triggers(_times=(0,), now=0), 1),
         (Triggers(_times=(0, 1), now=1), 2),
@@ -20,7 +20,7 @@ def test_length(triggers: Triggers, expected: int) -> None:
 
 
 @pytest.mark.parametrize(
-    "triggers, idx, expected",
+    ("triggers", "idx", "expected"),
     [
         (Triggers(_times=(0, 1), now=1), 0, 0),
         (Triggers(_times=(0, 1), now=1), 1, 1),
@@ -62,7 +62,7 @@ def test_iter(triggers: Triggers) -> None:
 
 
 @pytest.mark.parametrize(
-    "triggers, expected",
+    ("triggers", "expected"),
     [
         (Triggers(_times=(0, 1), now=5), 4),
         (Triggers(_times=(0, 1), now=1), 0),
@@ -74,7 +74,7 @@ def test_time_since_last_trigger(triggers: Triggers, expected: float) -> None:
 
 
 @pytest.mark.parametrize(
-    "triggers, expected",
+    ("triggers", "expected"),
     [
         (Triggers(_times=(0, 1), now=5), 5),
         (Triggers(_times=(0, 1), now=1), 1),
@@ -87,7 +87,7 @@ def test_time_since_first_trigger(triggers: Triggers, expected: float) -> None:
 
 
 @pytest.mark.parametrize(
-    "triggers, expected",
+    ("triggers", "expected"),
     [
         (Triggers(_times=(0,), now=0), False),
         (Triggers(_times=(0, 1), now=1), True),
@@ -98,7 +98,7 @@ def test_triggered(triggers: Triggers, expected: bool) -> None:
 
 
 @pytest.mark.parametrize(
-    "times, now",
+    ("times", "now"),
     [
         ((), 0),  # no times
         ((0,), -1),  # now before last time
@@ -111,7 +111,7 @@ def test_invalid_triggers(times: tuple[float], now: float) -> None:
 
 
 @pytest.mark.parametrize(
-    "triggers, offset, expected",
+    ("triggers", "offset", "expected"),
     [
         (Triggers(_times=(0,), now=1000), 1, []),
         (Triggers(_times=(0,), now=1000), 0, [0]),

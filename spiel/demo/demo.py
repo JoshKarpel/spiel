@@ -26,7 +26,7 @@ from spiel import Slide, SuspendType, Triggers, present
 from spiel.deck import Deck
 from spiel.renderables.image import Image
 
-deck = Deck(name=f"Spiel Demo Deck")
+deck = Deck(name="Spiel Demo Deck")
 
 SPIEL = "[Spiel](https://github.com/JoshKarpel/spiel)"
 RICH = "[Rich](https://rich.readthedocs.io/)"
@@ -80,7 +80,7 @@ def what() -> RenderableType:
     )
 
     lower_left = pad_markdown(
-        f"""\
+        """\
         ## Contributing
 
         Please report bugs via [GitHub Issues](https://github.com/JoshKarpel/spiel/issues).
@@ -92,7 +92,7 @@ def what() -> RenderableType:
     )
 
     lower_right = pad_markdown(
-        f"""\
+        """\
         ## Inspirations
 
         Brandon Rhodes' [PyCon 2017](https://youtu.be/66P5FMkWoVU) and [North Bay Python 2017](https://youtu.be/rrMnmLyYjU8) talks.
@@ -178,7 +178,7 @@ def dynamic() -> RenderableType:
     return Group(
         Align.center(
             pad_markdown(
-                f"""\
+                """\
                 ## Slides can have dynamic content!
 
                 Since slides are created using normal Python code,
@@ -318,7 +318,7 @@ def bullets(triggers: Triggers) -> RenderableType:
     )
 
     info_lower = pad_markdown(
-        f"""\
+        """\
         Trigger this slide (press `t`) a few times to reveal some content.
         Press `r` to hide the content again (by resetting the trigger state).
         """
@@ -481,7 +481,7 @@ def bindings() -> RenderableType:
     )
 
     info_lower = pad_markdown(
-        f"""\
+        """\
         Try pressing `e`!
 
         Due to reloading, any changes you make will be reflected in the
@@ -499,7 +499,7 @@ class DemoRenderFailure(Exception):
 @deck.slide(title="Render Failure")
 def failure() -> RenderableType:
     raise DemoRenderFailure(
-        f"""Woops!
+        """Woops!
 
         An exception was raised while rendering this slide.
 

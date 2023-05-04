@@ -11,6 +11,7 @@ from time import monotonic
 
 from more_itertools import intersperse
 from rich.console import Console
+from rich.text import Text
 from textual.app import App
 from textual.pilot import Pilot
 
@@ -24,6 +25,8 @@ ASSETS_DIR = ROOT_DIR / "docs" / "assets"
 # lie to Rich to make sure the screenshots are always generated in full color
 os.environ["TERMCOLOR"] = "truecolor"
 
+console = Console()
+
 
 def take_reproducible_screenshot(app: App[object]) -> str:
     """
@@ -31,7 +34,7 @@ def take_reproducible_screenshot(app: App[object]) -> str:
     so this little shim just reproduces the internals of Textual's methods with more control.
     """
     width, height = app.size
-    console = Console(
+    renderer = Console(
         width=width,
         height=height,
         file=StringIO(),
@@ -41,8 +44,8 @@ def take_reproducible_screenshot(app: App[object]) -> str:
         legacy_windows=False,
     )
     screen_render = app.screen._compositor.render(full=True)
-    console.print(screen_render)
-    return console.export_svg(title=app.title, unique_id="spieldocs")
+    renderer.print(screen_render)
+    return renderer.export_svg(title=app.title, unique_id="spieldocs")
 
 
 async def auto_pilot(pilot: Pilot[object], name: str, keys: Iterable[str]) -> None:
@@ -60,7 +63,7 @@ def take_screenshot(
     keys: Iterable[str],
     triggers: Triggers,
 ) -> str:
-    print(f"Generating {name}")
+    console.print(Text.from_markup(f":camera: Generating [bold cyan]{name}[/bold cyan] ..."))
 
     SpielApp(
         deck_path=deck_file,
@@ -223,8 +226,16 @@ if __name__ == "__main__":
         ]
 
         for future in as_completed(futures, timeout=60):
-            print(f"Generated {future.result()}")
+            console.print(
+                Text.from_markup(
+                    f":camera_with_flash: Generated [bold cyan]{future.result()}[/bold cyan]"
+                )
+            )
 
     end_time = monotonic()
 
-    print(f"Generated {len(futures)} screenshots in {end_time - start_time:0.2f} seconds")
+    console.print(
+        Text.from_markup(
+            f"Generated [green]{len(futures)}[/green] screenshots in [green]{end_time - start_time:0.2f}[/green] seconds"
+        )
+    )

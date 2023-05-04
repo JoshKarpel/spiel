@@ -7,7 +7,7 @@ from textual.widget import Widget
 from spiel import Direction, Swipe, Transition
 
 
-@pytest.fixture
+@pytest.fixture()
 def transition() -> Swipe:
     return Swipe()
 
@@ -16,7 +16,7 @@ Y = Scalar.parse("0", percent_unit=Unit.HEIGHT)
 
 
 @pytest.mark.parametrize(
-    "direction, to_offset",
+    ("direction", "to_offset"),
     [
         (Direction.Next, ScalarOffset(Scalar.parse("100%"), Y)),
     ],
@@ -33,7 +33,7 @@ def test_swipe_initialize(
 
 
 @pytest.mark.parametrize(
-    "progress, direction, from_offset, to_offset",
+    ("progress", "direction", "from_offset", "to_offset"),
     [
         (
             0,

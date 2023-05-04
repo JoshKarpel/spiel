@@ -15,24 +15,24 @@ settings.register_profile("default", deadline=None)
 settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
 
 
-@pytest.fixture
+@pytest.fixture()
 def runner() -> CliRunner:
     return CliRunner()
 
 
-@pytest.fixture
+@pytest.fixture()
 def three_slide_deck() -> Deck:
     deck = Deck(name="three-slides", default_transition=None)
     deck.add_slides(Slide(), Slide(), Slide())
     return deck
 
 
-@pytest.fixture
+@pytest.fixture()
 def output() -> StringIO:
     return StringIO()
 
 
-@pytest.fixture
+@pytest.fixture()
 def console(output: StringIO) -> Console:
     return Console(
         file=output,
@@ -41,7 +41,7 @@ def console(output: StringIO) -> Console:
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def empty_deck_source() -> str:
     return dedent(
         f"""\
@@ -52,7 +52,7 @@ def empty_deck_source() -> str:
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def empty_file(tmp_path: Path) -> Path:
     file = tmp_path / "test_deck.py"
 
@@ -61,7 +61,7 @@ def empty_file(tmp_path: Path) -> Path:
     return file
 
 
-@pytest.fixture
+@pytest.fixture()
 def file_with_empty_deck(empty_file: Path, empty_deck_source: str) -> Path:
     empty_file.write_text(empty_deck_source)
 

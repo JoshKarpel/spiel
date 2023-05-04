@@ -46,7 +46,7 @@ class SlideTransitionScreen(SpielScreen):
         to_slide: Slide,
         transition: Type[Transition],
         direction: Direction,
-    ):
+    ) -> None:
         super().__init__()
 
         self.from_slide = from_slide

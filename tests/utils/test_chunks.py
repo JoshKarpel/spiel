@@ -10,7 +10,7 @@ T = TypeVar("T")
 
 
 @pytest.mark.parametrize(
-    "items, n, fill, expected",
+    ("items", "n", "fill", "expected"),
     [
         ("abcdef", 3, None, [["a", "b", "c"], ["d", "e", "f"]]),
         ("abcde", 3, None, [["a", "b", "c"], ["d", "e", None]]),

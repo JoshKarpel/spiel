@@ -6,13 +6,13 @@ from spiel.constants import DEMO_DIR
 from spiel.renderables.image import Image, ImageSize
 
 
-@pytest.fixture
+@pytest.fixture()
 def image() -> Image:
     return Image(Img.new(mode="RGB", size=ImageSize(100, 100)))
 
 
 @pytest.mark.parametrize(
-    "max_width, height, size",
+    ("max_width", "height", "size"),
     [
         (100, None, ImageSize(100, 100)),
         (100, 50, ImageSize(100, 100)),

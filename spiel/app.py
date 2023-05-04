@@ -87,7 +87,7 @@ class SpielApp(App[None]):
         _fixed_triggers: Triggers | None = None,
         _enable_transitions: bool = True,
         _slide_refresh_rate: float = 1 / 60,
-    ):
+    ) -> None:
         super().__init__()
 
         self.deck_path = deck_path

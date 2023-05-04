@@ -4,7 +4,7 @@ from spiel.app import SpielApp
 from spiel.constants import DEMO_FILE
 
 
-@pytest.fixture
+@pytest.fixture()
 def app() -> SpielApp:
     return SpielApp(
         deck_path=DEMO_FILE,

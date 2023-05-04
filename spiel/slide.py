@@ -25,7 +25,7 @@ class Slide:
     title: str = ""
     """The title of the `Slide`, which will be displayed in the footer."""
 
-    content: Content = lambda: Text()
+    content: Content = Text
     """\
     A callable that is invoked by Spiel to display the slide's content.
 

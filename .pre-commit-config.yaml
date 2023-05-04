@@ -27,17 +27,18 @@ repos:
       - id: python-use-type-annotations
       - id: python-check-blanket-type-ignore
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.21.0
+    rev: 0.23.0
     hooks:
       - id: check-github-workflows
       - id: check-github-actions
       - id: check-dependabot
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.0.248'
+    rev: 'v0.0.264'
     hooks:
       - id: ruff
+        args: [ --fix, --exit-non-zero-on-fix ]
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
   - repo: local

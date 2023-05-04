@@ -105,4 +105,6 @@ ignore_missing_imports = true
 [tool.ruff]
 line-length = 100
 
-ignore = ["E501", "E731"]
+select = [
+    "I",  # sort imports
+]

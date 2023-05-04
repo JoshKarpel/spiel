@@ -19,7 +19,10 @@ from spiel.widgets.widget import SpielWidget
 
 class FixedSlideWidget(SpielWidget):
     def __init__(
-        self, slide: Slide, triggers: Triggers | None = None, id: str | None = None
+        self,
+        slide: Slide,
+        triggers: Triggers | None = None,
+        id: str | None = None,
     ) -> None:
         super().__init__(id=id)
 

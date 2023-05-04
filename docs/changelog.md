@@ -1,5 +1,13 @@
 # Changelog
 
+## `0.5.1`
+
+Released `2023-04-21`
+
+### Changed
+
+- [#222](https://github.com/JoshKarpel/spiel/pull/222) Pin to Textual `0.11.1` temporarily to resolve issues with slide transitions.
+
 ## `0.5.0`
 
 Released `2023-02-19`

@@ -11,7 +11,7 @@ from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from functools import cached_property, partial
 from pathlib import Path
 from time import monotonic
-from typing import Callable, ContextManager, Iterator
+from typing import Callable, ClassVar, ContextManager, Iterator, List
 
 from rich.style import Style
 from rich.text import Text
@@ -67,7 +67,7 @@ SuspendType = Callable[[], ContextManager[None]]
 
 class SpielApp(App[None]):
     CSS_PATH = "spiel.css"
-    BINDINGS = [
+    BINDINGS: ClassVar[List[Binding]] = [
         Binding("d", "switch_screen('deck')", "Go to the Deck view."),
         Binding("question_mark", "push_screen('help')", "Go to the Help view."),
         Binding("i", "repl", "Switch to the REPL."),

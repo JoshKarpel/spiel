@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import ClassVar, List
+from typing import ClassVar, List, Tuple
 
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -21,7 +21,7 @@ class HelpScreen(SpielScreen):
     }
     """
 
-    BINDINGS: ClassVar[List[Binding]] = [
+    BINDINGS: ClassVar[List[Binding | Tuple[str, str, str]]] = [
         Binding("escape,enter", "pop_screen", "Return to the previous view."),
     ]
 

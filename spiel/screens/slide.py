@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import ClassVar, List
+from typing import ClassVar, List, Tuple
 
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -15,7 +15,7 @@ SUSPEND = "suspend"
 
 
 class SlideScreen(SpielScreen):
-    BINDINGS: ClassVar[List[Binding]] = [
+    BINDINGS: ClassVar[List[Binding | Tuple[str, str, str]]] = [
         Binding("right", "next_slide", "Go to next slide."),
         Binding("left", "prev_slide", "Go to previous slide."),
         Binding("t", "trigger", "Trigger the current slide."),

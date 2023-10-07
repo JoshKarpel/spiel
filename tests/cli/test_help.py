@@ -14,6 +14,6 @@ def test_help(runner: CliRunner) -> None:
 
 
 def test_help_via_main() -> None:
-    result = subprocess.run([sys.executable, "-m", PACKAGE_NAME, "--help"])
+    result = subprocess.run([sys.executable, "-m", PACKAGE_NAME, "--help"], check=False)
 
     assert result.returncode == 0

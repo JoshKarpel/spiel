@@ -65,13 +65,13 @@ the [`Transition`][spiel.Transition] [protocol](https://docs.python.org/3/librar
 The protocol is:
 
 ```python title="Transition Protocol"
---8<-- "../spiel/transitions/protocol.py"
+--8<-- "spiel/transitions/protocol.py"
 ```
 
 As an example, consider the [`Swipe`][spiel.Swipe] transition included in Spiel:
 
 ```python title="Swipe Transition"
---8<-- "../spiel/transitions/swipe.py"
+--8<-- "spiel/transitions/swipe.py"
 ```
 
 The transition effect is implemented using

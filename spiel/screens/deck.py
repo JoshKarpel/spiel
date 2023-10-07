@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import ClassVar, List, Tuple
+
 from textual.app import ComposeResult
 from textual.binding import Binding
 
@@ -9,7 +11,7 @@ from spiel.widgets.minislides import MiniSlides
 
 
 class DeckScreen(SpielScreen):
-    BINDINGS = [
+    BINDINGS: ClassVar[List[Binding | Tuple[str, str, str]]] = [
         Binding("right", "next_slide", "Go to next slide."),
         Binding("left", "prev_slide", "Go to previous slide."),
         Binding("down", "next_row", "Go to next row of slides."),

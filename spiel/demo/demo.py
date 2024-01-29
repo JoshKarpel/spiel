@@ -191,9 +191,11 @@ def dynamic() -> RenderableType:
         Align.center(
             Panel(
                 Text(
-                    f"Your terminal is {width} cells wide (try resizing it or adjusting your font size!)"
-                    if width > width_limit
-                    else f"Your terminal is only {width} cells wide! Get a bigger monitor!",
+                    (
+                        f"Your terminal is {width} cells wide (try resizing it or adjusting your font size!)"
+                        if width > width_limit
+                        else f"Your terminal is only {width} cells wide! Get a bigger monitor!"
+                    ),
                     style=Style(color="green1" if width > width_limit else "red"),
                     justify="center",
                 )

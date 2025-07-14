@@ -27,13 +27,13 @@ repos:
       - id: python-use-type-annotations
       - id: python-check-blanket-type-ignore
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.33.0
+    rev: 0.33.2
     hooks:
       - id: check-github-workflows
       - id: check-github-actions
       - id: check-dependabot
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.11.13'
+    rev: 'v0.12.3'
     hooks:
       - id: ruff
         args: [ --fix, --exit-non-zero-on-fix ]

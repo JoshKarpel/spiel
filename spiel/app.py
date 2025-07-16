@@ -226,7 +226,7 @@ class SpielApp(App[None]):
     def repl(self) -> Callable[[], None]:
         # Lazily enable readline support
         try:
-            import readline  # noqa: F401
+            import readline  # noqa: F401, PLC0415
         except ImportError:
             pass
 

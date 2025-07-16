@@ -98,7 +98,7 @@ def copy(
         exists=False,
         writable=True,
         help="The path to copy the demo deck source code and assets to.",
-    )
+    ),
 ) -> None:
     """
     Copy the demo deck source code and assets to a new directory.
@@ -128,7 +128,7 @@ def version(
     plain: bool = Option(
         default=False,
         help=f"Print only {PACKAGE_NAME}'s version.",
-    )
+    ),
 ) -> None:
     """
     Display version and debugging information.

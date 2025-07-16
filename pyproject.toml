@@ -105,6 +105,7 @@ ignore_missing_imports = true
 [tool.ruff]
 line-length = 100
 
+[tool.ruff.lint]
 select = [
     "I",   # https://beta.ruff.rs/docs/rules/#isort-i
     "F",   # https://beta.ruff.rs/docs/rules/#pyflakes-f

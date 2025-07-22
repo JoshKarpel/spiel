@@ -41,7 +41,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build Image and Push to GHCR
-      uses: docker/build-push-action@v4.1.1
+      uses: docker/build-push-action@v6.18.0
       with:
         file: ./docker/Dockerfile
         pull: true

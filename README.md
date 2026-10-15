@@ -1,5 +1,8 @@
 # Spiel
 
+> [!WARNING]
+> This project is no longer maintained. If you're interested in following my escapades in TUIs, check out [Counterweight](https://www.counterweight.dev/) (which can support Spiel-like slide decks, and much more besides).
+
 [![PyPI](https://img.shields.io/pypi/v/spiel)](https://pypi.org/project/spiel)
 [![PyPI - License](https://img.shields.io/pypi/l/spiel)](https://pypi.org/project/spiel)
 [![Docs](https://img.shields.io/badge/docs-exist-brightgreen)](https://www.spiel.how)
